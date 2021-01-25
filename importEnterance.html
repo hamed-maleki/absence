@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta content="text/html;charset=utf-8" http-equiv="Content-Type">
+    <meta content="utf-8" http-equiv="encoding">
+    <link href="firefoxStyle/bootstrap.min.css" rel="stylesheet">
+    <link href="firefoxStyle/main.css" rel="stylesheet">
+    <link href="firefoxStyle/newElementsStyle.css" rel="stylesheet">
+    <link href="firefoxStyle/font-awesome.min.css" rel="stylesheet">
+    <link href="firefoxStyle/datepicker/bootstrap-datepicker.min.css" rel="stylesheet">
+    <link href="firefoxStyle/time.min.css" rel="stylesheet">
+    <script src="firefoxStyle/newJavascript/angular.min.js"></script>
+    <script src="firefoxStyle/newJavascript/jquery.min.js"></script>
+    <script src="firefoxStyle/newJavascript/propper.js"></script>
+    <script src="firefoxStyle/newJavascript/bootstrap.min.js"></script>
+    <script src="firefoxStyle/newJavascript/moment.js"></script>
+    <script src="firefoxStyle/newJavascript/moment-jalaali.js"></script>
+    <script src="firefoxStyle/newJavascript/import.js"></script>
+    <script src="firefoxStyle/newJavascript/requests.js"></script>
+    <script src="firefoxStyle/datepicker/bootstrap-datepicker.js"></script>
+    <script src="firefoxStyle/datepicker/bootstrap-datepicker.fa.min.js"></script>
+    <script src="firefoxStyle/newJavascript/time.min.js"></script>
+    <script src="firefoxStyle/newJavascript/shim.min.js"></script>
+    <script src="firefoxStyle/newJavascript/xlsx.core.min.js"></script>
+</head>
+
+<body ng-app="myApp" ng-controller="importCtrl">
+    <p class="HeaderForm">
+        ورود اطلاعات کارت ساعت
+    </p>
+    <div class="card">
+        <div class="row">
+            <div class="col-sm-4">
+                <div class="input-group">
+                    <div class="input-group-append">
+                        <label class="input-group-text">
+                            انتخاب فایل
+                        </label>
+                    </div>
+                    <input type="file" class="form-control" import-sheet-js="" multiple="false" id="upload-input">
+                </div>
+            </div>
+            <div class="col-sm-8" style="text-align: left;">
+                <button class="new-button" ng-click='showModalForConfirm()'>
+                    <i class="fa fa-eye"></i>
+                    مشاهده و تایید اطلاعات
+                </button>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="dataModal">
+        <div class="modal-dialog modal-xl">
+            <div class="modal-content">
+                <div class="modal-body">
+                    <p class="HeaderForm">
+                        مشاهده اطلاعات فایل انتخابی
+                        <i class="fa fa-close text-danger float-left pointer" style="margin: 0 5px;"
+                            ng-click="cacnelShowingData()"></i>
+                    </p>
+                    <div class="card">
+                        <div class="table-header">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th style="width: 20%;">
+                                            ستون اول
+                                        </th>
+                                        <th style="width: 20%;">
+                                            ستون دوم
+                                        </th>
+                                        <th style="width: 20%;">
+                                            ستون سوم
+                                        </th>
+                                        <th style="width: 20%;">
+                                            ستون چهارم
+                                        </th>
+                                        <th style="width: 20%;">
+                                            ستون پنجم
+                                        </th>
+                                    </tr>
+                                    <tr>
+                                        <th style="width: 20%;">
+                                            <select class="form-control" ng-change="setDatePicker()" ng-model="orderedData[0]">
+                                                <option ng-repeat="order in fileOrder" ng-value="order.id">
+                                                    {{order.title}}
+                                                </option>
+                                            </select>
+                                        </th>
+                                        <th style="width: 20%;">
+                                            <select class="form-control"  ng-change="setDatePicker()" ng-model="orderedData[1]">
+                                                <option ng-repeat="order in fileOrder" ng-value="order.id">
+                                                    {{order.title}}
+                                                </option>
+                                            </select>
+                                        </th>
+                                        <th style="width: 20%;">
+                                            <select class="form-control"  ng-change="setDatePicker()" ng-model="orderedData[2]">
+                                                <option ng-repeat="order in fileOrder" ng-value="order.id">
+                                                    {{order.title}}
+                                                </option>
+                                            </select>
+                                        </th>
+                                        <th style="width: 20%;">
+                                            <select class="form-control"  ng-change="setDatePicker()" ng-model="orderedData[3]">
+                                                <option ng-repeat="order in fileOrder" ng-value="order.id">
+                                                    {{order.title}}
+                                                </option>
+                                            </select>
+                                        </th>
+                                        <th style="width: 20%;">
+                                            <select class="form-control"  ng-change="setDatePicker()" ng-model="orderedData[4]">
+                                                <option ng-repeat="order in fileOrder" ng-value="order.id">
+                                                    {{order.title}}
+                                                </option>
+                                            </select>
+                                        </th>
+                                    </tr>
+                                </thead>
+                            </table>
+                        </div>
+                        <div class="table-body">
+                            <table class="test">
+                                <tbody>
+                                    <tr ng-repeat="file in fileData[0]">
+                                        <td style="width: 20%;">
+                                            <input class="form-control" ng-disabled="orderedData[0] == 1" ng-class="{'date-picker':orderedData[0] == 2}" ng-value="file[0]">
+                                        </td>
+                                        <td style="width: 20%;">
+                                            <input class="form-control date-picker" ng-class="{'date-picker':orderedData[1] == 2}" ng-value="file[1]">
+                                        </td>
+                                        <td style="width: 20%;">
+                                            <input class="form-control date-picker" ng-class="{'date-picker':orderedData[2] == 2}" ng-value="file[2]">
+                                        </td>
+                                        <td style="width: 20%;">
+                                            <input class="form-control date-picker" ng-class="{'date-picker':orderedData[3] == 2}" ng-value="file[3]">
+                                        </td>
+                                        <td style="width: 20%;">
+                                            <input class="form-control date-picker" ng-class="{'date-picker':orderedData[4] == 2}" ng-value="file[4]">
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <div style="text-align: left;">
+                            <button class="new-button red" ng-click="cacnelShowingData()">
+                                <i class="fa fa-close"></i>
+                                انصراف
+                            </button>
+                            <button class="new-button green" ng-click="confirmData()">
+                                <i class="fa fa-check"></i>
+                                تایید
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>

@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta content="text/html;charset=utf-8" http-equiv="Content-Type">
+    <meta content="utf-8" http-equiv="encoding">
+    <link href="firefoxStyle/newElementsStyle.css" rel="stylesheet">
+    <script src="firefoxStyle/newJavascript/angular.min.js"></script>
+    <script src="firefoxStyle/newJavascript/jquery.min.js"></script>
+    <script src="firefoxStyle/newJavascript/login.js"></script>
+    <style>
+        .login-container {
+            background-image: url("Images/polygon.png");
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            height: 100vh;
+        }
+
+        body {
+            overflow: hidden;
+            
+        }
+        body > div {
+            direction: rtl;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="login-container" ng-app="myApp" ng-controller="loginCtrl">
+        <div class="inner-login-container">
+            <img src="Images/logofox.png">
+            <div>
+                <div>
+                    <div class="label-container">
+                        <label>
+                            نام کاربری
+                        </label>
+                    </div>
+                    <div class="input-container">
+                        <input type="text" ng-model="loginItem.username" class="new-input">
+                    </div>
+                </div>
+                <div>
+                    <div class="label-container">
+                        <label>
+                            کلمه عبور
+                        </label>
+                    </div>
+                    <div class="input-container">
+                        <input type="password" ng-model="loginItem.password" ng-keyup="checkEnter($event)" class="new-input">
+                    </div>
+                </div>
+                <div style="text-align: left;">
+                    <button class="new-button" ng-click="loginFunction()" style="height: 30px;">
+                        ورود
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>

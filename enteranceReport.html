@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta content="text/html;charset=utf-8" http-equiv="Content-Type">
+    <meta content="utf-8" http-equiv="encoding">
+    <link href="firefoxStyle/bootstrap.min.css" rel="stylesheet">
+    <link href="firefoxStyle/main.css" rel="stylesheet">
+    <link href="firefoxStyle/newElementsStyle.css" rel="stylesheet">
+    <link href="firefoxStyle/font-awesome.min.css" rel="stylesheet">
+    <link href="firefoxStyle/datepicker/bootstrap-datepicker.min.css" rel="stylesheet">
+    <link href="firefoxStyle/time.min.css" rel="stylesheet">
+    <script src="firefoxStyle/newJavascript/angular.min.js"></script>
+    <script src="firefoxStyle/newJavascript/jquery.min.js"></script>
+    <script src="firefoxStyle/newJavascript/propper.js"></script>
+    <script src="firefoxStyle/newJavascript/bootstrap.min.js"></script>
+    <script src="firefoxStyle/newJavascript/moment.js"></script>
+    <script src="firefoxStyle/newJavascript/moment-jalaali.js"></script>
+    <script src="firefoxStyle/newJavascript/entranceReport.js"></script>
+    <script src="firefoxStyle/newJavascript/modules/sharing.js"></script>
+    <script src="firefoxStyle/newJavascript/modules/selectingChart.js"></script>
+    <script src="firefoxStyle/newJavascript/modules/personnel.js"></script>
+    <script src="firefoxStyle/newJavascript/requests.js"></script>
+    <script src="firefoxStyle/datepicker/bootstrap-datepicker.js"></script>
+    <script src="firefoxStyle/datepicker/bootstrap-datepicker.fa.min.js"></script>
+    <script src="firefoxStyle/newJavascript/time.min.js"></script>
+    <style>
+        .top-Ab {
+            position: absolute;
+            width: 100%;
+            top: 24px;
+            z-index: 100;
+            overflow-y: auto;
+            height: 25vh;
+        }
+
+        .wickedpicker {
+            z-index: 3000 !important;
+            direction: ltr !important;
+        }
+
+        .time {
+            direction: ltr !important;
+            text-align: right;
+        }
+
+        .wickedpicker__controls__control span {
+            display: block;
+        }
+
+        .custom-control-label::after,
+        .custom-control-label::before {
+            right: -1.5rem;
+            left: auto;
+        }
+
+        .check-container {
+            text-align: right;
+            padding-right: 3.5rem;
+        }
+
+        .custom-dropdown {
+            position: absolute;
+            width: 100%;
+            min-height: 10vh;
+            height: 25vh;
+            overflow-y: auto;
+            overflow-x: hidden;
+            background-color: whitesmoke;
+            border: 1px solid lightgray;
+            border-radius: 5px;
+            top: 24px;
+            z-index: 100;
+            text-align: right;
+            padding-right: 2.5rem;
+            padding-top: 0.5rem;
+        }
+    </style>
+</head>
+
+<body ng-app="myApp" ng-controller="reportCtrl" ng-init="getPersonnel()">
+    <p class="HeaderForm">
+        گزارش تردد پرسنل
+    </p>
+    <div class="card">
+        <div class="row">
+            <div class="col-sm-6 asp-label" style="text-align: right;">
+                <div class="custom-control custom-radio custom-control-inline">
+                    <input type="radio" class="custom-control-input" id="customRadio" name="example" value="customEx">
+                    <label class="custom-control-label" for="customRadio">گزارش به صورت روزانه</label>
+                </div>
+                <div class="custom-control custom-radio custom-control-inline">
+                    <input type="radio" class="custom-control-input" id="customRadio2" name="example" value="customEx">
+                    <label class="custom-control-label" for="customRadio2">گزارش به صورت ماهانه</label>
+                </div>
+            </div>
+            <div class="col-sm-6"></div>
+            <div class="col-sm-4">
+                <div class="input-group">
+                    <div class="input-group-append">
+                        <label class="input-group-text">
+                            گزارش از تاریخ
+                        </label>
+                    </div>
+                    <input class="form-control date-picker" id="start" placeholder="xxxx/xx/xx">
+                </div>
+            </div>
+            <div class="col-sm-4">
+                <div class="input-group">
+                    <div class="input-group-append">
+                        <label class="input-group-text">
+                            تا
+                        </label>
+                    </div>
+                    <input class="form-control date-picker" id="finish" placeholder="xxxx/xx/xx">
+                </div>
+            </div>
+            <div class="col-sm-4">
+                <div class="input-group">
+                    <div class="input-group-append">
+                        <label class="input-group-text">
+                            نوع تردد
+                        </label>
+                    </div>
+                    <p class="form-control" ng-click="changeSelectingStatus()">
+                        <i class="fa fa-chevron-down pointer float-left"></i>
+                    </p>
+                    <div class="custom-dropdown" ng-if="selectingMultiPle">
+                        <div class="asp-label">
+                            <div class="custom-control custom-checkbox">
+                                <input type="checkbox" class="custom-control-input" id="customChecktest"
+                                    name="example1">
+                                <label class="custom-control-label" for="customChecktest">افرادی که خروج ندارند</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-12 asp-label check-container">
+                <div class="custom-control custom-checkbox">
+                    <input type="checkbox" class="custom-control-input" id="customCheck" name="example1">
+                    <label class="custom-control-label" for="customCheck">افرادی که خروج ندارند</label>
+                </div>
+            </div>
+            <div class="col-sm-12 asp-label check-container">
+                <div class="custom-control custom-checkbox">
+                    <input type="checkbox" class="custom-control-input" id="customCheck1" name="example1">
+                    <label class="custom-control-label" for="customCheck1">ورود و خروج ناقص</label>
+                </div>
+            </div>
+            <div class="col-sm-12 asp-label check-container">
+                <div class="custom-control custom-checkbox">
+                    <input type="checkbox" class="custom-control-input" id="customCheck2" name="example1">
+                    <label class="custom-control-label" for="customCheck2">تاخیر</label>
+                </div>
+            </div>
+            <div class="col-sm-12 asp-label check-container">
+                <div class="custom-control custom-checkbox">
+                    <input type="checkbox" class="custom-control-input" id="customCheck3" name="example1">
+                    <label class="custom-control-label" for="customCheck3">کسر کارکرد</label>
+                </div>
+            </div>
+            <div class="col-sm-12 asp-label check-container">
+                <div class="custom-control custom-checkbox">
+                    <input type="checkbox" class="custom-control-input" id="customCheck4" name="example1">
+                    <label class="custom-control-label" for="customCheck4">ماموریت</label>
+                </div>
+            </div>
+            <div class="col-sm-12 asp-label check-container">
+                <div class="custom-control custom-checkbox">
+                    <input type="checkbox" class="custom-control-input" id="customCheck5" name="example1">
+                    <label class="custom-control-label" for="customCheck5">تعجیل خروج</label>
+                </div>
+            </div>
+            <div class="col-sm-12 asp-label check-container">
+                <div class="custom-control custom-checkbox">
+                    <input type="checkbox" class="custom-control-input" id="customCheck6" name="example1">
+                    <label class="custom-control-label" for="customCheck6">محاسبه طبق ضریب</label>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="card">
+        <div class="card-header" data-toggle="collapse" data-target="#demo1">
+            <p class="asp-label" style="text-align: right;margin-bottom: 0;">
+                انتخاب افراد مورد نظر
+                <i class="fa fa-chevron-down pointer float-left"></i>
+            </p>
+        </div>
+        <div class="card-body collapse" id="demo1">
+            <div ng-if="loadingPersonnel" ng-include="'modules/personnelSelect.html'"></div>
+        </div>
+    </div>
+    <div class="card">
+        <div style="text-align: left;">
+            <button class="new-button">
+                <i class="fa fa-eye"></i>
+                مشاهده گزارش
+            </button>
+        </div>
+    </div>
+</body>
+
+</html>

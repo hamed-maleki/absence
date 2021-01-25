@@ -1,0 +1,42 @@
+<div class="card" ng-controller="PersonnelCtrl" ng-init="getLocalPersonnel()">
+    <p class="asp-label text-danger" style="text-align: right;" ng-if="localStatus">
+        هیچ شخصی قبلا انتخاب نشده است
+    </p>
+    <div class="card">
+        <div class="table-header">
+            <table>
+                <thead>
+                    <tr>
+                        <th style="width: 10%;">
+
+                        </th>
+                        <th style="width: 60%;">
+                            نام/
+                            نام خانوادگی
+                        </th>
+                        <th style="width: 30%;">
+                            کد پرسنلی
+                        </th>
+                    </tr>
+                </thead>
+            </table>
+        </div>
+        <div class="table-body">
+            <table class="test">
+                <tbody>
+                    <tr ng-repeat="personnel in storagedPersonnel" ng-click="selectedPersonnel(personnel)">
+                        <td style="width: 10%;">
+                            <input type="radio" ng-click="selectedPersonnel(personnel)">
+                        </td>
+                        <td style="width: 60%;">
+                             {{personnel.FirstName}} {{personnel.LastName}} 
+                        </td>
+                        <td style="width: 30%;">
+                            {{personnel.PersonnelNo}}
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

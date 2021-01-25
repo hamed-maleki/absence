@@ -1,0 +1,108 @@
+<div class="card" ng-init="getTreeRootNode()">
+    <div class="form-control" style="padding: 0 2px !important;">
+        <input type="text" placeholder="شناسه یکتا" ng-model="searchParam.uc" ng-keyup="searching()"
+            style="float: left;height: 23px;margin-top: 0;border: none;width: 33%;">
+        <input type="text" placeholder="کد" ng-model="searchParam.cd" ng-keyup="searching()"
+            style="float: left;height: 23px;margin-top: 0;border: none;border-left: 1px solid lightgray;width: 33%;">
+        <input type="text" placeholder="عنوان" ng-model="searchParam.q" ng-keyup="searching()"
+            style="float: left;height: 23px;margin-top: 0;border: none;border-left: 1px solid lightgray;width: 33%;">
+        <i ng-show="(searchParam.q != null && searchParam.q !='') || (searchParam.cd != null && searchParam.cd !='') || (searchParam.uc != null && searchParam.uc !='')"
+            ng-click="searchParam.q = '';searchParam.cd = '';searchParam.uc = ''"
+            class="fa fa-close text-danger inline-search" style="z-index: 5;position: absolute;top: 10px;left: 15px;font-size: 1.3em;"></i>
+        <div ng-if="(searchParam.q != null && searchParam.q !='') || (searchParam.cd != null && searchParam.cd !='') || (searchParam.uc != null && searchParam.uc !='')"
+            style="position: absolute;width: 101%;min-height: 15em;background-color: white;border-radius: 5px;border: 1px solid lightgray;right: -0.5%;z-index: 11;top: 34px;height: 25em;overflow-x: hidden;">
+            <div ng-if="searchLoading" style="display: flex;align-items: center;justify-content: center;height: 100%;">
+                <div class="spinner-border text-primary"></div>
+            </div>
+            <div ng-if="!searchLoading" style="height: 97%;">
+                <div class="card" style="margin: 0;height: 87%;overflow-y: auto;overflow-x: hidden;">
+                    <div>
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th style="width: 40%;">
+                                        عنوان
+                                    </th>
+                                    <th style="width: 20%;">
+                                        کد
+                                    </th>
+                                    <th style="width: 35%;">
+                                        شناسه یکتا
+                                    </th>
+                                </tr>
+                            </thead>
+
+                        </table>
+                        <div ng-repeat="result in searchResult">
+                            <p ng-if="result.BreadCrumb.length != 0" class="asp-label alert alert-primary"
+                                style="text-align: right;margin: 5px 0;padding: 0 15px;font-size: 0.8em !important;">
+                                <span ng-repeat="bread in result.BreadCrumb">
+                                    {{bread.Title}} /
+                                </span>
+                            </p>
+                            <table>
+                                <tbody class="special-tbody">
+                                    <tr ng-repeat="tst in result.Items" ng-if="!tst.IsDeleted"
+                                         ng-click='selectingNode1(tst)'>
+                                        <td class="asp-label" style="width: 45%;">
+                                            <p title="{{tst.Title}}"
+                                                style="width: 90%;overflow: hidden !important;text-overflow: ellipsis;margin-bottom: 0;font-size: 1.2em !important;">
+                                                {{tst.Title}}
+                                            </p>
+                                        </td>
+                                        <td class="asp-label" style="text-align: center;width: 20%;font-size: 0.8em;">
+                                            {{tst.Code}}
+                                        </td>
+                                        <td class="asp-label" style="text-align: center;width: 35%;font-size: 0.8em;">
+                                            {{tst.UniqueCode}}
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                <div class="card" style="margin: 0;height: 13%;margin-top: 5px;">
+                    <div class="row">
+                        <div class="col-sm-12" style="text-align: right;">
+                            <span ng-click="loadPage('last')" style="cursor: pointer;">
+                                <i class="fa fa-chevron-right" style="font-size: 0.7em;"></i>
+                                <i class="fa fa-chevron-right asp-label"
+                                    style="margin-right: -3px;font-size: 0.7em;"></i>
+                            </span>
+                            <i class="fa fa-chevron-right asp-label" ng-click="loadPage(1)"
+                                style="margin: 0 10px;cursor: pointer;font-size: 0.7em;"></i>
+                            <input class="form-control" id="pagingD" placeholder="{{currentPage}} از  {{TotalPages}}"
+                                style="width: 30%;display: inline-block;position: relative;top: 0px;font-size: 0.7em;"
+                                ng-model="pageNumber" ng-keyup="changePage($event,pageNumber);">
+                            <i class="fa fa-chevron-left asp-label" ng-click="loadPage(-1)"
+                                style="margin: 0 10px;cursor: pointer;font-size: 0.7em;"></i>
+                            <span ng-click="loadPage('first')" style="cursor: pointer;">
+                                <i class="fa fa-chevron-left asp-label" style="margin-left: -3px;font-size: 0.7em;"></i>
+                                <i class=" fa fa-chevron-left asp-label" style="font-size: 0.7em;"></i>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div style="text-align: right;margin-top: 5px;">
+        <ul class="ul">
+            <li ng-repeat="treeNode in nodes" ng-if="treeNode.ParentId == null">
+                <div class="li-info asp-label">
+                    <i class="fa fa-building" ng-if="treeNode.IsOrganization"
+                        ng-click="getSubNode(treeNode.ChartId)"></i>
+                    <i class="fa fa-users" ng-if="!treeNode.IsOrganization && !treeNode.IsPost"
+                        ng-click="getSubNode(treeNode.ChartId)"></i>
+                    <i class="fa fa-address-card" ng-if="treeNode.IsPost" ng-click="getSubNode(treeNode.ChartId)"></i>
+                    <input type='radio' ng-if="!selectMultiChart" ng-click='selectingNode(treeNode.ChartId)' name='chart'
+                        id='radio-{{treeNode.ChartId}}'>
+                        <input type="checkbox" ng-if="selectMultiChart" ng-click="addToChartList(treeNode.ChartId)" id="check-{{treeNode.ChartId}}">
+                    {{treeNode.Title}}
+                </div>
+                <ul id="tree-select-{{treeNode.ChartId}}"></ul>
+            </li>
+        </ul>
+    </div>
+</div>

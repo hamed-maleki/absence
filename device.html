@@ -1,0 +1,638 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta content="text/html;charset=utf-8" http-equiv="Content-Type">
+    <meta content="utf-8" http-equiv="encoding">
+    <link href="firefoxStyle/bootstrap.min.css" rel="stylesheet">
+    <link href="firefoxStyle/main.css" rel="stylesheet">
+    <link href="firefoxStyle/newElementsStyle.css" rel="stylesheet">
+    <link href="firefoxStyle/time.min.css" rel="stylesheet">
+    <link href="firefoxStyle/font-awesome.min.css" rel="stylesheet">
+    <link href="firefoxStyle/datepicker/bootstrap-datepicker.min.css" rel="stylesheet">
+    <script src="firefoxStyle/newJavascript/angular.min.js"></script>
+    <script src="firefoxStyle/newJavascript/jquery.min.js"></script>
+    <script src="firefoxStyle/newJavascript/device.js"></script>
+    <script src="firefoxStyle/newJavascript/requests.js"></script>
+    <script src="firefoxStyle/newJavascript/modules/sharing.js"></script>
+    <script src="firefoxStyle/newJavascript/modules/selectingChart.js"></script>
+    <script src="firefoxStyle/newJavascript/modules/personnel.js"></script>
+    <script src="firefoxStyle/newJavascript/propper.js"></script>
+    <script src="firefoxStyle/newJavascript/bootstrap.min.js"></script>
+    <script src="firefoxStyle/datepicker/bootstrap-datepicker.js"></script>
+    <script src="firefoxStyle/datepicker/bootstrap-datepicker.fa.min.js"></script>
+    <style>
+        .top-Ab {
+            position: absolute;
+            width: 100%;
+            top: 24px;
+            z-index: 100;
+            overflow-y: auto;
+            height: 25vh;
+        }
+    </style>
+</head>
+<body ng-app="myApp" ng-controller="deviceCtrl" ng-init="getDevices(1)">
+    <p class="HeaderForm">
+        معرفی و ویرایش کارت ساعت {{parentInfo.name}}
+    </p>
+    <div ng-if="!settingView">
+        <div class="card">
+            <div ng-if="hasValue">
+                <div class="table-header">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th style="width: 20%;">
+                                    نام دستگاه
+                                </th>
+                                <th style="width: 10%;">
+                                    شماره دستگاه
+                                </th>
+                                <th style="width: 70%;">
+                                    آدرس دستگاه
+                                </th>
+                            </tr>
+                        </thead>
+                    </table>
+                </div>
+                <div class="table-body">
+                    <table class="test">
+                        <tbody>
+                            <tr ng-repeat="device in devices.item1">
+                                <td style="width: 20%;">
+                                    {{device.name}}
+                                </td>
+                                <td style="width: 10%;">
+                                    {{device.deviceCode}}
+                                </td>
+                                <td style="width: 70%;">
+                                    {{device.address}}
+                                    <i class="fa fa-cog float-left pointer" ng-click="getPersonnelAndChart(device)"></i>
+                                    <i class="fa fa-edit float-left pointer" ng-click="editData(device)" style="margin: 0 0 0 5px;"></i>
+                                    <i class="fa fa-trash float-left pointer" ng-click="deleteData(device)" style="margin: 0 0 0 5px;"></i>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div ng-if="!hasValue">
+                <p class="text-danger asp-label center">
+                    تا کنون دستگاهی ثبت نشده است
+                </p>
+            </div>
+        </div>
+        <div class="card">
+            <div class="row">
+                <div class="col-sm-4" style="text-align: right;padding-right: 25px;">
+                    <div ng-if="hasValue">
+                        <span ng-click="loadPages('last')" style="cursor: pointer;">
+                            <i class="fa fa-chevron-right" style="font-size: 0.7em;"></i>
+                            <i class="fa fa-chevron-right asp-label" style="margin-right: -3px;font-size: 0.7em;"></i>
+                        </span>
+                        <i class="fa fa-chevron-right asp-label" ng-click="loadPages(1)"
+                            style="margin: 0 10px;cursor: pointer;font-size: 0.7em;"></i>
+                        <input class="form-control" id="pagingD"
+                            placeholder="{{devices.item3}} از  {{devices.pagetotal}}"
+                            style="width: 30%;display: inline-block;position: relative;top: 0px;font-size: 0.7em;"
+                            ng-model="pageNumber" ng-keyup="changePage($event,pageNumber);">
+                        <i class="fa fa-chevron-left asp-label" ng-click="loadPages(-1)"
+                            style="margin: 0 10px;cursor: pointer;font-size: 0.7em;"></i>
+                        <span ng-click="loadPages('first')" style="cursor: pointer;">
+                            <i class="fa fa-chevron-left asp-label" style="margin-left: -3px;font-size: 0.7em;"></i>
+                            <i class=" fa fa-chevron-left asp-label" style="font-size: 0.7em;"></i>
+                        </span>
+                    </div>
+                </div>
+                <div class="col-sm-4"></div>
+                <div class="col-sm-4" style="text-align: left;padding-left: 25px;">
+                    <i class="fa fa-plus pointer" ng-click="createDevice()"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div ng-if="settingView">
+        <div class="card">
+            <ul class="list-group list-group-horizontal">
+                <li class="list-group-item" id="personnel" ng-click="changeSettingView('personnel')" ng-class="{'selected-list-group':view == 'personnel'}">
+                    پرسنل
+                    <i class="fa fa-user"></i>
+                </li>
+                <li class="list-group-item" id="chart" ng-click="changeSettingView('chart')" ng-class="{'selected-list-group':view == 'chart'}">
+                    چارت
+                    <i class="fa fa-sitemap"></i>
+                </li>
+            </ul>
+        </div>
+        <div >
+            <div ng-if="view == 'personnel'" ng-init="getDevicePersonnel()">
+                <div class="card" ng-if="noPersonnelSetted">
+                    <p class="asp-label text-danger center">
+                        پرسنلی به این دستگاه نسبت داده نشده است
+                    </p>
+                </div>
+                <div class="card" ng-if="!noPersonnelSetted">
+                    <div class="table-body">
+                        <table class="test">
+                            <thead>
+                                <tr>
+                                    <th>
+                                        نام پرسنل
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr ng-repeat="personnel in devicePersonnelArray">
+                                    <td style="text-align: right;">
+                                        <div ng-if="personnelDeleteMode" style="display: inline-block;margin-left: 15px;"  class="custom-control custom-checkbox">
+                                            <input type="checkbox" class="custom-control-input" ng-click="addToDeleteList(personnel)" id="customCheck-edit-{{personnel.personId}}" name="example1">
+                                            <label class="custom-control-label" for="customCheck-edit-{{personnel.personId}}"></label>
+                                        </div>
+                                        {{personnel.personName}}
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="row">
+                        <div class="col-sm-4"></div>
+                        <div class="col-sm-4"></div>
+                        <div class="col-sm-4" ng-if="!personnelDeleteMode" style="text-align: left;">
+                            <button class="new-button red" ng-click="cancelSettingView()">
+                                <i class="fa fa-repeat"></i>
+                                بازگشت
+                            </button>
+                            <button class="new-button btn-info" ng-click="changePersonnelDeleteMode()">
+                                <i class="fa fa-trash"></i>
+                                حذف پرسنل
+                            </button>
+                            <button class="new-button" ng-click="addPersonnelToDevice()">
+                                <i class="fa fa-plus"></i>
+                                انتساب پرسنل
+                            </button>
+                        </div>
+                        <div class="col-sm-4" ng-if="personnelDeleteMode" style="text-align: left;">
+                            <button class="new-button red" ng-click="cancelDeleteMode()">
+                                <i class="fa fa-close"></i>
+                                انصراف
+                            </button>
+                            <button class="new-button green" ng-click="openPersonnelDeleteModal()">
+                                <i class="fa fa-check"></i>
+                                تایید
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div ng-if="view == 'chart'" ng-init="getDeviceChart()">
+                <div class="card" ng-if="noChartFound">
+                    <p class="asp-label text-danger center">
+                        تا کنون چارتی به این کارت دستگاه نسبت داده نشده است
+                    </p>
+                </div>
+                <div class="card" ng-if="!noChartFound">
+                    <div class="table-body">
+                        <table class="test">
+                            <thead>
+                                <tr>
+                                    <th>
+                                        نام چارت
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr ng-repeat="chart in deviceChartArray">
+                                    <td style="text-align: right;">
+                                        <div ng-if="chartDeleteMode" style="display: inline-block;margin-left: 15px;"  class="custom-control custom-checkbox">
+                                            <input type="checkbox" class="custom-control-input" ng-click="addToDeleteListChart(chart)" id="customCheck-edit-chart-{{chart.chartId}}" name="example1">
+                                            <label class="custom-control-label" for="customCheck-edit-chart-{{chart.chartId}}"></label>
+                                        </div>
+                                        {{chart.chartName}}
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="row">
+                        <div class="col-sm-4"></div>
+                        <div class="col-sm-4"></div>
+                        <div class="col-sm-4" ng-if="!chartDeleteMode" style="text-align: left;">
+                            <button class="new-button red" ng-click="cancelSettingView()">
+                                <i class="fa fa-repeat"></i>
+                                بازگشت
+                            </button>
+                            <button class="new-button btn-info" ng-click="changeChartDeleteMode()">
+                                <i class="fa fa-trash"></i>
+                                حذف چارت
+                            </button>
+                            <button class="new-button" ng-click="addChartToDevice()">
+                                <i class="fa fa-plus"></i>
+                                انتساب چارت
+                            </button>
+                        </div>
+                        <div class="col-sm-4" ng-if="chartDeleteMode" style="text-align: left;">
+                            <button class="new-button red" ng-click="cancelDeleteModeChart()">
+                                <i class="fa fa-close"></i>
+                                انصراف
+                            </button>
+                            <button class="new-button green" ng-click="openDeleteChartModal()">
+                                <i class="fa fa-check"></i>
+                                تایید
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="createModal">
+        <div class="modal-dialog modal-xl">
+            <div class="modal-content">
+                <div class="modal-body">
+                    <p class="HeaderForm">
+                        ایجاد دستگاه کارت ساعت
+                        <i class="fa fa-close text-danger float-left pointer" style="margin: 0 5px;" ng-click="cancelCreate()"></i>
+                    </p>
+                    <div class="card">
+                        <div class="row">
+                            <div class="col-sm-4">
+                                <div class="input-group">
+                                    <div class="input-group-append">
+                                        <label class="input-group-text">
+                                            نام دستگاه
+                                        </label>
+                                    </div>
+                                    <input type="text" class="form-control" ng-model="createDeviceItem.name">
+                                </div>
+                            </div>
+                            <div class="col-sm-4">
+                                <div class="input-group">
+                                    <div class="input-group-append">
+                                        <label class="input-group-text">
+                                            شماره دستگاه
+                                        </label>
+                                    </div>
+                                    <input type="text" class="form-control" ng-model="createDeviceItem.deviceCode">
+                                </div>
+                            </div>
+                            <div class="col-sm-4"></div>
+                            <div class="col-sm-4">
+                                <div class="input-group">
+                                    <div class="input-group-append">
+                                        <label class="input-group-text">
+                                            port Address
+                                        </label>
+                                    </div>
+                                    <input class="form-control" ng-model="createDeviceItem.portAddress">
+                                </div>
+                            </div>
+                            <div class="col-sm-4">
+                                <div class="input-group">
+                                    <div class="input-group-append">
+                                        <label class="input-group-text">
+                                            Ip Address
+                                        </label>
+                                    </div>
+                                    <input class="form-control" ng-model="createDeviceItem.ipAddress">
+                                </div>
+                            </div>
+                            <div class="col-sm-4"></div>
+                            <div class="col-sm-4">
+                                <div class="input-group">
+                                    <div class="input-group-append">
+                                        <label class="input-group-text">
+                                            نام کاربری
+                                        </label>
+                                    </div>
+                                    <input class="form-control" ng-model="createDeviceItem.userName">
+                                </div>
+                            </div>
+                            <div class="col-sm-4">
+                                <div class="input-group">
+                                    <div class="input-group-append">
+                                        <label class="input-group-text">
+                                            رمز
+                                        </label>
+                                    </div>
+                                    <input class="form-control" type="password" ng-model="createDeviceItem._password">
+                                </div>
+                            </div>
+                            <div class="col-sm-8">
+                                <div class="input-group">
+                                    <div class="input-group-append">
+                                        <label class="input-group-text">
+                                            آدرس فیزیکی
+                                        </label>
+                                    </div>
+                                    <textarea class="form-control" style="height: 5em !important;" ng-model="createDeviceItem.address"></textarea>
+                                </div>
+                            </div>
+                            <!-- <div class="col-sm-8" ng-controller="PersonnelCtrl">
+                                <div class="input-group">
+                                    <div class="input-group-prepend">
+                                        <label class="input-group-text">
+                                            چارت سازمانی
+                                        </label>
+                                    </div>
+                                    <p class="form-control pointer" style="text-align: right;" ng-click="changeSelectPostStatus()">
+                                        {{searchItems.treeName}}
+                                        <i class="fa fa-chevron-down float-left" style="font-size: 16px;"></i>
+                                        <i class="fa fa-close text-danger float-left" style="font-size: 16px;margin-left: 10px;"
+                                            ng-if="searchItems.tri != null" ng-click="clearChart()"></i>
+                                    </p>
+                                    <div ng-if="selectPostStatus" class="top-Ab">
+                                        <div ng-controller="organizationSelectController" ng-init="getRootData()">
+                                            <div class="chartHolder card" ng-include="'modules/chartTree.html'"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div> -->
+                        </div>
+                    </div>
+                    <div class="card">
+                        <div style="text-align: left;">
+                            <button class="new-button red" ng-click="cancelCreate()">
+                                <i class="fa fa-close"></i>
+                                انصراف
+                            </button>
+                            <button class="new-button green" ng-click="confirmCreate()">
+                                <i class="fa fa-check"></i>
+                                تایید
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="editModal">
+        <div class="modal-dialog modal-xl">
+            <div class="modal-content">
+                <div class="modal-body">
+                    <p class="HeaderForm">
+                        ایجاد دستگاه کارت ساعت
+                        <i class="fa fa-close text-danger float-left pointer" style="margin: 0 5px;" ng-click="cancelEdit()"></i>
+                    </p>
+                    <div class="card">
+                        <div class="row">
+                            <div class="col-sm-4">
+                                <div class="input-group">
+                                    <div class="input-group-append">
+                                        <label class="input-group-text">
+                                            نام دستگاه
+                                        </label>
+                                    </div>
+                                    <input type="text" class="form-control" ng-model="editingDevice.name">
+                                </div>
+                            </div>
+                            <div class="col-sm-4">
+                                <div class="input-group">
+                                    <div class="input-group-append">
+                                        <label class="input-group-text">
+                                            شماره دستگاه
+                                        </label>
+                                    </div>
+                                    <input type="text" class="form-control" ng-model="editingDevice.deviceCode">
+                                </div>
+                            </div>
+                            <div class="col-sm-4"></div>
+                            <div class="col-sm-4">
+                                <div class="input-group">
+                                    <div class="input-group-append">
+                                        <label class="input-group-text">
+                                            port Address
+                                        </label>
+                                    </div>
+                                    <input class="form-control" ng-model="editingDevice.portAddress">
+                                </div>
+                            </div>
+                            <div class="col-sm-4">
+                                <div class="input-group">
+                                    <div class="input-group-append">
+                                        <label class="input-group-text">
+                                            Ip Address
+                                        </label>
+                                    </div>
+                                    <input class="form-control" ng-model="editingDevice.ipAddress">
+                                </div>
+                            </div>
+                            <div class="col-sm-4"></div>
+                            <div class="col-sm-4">
+                                <div class="input-group">
+                                    <div class="input-group-append">
+                                        <label class="input-group-text">
+                                            نام کاربری
+                                        </label>
+                                    </div>
+                                    <input class="form-control" ng-model="editingDevice.userName">
+                                </div>
+                            </div>
+                            <div class="col-sm-4">
+                                <div class="input-group">
+                                    <div class="input-group-append">
+                                        <label class="input-group-text">
+                                            رمز
+                                        </label>
+                                    </div>
+                                    <input class="form-control" type="password" ng-model="editingDevice._password">
+                                </div>
+                            </div>
+                            <div class="col-sm-8">
+                                <div class="input-group">
+                                    <div class="input-group-append">
+                                        <label class="input-group-text">
+                                            آدرس فیزیکی
+                                        </label>
+                                    </div>
+                                    <textarea class="form-control" style="height: 5em !important;" ng-model="editingDevice.address"></textarea>
+                                </div>
+                            </div>
+                            <!-- <div class="col-sm-8" ng-controller="PersonnelCtrl">
+                                <div class="input-group">
+                                    <div class="input-group-prepend">
+                                        <label class="input-group-text">
+                                            چارت سازمانی
+                                        </label>
+                                    </div>
+                                    <p class="form-control pointer" style="text-align: right;" ng-click="changeSelectPostStatus()">
+                                        {{searchItems.treeName}}
+                                        <i class="fa fa-chevron-down float-left" style="font-size: 16px;"></i>
+                                        <i class="fa fa-close text-danger float-left" style="font-size: 16px;margin-left: 10px;"
+                                            ng-if="searchItems.tri != null" ng-click="clearChart()"></i>
+                                    </p>
+                                    <div ng-if="selectPostStatus" class="top-Ab">
+                                        <div ng-controller="organizationSelectController" ng-init="getRootData()">
+                                            <div class="chartHolder card" ng-include="'modules/chartTree.html'"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div> -->
+                        </div>
+                    </div>
+                    <div class="card">
+                        <div style="text-align: left;">
+                            <button class="new-button red" ng-click="cancelEdit()">
+                                <i class="fa fa-close"></i>
+                                انصراف
+                            </button>
+                            <button class="new-button green" ng-click="confirmEdit()">
+                                <i class="fa fa-check"></i>
+                                تایید
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="deleteModal">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-body">
+                    <p class="HeaderForm">
+                        تایید حذف
+                        <i class="fa fa-close text-danger pointer float-left" style="margin: 0 5px;" ng-click="cancelDelete()"></i>
+                    </p>
+                    <div class="card">
+                        <p class="asp-label text-danger center">
+                            آیا از حذف این مورد اطمینان دارید؟
+                        </p>
+                    </div>
+                    <div class="card">
+                        <div style="text-align: left;">
+                            <button class="new-button red" ng-click="cancelDelete()">
+                                <i class="fa fa-close"></i>
+                                انصراف
+                            </button>
+                            <button class="new-button green" ng-click="confirmDelete()">
+                                <i class="fa fa-check"></i>
+                                تایید
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="personnelDeleteModal">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-body">
+                    <p class="HeaderForm">
+                        تایید حذف
+                        <i class="fa fa-close text-danger pointer float-left" style="margin: 0 5px;" ng-click="cancelDeletePersonnel()"></i>
+                    </p>
+                    <div class="card">
+                        <p class="asp-label text-danger center">
+                            آیا از حذف این مورد اطمینان دارید؟
+                        </p>
+                    </div>
+                    <div class="card">
+                        <div style="text-align: left;">
+                            <button class="new-button red" ng-click="cancelDeletePersonnel()">
+                                <i class="fa fa-close"></i>
+                                انصراف
+                            </button>
+                            <button class="new-button green" ng-click="confirmDeletePersonnel()">
+                                <i class="fa fa-check"></i>
+                                تایید
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="chartDeleteModal">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-body">
+                    <p class="HeaderForm">
+                        تایید حذف
+                        <i class="fa fa-close text-danger pointer float-left" style="margin: 0 5px;" ng-click="cancelDeleteChart()"></i>
+                    </p>
+                    <div class="card">
+                        <p class="asp-label text-danger center">
+                            آیا از حذف این مورد اطمینان دارید؟
+                        </p>
+                    </div>
+                    <div class="card">
+                        <div style="text-align: left;">
+                            <button class="new-button red" ng-click="cancelDeleteChart()">
+                                <i class="fa fa-close"></i>
+                                انصراف
+                            </button>
+                            <button class="new-button green" ng-click="ConfirmDeleteChart()">
+                                <i class="fa fa-check"></i>
+                                تایید
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="addingPersonnel">
+        <div class="modal-dialog modal-xl">
+            <div class="modal-content">
+                <div class="modal-body">
+                    <p class="HeaderForm">
+                        انتساب پرسنل به {{parentInfo.name}}
+                        <i class="fa fa-close text-danger pointer float-left" style="margin: 0 5px;" ng-click='cancelAddingPersonnel()'></i>
+                    </p>
+                    <div>
+                        <div ng-if="loadingPersonnel" ng-include="'modules/personnelSelect.html'"></div>
+                    </div>
+                    <div class="card">
+                        <div style="text-align: left;">
+                            <button class="new-button red" ng-click='cancelAddingPersonnel()'>
+                                <i class="fa fa-close"></i>
+                                انصراف
+                            </button>
+                            <button class="new-button green" ng-click="confirmAddingPersonnel()">
+                                <i class="fa fa-check"></i>
+                                تایید
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="addingchartModal">
+        <div class="modal-dialog modal-xl">
+            <div class="modal-content">
+                <div class="modal-body">
+                    <p class="HeaderForm">
+                        انتساب چارت به دستگاه {{parentInfo.name}}
+                        <i class="fa fa-close text-danger float-left pointer" style="margin: 0 5px;" ng-click="cancelAddingChart()"></i>
+                    </p>
+                    <div ng-if="allowAddingChart">
+                        <div ng-controller="organizationSelectController" ng-init="getRootData()">
+                            <div class="chartHolder" ng-include="'modules/chartTree.html'"></div>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <div style="text-align: left;">
+                            <button class="new-button red" ng-click="cancelAddingChart()">
+                                <i class="fa fa-close"></i>
+                                انصراف
+                            </button>
+                            <button class="new-button green" ng-click="confirmAddingchart()">
+                                <i class="fa fa-check"></i>
+                                تایید
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>

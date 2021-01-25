@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta content="text/html;charset=utf-8" http-equiv="Content-Type">
+    <meta content="utf-8" http-equiv="encoding">
+    <link href="firefoxStyle/bootstrap.min.css" rel="stylesheet">
+    <link href="firefoxStyle/main.css" rel="stylesheet">
+    <link href="firefoxStyle/newElementsStyle.css" rel="stylesheet">
+    <link href="firefoxStyle/font-awesome.min.css" rel="stylesheet">
+    <link href="firefoxStyle/datepicker/bootstrap-datepicker.min.css" rel="stylesheet">
+    <link href="firefoxStyle/time.min.css" rel="stylesheet">
+    <script src="firefoxStyle/newJavascript/angular.min.js"></script>
+    <script src="firefoxStyle/newJavascript/jquery.min.js"></script>
+    <script src="firefoxStyle/newJavascript/propper.js"></script>
+    <script src="firefoxStyle/newJavascript/bootstrap.min.js"></script>
+    <script src="firefoxStyle/newJavascript/moment.js"></script>
+    <script src="firefoxStyle/newJavascript/moment-jalaali.js"></script>
+    <script src="firefoxStyle/newJavascript/enter.js"></script>
+    <script src="firefoxStyle/newJavascript/requests.js"></script>
+    <script src="firefoxStyle/newJavascript/modules/sharing.js"></script>
+    <script src="firefoxStyle/newJavascript/modules/selectingChart.js"></script>
+    <script src="firefoxStyle/newJavascript/modules/personnel.js"></script>
+    <script src="firefoxStyle/datepicker/bootstrap-datepicker.js"></script>
+    <script src="firefoxStyle/datepicker/bootstrap-datepicker.fa.min.js"></script>
+    <script src="firefoxStyle/newJavascript/time.min.js"></script>
+    <style>
+        .top-Ab {
+            position: absolute;
+            width: 100%;
+            top: 24px;
+            z-index: 100;
+            overflow-y: auto;
+            height: 25vh;
+        }
+
+        .wickedpicker {
+            z-index: 3000 !important;
+            direction: ltr !important;
+        }
+
+        .time {
+            direction: ltr !important;
+            text-align: right;
+        }
+
+        .wickedpicker__controls__control span {
+            display: block;
+        }
+    </style>
+</head>
+
+<body ng-app="myApp" ng-controller="enterCtrl">
+    <p class="HeaderForm">
+        مشاهده تردد پرسنل
+    </p>
+    <div class="card">
+        <div class="row">
+            <div class="col-sm-6">
+                <div class="input-group">
+                    <div class="input-group-prepend">
+                        <label class="input-group-text">
+                            نام فرد
+                        </label>
+                    </div>
+                    <input class="form-control" ng-model="searchP.value" id="personnel-input" ng-value="searchP.value"
+                        ng-focus="selectFormLocal()" ng-keyup="serachPersonel(searchP.value)"
+                        placeholder="نام/ نام خانوادگی/ کد ملی/ شماره کارمند">
+                    <i class="fa fa-download text-success pointer" ng-show="!localPersonnel && !searchingPosition"
+                        ng-click="localPersonnel = true" style="position: absolute;top: 0.3em;left: 5%;z-index: 3;"></i>
+                    <i class="fa fa-bars pointer" ng-click="selectPersonnel()"
+                        style="position: relative;top:5px;right:3px"></i>
+                    <i class="fa fa-close text-danger pointer" ng-if="searchingPosition"
+                        ng-click="searchingPositionChange()"
+                        style="position: absolute;top: 0.3em;left: 5%;z-index: 3;"></i>
+                    <i class="fa fa-close text-danger pointer" ng-show="localPersonnel"
+                        ng-click="localPersonnel = false"
+                        style="position: absolute;top: 0.3em;left: 5%;z-index: 3;"></i>
+                    <div ng-if="searchingPosition" style="position: absolute;top:1.6em;width: 100%;z-index: 2;"
+                        ng-include="'modules/personnelSelectDropdown.html'"></div>
+                    <div ng-if="localPersonnel" style="position: absolute;top:1.6em;width: 100%;z-index: 2;"
+                        ng-include="'modules/personnelSelectLocal.html'"></div>
+                </div>
+            </div>
+            <div class="col-sm-6" style="text-align: center;">
+                <div class="spinner-border text-primary" ng-if="loading"></div>
+            </div>
+        </div>
+    </div>
+    <div class="card" ng-if="oneSelected">
+        <div class="row">
+            <div class="col-sm-4">
+                <div class="input-group">
+                    <div class="input-group-prepend">
+                        <label class="input-group-text">
+                            تاریخ شروع
+                        </label>
+                    </div>
+                    <input class="form-control date-picker" placeholder="xxxx/xx/xx" id="startEnterDate">
+                </div>
+            </div>
+            <div class="col-sm-4">
+                <div class="input-group">
+                    <div class="input-group-prepend">
+                        <label class="input-group-text">
+                            تاریخ پایان
+                        </label>
+                    </div>
+                    <input class="form-control date-picker" placeholder="xxxx/xx/xx" id="finishEnterDate">
+                </div>
+            </div>
+            <div class="col-sm-4">
+                <div class="input-group">
+                    <div class="input-group-prepend">
+                        <label class="input-group-text">
+                            فیلتر موارد
+                        </label>
+                    </div>
+                    <p class="form-control" style="text-align: right;height: auto !important;">
+                        <span class="alert alert-success" ng-if="eValue.selected" style="margin: 0 2.5px;padding: 0 5px;display: inline-block;" ng-repeat="eValue in filterItems" >
+                            {{eValue.title}}
+                            <i class="fa fa-close pointer" ng-click="removeFilter(eValue)"></i>
+                        </span>
+                    </p>
+                    <div class="dropdown">
+                        <i class="fa fa-chevron-down" style="position: absolute;left: 5px;top: 0.3em;"
+                            data-toggle="dropdown"></i>
+                        <div class="dropdown-menu"
+                            style="top: 4px !important;left: -6px !important;height: auto;overflow-y: auto;overflow-x: hidden;width: 30.5em;">
+                            <div class="card">
+                                <input class="form-control" ng-model="search.title">
+                                <div class="table-header">
+                                    <table>
+                                        <thead>
+                                            <tr>
+                                                <th style="width: 10%;">
+                                                </th>
+                                                <th style="width: 90%;">
+                                                    عنوان
+                                                </th>
+                                            </tr>
+                                        </thead>
+                                    </table>
+                                </div>
+                                <div class="table-body">
+                                    <table class="test">
+                                        <tbody>
+                                            <tr ng-repeat="item in filterItems|filter:search">
+                                                <td style="width: 10%;">
+                                                    <div class="custom-control custom-checkbox"
+                                                        style="display: inline-block;margin-top: -38px;">
+                                                        <input type="checkbox" ng-model="item.selected"
+                                                            class="custom-control-input"
+                                                            id="check-enter-{{item.id}}" name="example1">
+                                                        <label class="custom-control-label"
+                                                            for="check-enter-{{item.id}}"></label>
+                                                    </div>
+                                                </td>
+                                                <td style="width: 90%;">
+                                                    {{item.title}}
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-12" style="text-align: left;">
+                <button class="new-button" ng-click="changeCheckingDate()">
+                    <i class="fa fa-eye"></i>
+                    مشاهده
+                </button>
+            </div>
+        </div>
+    </div>
+    <div class="card" ng-if="loadedData">
+        <div class="table-header">
+            <table>
+                <thead>
+                    <tr>
+                        <th style="width: 25%;">
+                            تاریخ
+                        </th>
+                        <th style="width: 25%;">
+                            ساعت ورود
+                        </th>
+                        <th style="width: 25%;">
+                            ساعت خروج
+                        </th>
+                        <th style="width: 25%;">
+                            نوع تردد
+                        </th>
+                    </tr>
+                </thead>
+            </table>
+        </div>
+        <div class="table-body">
+            <table class="test">
+                <tbody>
+                    <tr ng-repeat="day in customMonth">
+                        <td style="width: 25%;">
+                            {{day.date}}
+                        </td>
+                        <td style="width: 25%;"></td>
+                        <td style="width: 25%;"></td>
+                        <td style="width: 25%;">
+                            <i class="fa fa-ellipsis-v float-left pointer" ng-click="openExtra()"
+                                style="margin: 0 10px 0 0px;"></i>
+                            <i class="fa fa-edit float-left pointer" ng-click="editTransporting(day)"></i>
+                            <i class="fa fa-plus float-left pointer" style="margin: 0 0 0 10px;"></i>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <div class="modal fade" id="selectPersonnel">
+        <div class="modal-dialog modal-xl">
+            <div class="modal-content">
+                <div class="modal-head">
+                    <p class="HeaderForm">
+                        انتخاب پرسنل
+                        <i class="fa  fa-close text-danger pointer" style="float: left;margin: 0 5px;"
+                            data-dismiss="modal"></i>
+                    </p>
+                </div>
+                <div class="modal-body" style="padding-top: 0;">
+                    <div ng-if="loadingPersonnel" ng-include="'modules/personnelSelect.html'"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="editEnterData">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-body">
+                    <p class="HeaderForm">
+                        ویرایش تردد
+                        <i class="fa fa-close text-danger float-left pointer" style="margin: 0 5px;"
+                            ng-click='cancelEdit()'></i>
+                    </p>
+                    <div class="card">
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <div class="input-group">
+                                    <div class="input-group-prepend">
+                                        <label class="input-group-text">
+                                            تاریخ
+                                        </label>
+                                    </div>
+                                    <input class="form-control" ng-value="editingItem.date" disabled>
+                                </div>
+                            </div>
+                            <div class="col-sm-12">
+                                <div class="input-group">
+                                    <div class="input-group-prepend">
+                                        <label class="input-group-text">
+                                            ساعت ورود
+                                        </label>
+                                    </div>
+                                    <input class="form-control time">
+                                </div>
+                            </div>
+                            <div class="col-sm-12">
+                                <div class="input-group">
+                                    <div class="input-group-prepend">
+                                        <label class="input-group-text">
+                                            ساعت خروج
+                                        </label>
+                                    </div>
+                                    <input class="form-control time">
+                                </div>
+                            </div>
+                            <div class="col-sm-12">
+                                <div class="input-group">
+                                    <div class="input-group-prepend">
+                                        <label class="input-group-text">
+                                            نوع تردد
+                                        </label>
+                                    </div>
+                                    <select class="form-control">
+                                        <option>
+                                            skjdhf
+                                        </option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <div style="text-align: left;">
+                            <button class="new-button red" ng-click="cancelEdit()">
+                                <i class="fa fa-close"></i>
+                                انصراف
+                            </button>
+                            <button class="new-button green" ng-click="confirmEdit()">
+                                <i class="fa fa-check"></i>
+                                تایید
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="additionalHours">
+        <div class="modal-dialog modal-xl">
+            <div class="modal-content">
+                <div class="modal-body">
+                    <p class="HeaderForm">
+                        اطلاعات تکمیلی تاریخ
+                        <i class="fa fa-close text-danger pointer float-left" style="margin: 0 5px;"
+                            ng-click="cancelAdditional()"></i>
+                    </p>
+                    <div class="card">
+                        <div class="table-header">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th style="width: 33%;">
+                                            ساعت ورود
+                                        </th>
+                                        <th style="width: 33%;">
+                                            ساعت خروج
+                                        </th>
+                                        <th style="width: 34%;">
+                                            نوع تردد
+                                        </th>
+                                    </tr>
+                                </thead>
+                            </table>
+                        </div>
+                        <div class="table-body">
+                            <table class="test">
+                                <tbody>
+                                    <tr>
+                                        <td style="width: 33%;"></td>
+                                        <td style="width: 33%;"></td>
+                                        <td style="width: 34%;">
+                                            <i class="fa fa-edit float-left pointer"></i>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <div style="text-align: lef;">
+                            <i class="fa fa-plus pointer"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>

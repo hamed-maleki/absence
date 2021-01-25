@@ -1,0 +1,237 @@
+<div ng-controller="calendarCtrl" ng-init="setDate()">
+    <div ng-if="loadedHoliday">
+        <div class="card">
+            <div class="row">
+                <div class="col-sm-4" ng-if="!yearlyView">
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <select class="form-control" ng-model="currentMonth" ng-change="getFavmonth(currentYear,currentMonth)">
+                                <option ng-value="1" ng-click="getFavmonth(currentYear,currentMonth)">
+                                    فروردین
+                                </option>
+                                <option ng-value="2" ng-click="getFavmonth(currentYear,currentMonth)">
+                                    اردیبهشت
+                                </option>
+                                <option ng-value="3" ng-click="getFavmonth(currentYear,currentMonth)">
+                                    خرداد
+                                </option>
+                                <option ng-value="4" ng-click="getFavmonth(currentYear,currentMonth)">
+                                    تیر
+                                </option>
+                                <option ng-value="5" ng-click="getFavmonth(currentYear,currentMonth)">
+                                    مرداد
+                                </option>
+                                <option ng-value="6" ng-click="getFavmonth(currentYear,currentMonth)">
+                                    شهریور
+                                </option>
+                                <option ng-value="7" ng-click="getFavmonth(currentYear,currentMonth)">
+                                    مهر
+                                </option>
+                                <option ng-value="8" ng-click="getFavmonth(currentYear,currentMonth)">
+                                    آبان
+                                </option>
+                                <option ng-value="9" ng-click="getFavmonth(currentYear,currentMonth)">
+                                    آذر
+                                </option>
+                                <option ng-value="10" ng-click="getFavmonth(currentYear,currentMonth)">
+                                    دی
+                                </option>
+                                <option ng-value="11" ng-click="getFavmonth(currentYear,currentMonth)">
+                                    بهمن
+                                </option>
+                                <option ng-value="12" ng-click="getFavmonth(currentYear,currentMonth)">
+                                    اسفند
+                                </option>
+                            </select>
+                        </div>
+                        <div class="col-sm-6">
+                            <select class="form-control" ng-model="currentYear" ng-change="getFavmonth(currentYear,currentMonth)">
+                                <option ng-repeat="year in years" ng-click="getFavmonth(currentYear,currentMonth)"  ng-value="year.val">
+                                    {{year.title}}
+                                </option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-4 center" ng-if="yearlyView">
+                    <p style="margin-bottom: 0;">
+                        {{currentYear}}
+                    </p>
+                </div>
+                <div class="col-sm-8" >
+                    <div style="text-align: left;">
+                        <input type="file" id="upload" on-read-file="showContent($content)" style="display: none;">
+                        <i class="fa fa-external-link pointer" ng-if="yearlyView && !addingHolidayToShift"  ng-click="exportFile()" title="export تعطیلات ثبت شده" style="border: 1px solid lightgray;padding: 5px 10px;border-radius: 5px;margin: 0 10px;"></i>
+                        <label for="upload">
+                            <i class="fa fa-download pointer"  ng-if="yearlyView && !addingHolidayToShift" title="اضافه کردن تعطیلات از فایل" style="border: 1px solid lightgray;padding: 5px 10px;border-radius: 5px;margin: 0 10px;"></i>
+                        </label>
+                        <i class="fa fa-trash pointer" title="پاک کردن تمامی تعطیلی های وارد شده" ng-click="deleteGeneral()" style="border: 1px solid lightgray;padding: 5px 10px;border-radius: 5px;margin: 0 10px;" ng-if="yearlyView && reset"></i>
+                        <i class="fa fa-calendar pointer" ng-if="!yearlyView && !addingHolidayToShift" ng-click="changeView()" style="border: 1px solid lightgray;padding: 5px 10px;border-radius: 5px;margin: 0 10px;" ></i>
+                        <i class="fa fa-calendar pointer" ng-if="yearlyView && !addingHolidayToShift" ng-click="changeView1()" style="border: 1px solid lightgray;padding: 5px 10px;border-radius: 5px;margin: 0 10px;" ></i>
+                        <i class="fa fa-chevron-right pointer" ng-if="!addingHolidayToShift" ng-click="getPreMonth()" style="border: 1px solid lightgray;padding: 5px 10px;border-radius: 5px;margin: 0 10px;" ></i>
+                        <i class="fa fa-chevron-left pointer" ng-if="!addingHolidayToShift" style="border: 1px solid lightgray;padding: 5px 10px;border-radius: 5px;margin: 0 10px;"  ng-click="getNextMonth()"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div ng-if="!yearlyView" class="card" >
+            <div class="row">
+                <div class="col-sm-12">
+                    <table class="test cal-table">
+                        <thead>
+                            <tr>
+                                <th style="width: 14.2%;">
+                                    شنبه
+                                </th>
+                                <th style="width: 14.2%;">
+                                    یکشنبه
+                                </th>
+                                <th style="width: 14.2%;">
+                                    دوشنبه
+                                </th>
+                                <th style="width: 14.2%;">
+                                    سه شنبه
+                                </th>
+                                <th style="width: 14.2%;">
+                                    چهارشنبه
+                                </th>
+                                <th style="width: 14.2%;">
+                                    پنجشنبه
+                                </th>
+                                <th style="width: 14.2%;">
+                                    جمعه
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr ng-repeat="week in month">
+                                <td ng-repeat="day in week"  ng-class="{'today':day.date == todayDay && day.month == todayMonth && day.year == todayYear,'holiday': day.isOff}">
+                                    <div style="position: relative;">
+                                        <div class="dropdown" style="height: 100%;display: flex;align-items: center;">
+                                            <span ng-if="day.date == '-'" style="width: 100%;height: 100%;display:flex;align-items: center;justify-content: center;">
+                                                -
+                                            </span>
+                                            <span data-toggle="dropdown" ng-if="day.date != '-'" style="width: 100%;height: 100%;display:flex;align-items: center;justify-content: center;">
+                                                {{day.date}}
+                                            </span>
+                                            <div class="dropdown-menu">
+                                              <p ng-repeat="option in clanderOptions"  class="dropdown-item asp-label" style="text-align: right;margin-bottom: 5px;" ng-click="sendDate(day,option.id)">
+                                                  {{option.title}}
+                                                </p>
+                                                <p ng-repeat="option in clanderOptionsFill" ng-if="day.item != undefined" class="dropdown-item asp-label" style="text-align: right;margin-bottom: 5px;" ng-click="sendDate(day,option.id)">
+                                                    {{option.title}}
+                                                </p>
+                                            </div>
+                                          </div>
+                                        <p class="text-danger" ng-if="day.item != undefined" style="position: absolute;top: 25px;text-align: center;width: 100%;" title="{{day.description}}">
+                                            {{day.item.name}}
+                                        </p>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <div ng-if="yearlyView" class="card" ng-init="creatYearCal()">
+            <div class="row">
+                <div class="col-sm-4" ng-repeat="month in yearMonths">
+                    <div class="card cal-card">
+                        <div class="card-header pointer" ng-click="getYearByMonth(month)" style="padding: 5px;text-align: center;">
+                            <p class="asp-label" style="margin-bottom: 0;">
+                                {{month.title}}
+                            </p>
+                        </div>
+                        <div class="card-body" style="padding: 5px;">
+                            <table class="test cal-table">
+                                <thead>
+                                    <tr>
+                                        <th style="width: 14.2%;">
+                                            شنبه
+                                        </th>
+                                        <th style="width: 14.2%;">
+                                            یکشنبه
+                                        </th>
+                                        <th style="width: 14.2%;">
+                                            دوشنبه
+                                        </th>
+                                        <th style="width: 14.2%;">
+                                            سه شنبه
+                                        </th>
+                                        <th style="width: 14.2%;">
+                                            چهارشنبه
+                                        </th>
+                                        <th style="width: 14.2%;">
+                                            پنجشنبه
+                                        </th>
+                                        <th style="width: 14.2%;">
+                                            جمعه
+                                        </th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr ng-repeat="week in month.monthsDay">
+                                        <td ng-repeat="day in week" ng-mouseenter="showAlter = true" ng-mouseleave="showAlter = false" style="padding: 0 !important;height: 52px;position: relative;" ng-class="{'today':day.date == todayDay && day.month == todayMonth && day.year == todayYear,'holiday': day.isOff && !importStatus,'striped': day.isOff && importStatus}">
+                                            <div  class="dropdown" ng-click="showAlter = false" style="height: 100%;display: flex;align-items: center;">
+                                                <span ng-if="day.date == '-'" style="width: 100%;height: 100%;display:flex;align-items: center;justify-content: center;">
+                                                    -
+                                                </span>
+                                                <span ng-click="addToPreLoad(day)" ng-if="importStatus && day.date != '-' && !addingHolidayToShift" style="width: 100%;height: 100%;display:flex;align-items: center;justify-content: center;">
+                                                    {{day.date}}
+                                                </span>
+                                                <span ng-if="importStatus && day.date != '-' && addingHolidayToShift" data-toggle="dropdown"  style="width: 100%;height: 100%;display:flex;align-items: center;justify-content: center;">
+                                                    {{day.date}}
+                                                </span>
+                                                <span ng-if="!importStatus && day.date != '-' && !addingHolidayToShift" data-toggle="dropdown"  style="width: 100%;height: 100%;display:flex;align-items: center;justify-content: center;">
+                                                    {{day.date}}
+                                                </span>
+                                                <i class="fa fa-warning" ng-if="day.law != undefined" style="margin: 0 -18px 0 0;color: yellowgreen;"></i>
+                                                <div class="dropdown-menu">
+
+                                                  <p ng-repeat="option in clanderOptions" ng-if="!day.isOff"  class="dropdown-item asp-label" style="text-align: right;margin-bottom: 5px;" ng-click="sendDate(day,option.id)">
+                                                      {{option.title}}
+                                                    </p>
+                                                    <p ng-repeat="option in clanderOptionsFill" ng-if="day.isOff" ng-if="day.item != undefined" class="dropdown-item asp-label" style="text-align: right;margin-bottom: 5px;" ng-click="sendDate(day,option.id)">
+                                                        {{option.title}}
+                                                    </p>
+                                                </div>
+                                              </div> 
+                                              <div class="alter" ng-show="showAlter && day.date != '-'">
+                                                <div>
+                                                    {{day.year}} / {{day.month}} / {{day.date}}
+                                                </div>
+                                                <div>
+                                                    {{transformGergorian(day)}}
+                                                </div>
+                                                <div>
+                                                    {{day.item.name}}
+                                                </div>
+                                            </div>
+                                            <!-- <i class="fa fa-comment" ng-if="day.description != undefined" title="{{day.description}}"></i> -->
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="card" ng-if="importStatus">
+        <div style="text-align: left;">
+            <button class="new-button red" ng-click="cancelImport()">
+                <i class="fa fa-close"></i>
+                انصراف
+            </button>
+            <button class="new-button green" ng-click="confirmImport()">
+                <i class="fa fa-check"></i>
+                تایید
+            </button>
+        </div>
+    </div>
+    <div ng-if="!loadedHoliday" style="text-align: center;">
+        <div class="spinner-border text-primary spinner-border-xl"></div>
+    </div>
+</div>

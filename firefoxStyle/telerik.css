@@ -1,0 +1,196 @@
+.RadToolBar_Default .rtbMiddle {
+    background-image: none !important;
+    border: none !important;
+    width: 100%;
+}
+
+.RadToolBar {
+    width: 100%;
+}
+
+.RadToolBar_Default .rtbWrap, .RadToolBar_Default .rtbTemplate {
+    color: rgba(0, 0, 0, 0.8) !important;
+}
+
+.RadToolBar_Default .rtbItemHovered .rtbWrap, .RadToolBar_Default .rtbItemHovered .rtbOut, .RadToolBar_Default .rtbItemHovered .rtbMid, .RadToolBar_Default .rtbItemHovered .rtbIn {
+    background-image: none !important;
+    color: #004085 !important;
+    background-color: #cce5ff !important;
+}
+
+.RadToolBar .rtbInner {
+    height: 50px !important;
+    display: flex;
+    align-items: center;
+}
+
+.newLink img {
+    width: 24px !important;
+    height: 24px !important;
+}
+
+.rgMasterTable, .rgDetailTable, .rgGroupPanel table, .rgCommandRow table, .rgEditForm table, .rgPager table, .GridToolTip_Sunset {
+    font: 12px/16px "vazir" !important;
+    font-family: 'vazir' !important;
+}
+
+.RadToolBar_Default .rtbOuter {
+    border: none !important;
+    width: 100% !important;
+}
+
+.rgHeader, th.rgResizeCol {
+    background-image: none !important;
+    border: initial !important;
+    background-color: inherit !important;
+    color: inherit !important;
+    font-family: 'vazir' !important;
+    border: 1px solid #004085 !important;
+    padding: 12.5px 5px !important;
+    text-align: center !important;
+    font-size: 1em;
+}
+
+.rgAltRow {
+    background-color: rgba(0, 0, 0, .03) !important;
+}
+.rgRow:hover {
+    background-color: #ECEEF8 !important;
+    color: #3F51B5;
+}
+
+.rgAltRow td,.rgRow td {
+    border-left: 1px solid #dee2e6 !important;
+    border-top: 1px solid #dee2e6 !important;
+    border-bottom: 1px solid #dee2e6 !important;
+}
+.rgHoveredRow {
+    background-image: none !important;
+    background-color: #cce5ff !important;
+    color: #004085 !important;
+}
+
+table tbody td {
+    font-size: 1em;
+}
+
+.rgPager {
+    background-color: #F3F3F3 !important;
+}
+
+.rgPager>td {
+    padding: 0 15px !important;
+}
+
+.RadGrid .rgMasterTable, .RadGrid .rgDetailTable {
+    border-collapse: collapse !important;
+}
+
+.rgPager table {
+    margin-top: 15px;
+}
+
+td.rgPagerCell {
+    border: none !important;
+    border-bottom: 1px solid lightgray !important;
+    margin-top: 15px;
+}
+
+html body .RadInput_Sunset .riTextBox, html body .RadInputMgr_Sunset {
+    height: 16px;
+    position: relative;
+    top: -2px;
+    width: 25px !important;
+    border: 1px solid lightgrey;
+    border-radius: 5px;
+}
+
+.rgPager .rgPagerButton {
+    background: none !important;
+    border: none !important;
+    border-radius: 5px;
+    background-color: #004085 !important;
+    color: #cce5ff !important;
+}
+
+.rgInfoPart {
+    direction: ltr;
+}
+
+.rgSelectedRow {
+    background-image: none !important;
+    background-color: #cce5ff !important;
+    color: #004085 !important;
+}
+
+.rgHeaderDiv {
+    background: #F3F3F3 !important;
+}
+
+.rgWrap a {
+    position: static !important;
+    background-color: none;
+    width: auto;
+    height: auto;
+    opacity: 1;
+}
+
+.rgWrap input[type="button"], .rgWrap input[type="submit"] {
+    min-width: 45px !important;
+}
+
+.rgAdvPart {
+    display: none;
+}
+
+.rgInfoPart {
+    display: none;
+}
+
+.RadGrid_Default .rgFooterDiv {
+    padding-right: 0 !important;
+    padding-left: 16px !important;
+}
+
+.RadGrid_Default .rgFooter {
+    background-color: #D1DAEF !important;
+    color: black !important;
+}
+.RadGrid_Default .rgRow > td {
+    border-left: 1px solid lightgray !important;
+    border-right: 1px solid lightgray !important;
+}
+.rgDataDiv {
+    overflow-y: scroll !important;
+}
+.rtsHorizontal .rtsLI {
+    display: inline-flex !important;
+}
+.rtsLink {
+    background-image: none !important;
+    background-color: #004085 !important;
+    color: white !important;
+}
+.rtsSelected .rtsLink {
+    background-color: white !important;
+    color: #004085 !important;
+}
+.dark-theme .RadGrid_Default {
+    background-color: initial !important;
+    color: white !important;
+}
+.dark-theme .rgAltRow {
+    background-color: rgba(255, 255, 255, .1) !important;
+    color: white;
+}
+.rgAltRow:hover {
+    background-color: #ECEEF8 !important;
+    color: #3F51B5;
+}
+.dark-theme .RadGrid_Default .rgAltRow:hover {
+    background-color: #ECEEF8 !important;
+    color: #3F51B5;
+}
+.dark-theme .rgSelectedRow {
+    background-color: #ECEEF8 !important;  
+}

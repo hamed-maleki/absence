@@ -1,0 +1,27 @@
+<div  ng-init="getWeeksDay()">
+    <div ng-if="firstLoadedDays" ng-controller="weekCtrl" ng-init="getDays()">
+        <div class="card">
+            <div ng-repeat="day in days" class="custom-check" style="text-align: right;padding-right: 35px;">
+                <div class="custom-control custom-checkbox">
+                    <input type="checkbox" ng-checked="checkingDays(day.id)" ng-click="makingDays(day.id)" class="custom-control-input" id="customCheck-{{day.id}}" name="example1">
+                    <label class="custom-control-label asp-label" for="customCheck-{{day.id}}">{{day.name}}</label>
+                  </div>
+            </div>
+        </div>
+        <div class="card">
+            <div style="text-align: left;">
+                <button class="new-button red" ng-click="showWeekDays()">
+                    <i class="fa fa-close"></i>
+                    انصراف
+                </button>
+                <button class="new-button green" ng-click="confirmDays()">
+                    <i class="fa fa-check"></i>
+                    تایید
+                </button>
+            </div>
+        </div>
+    </div>
+    <div ng-if="!firstLoadedDays" class="center">
+        <div class="spinner-border text-primary spinner-border-xl"></div>
+    </div>
+</div>

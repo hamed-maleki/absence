@@ -1,0 +1,1196 @@
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-sm-2">
+            <ul style="padding-right:0">
+                <li class="asp-label ability-list" ng-click="changeLevel(level)" ng-repeat="level in levels"
+                    style="text-align: right;cursor: pointer;">
+                    <div class="card" ng-class="{'selected-list-group':level.selected}" style="padding:10px">
+                        {{level.title}}
+                    </div>
+                </li>
+            </ul>
+        </div>
+        <div class="col-sm-10">
+            <div class="card" ng-if="selectedLevel == 1">
+                <div class="row">
+                    <div class="col-sm-4">
+                        <div class="input-group">
+                            <div class="input-group-prepend">
+                                <label class="input-group-text">
+                                    عنوان
+                                </label>
+                            </div>
+                            <input class="form-control" ng-model="editingInfo.name">
+                        </div>
+                    </div>
+                    <div class="col-sm-4">
+                        <div class="input-group">
+                            <div class="input-group-prepend">
+                                <label class="input-group-text">
+                                    تاریخ شروع
+                                </label>
+                            </div>
+                            <input class="form-control date-picker" ng-value="changeDate(editingInfo.startDate)" id="editStart" placeholder="xxxx/xx/xx">
+                        </div>
+                    </div>
+                    <div class="col-sm-4">
+                        <div class="input-group">
+                            <div class="input-group-prepend">
+                                <label class="input-group-text">
+                                    تاریخ پایان
+                                </label>
+                            </div>
+                            <input class="form-control date-picker" ng-value="editingInfo.endDate" id="editEnd" placeholder="xxxx/xx/xx">
+                        </div>
+                    </div>
+                    <div class="col-sm-4">
+                        <div class="input-group">
+                            <div class="input-group-prepend">
+                                <label class="input-group-text">
+                                    نوع نوبت کاری
+                                </label>
+                            </div>
+                            <select class="form-control" ng-model="editingInfo.shiftTypeId">
+                                <option ng-value="1">
+                                    شیفت عادی
+                                </option>
+                                <option ng-value="2">
+                                    شیفت چرخشی
+                                </option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-sm-4" ng-if="editingInfo.shiftTypeId == 2">
+                        <div class="input-group">
+                            <div class="input-group-prepend">
+                                <label class="input-group-text">
+                                    میزان جا به جایی ساعت تعطیلات
+                                </label>
+                            </div>
+                            <input class="form-control" type="number" ng-model="editingInfo.moveHourAfter">
+                        </div>
+                    </div>
+                    <div class="col-sm-4" ng-if="editingInfo.shiftTypeId != 2"></div>
+                    <div class="col-sm-4"></div>
+                    <div class="col-sm-4">
+                        <div class="input-group">
+                            <div class="input-group-prepend">
+                                <label class="input-group-text">
+                                    تاجیل مجاز
+                                </label>
+                            </div>
+                            <input class="form-control" type="number" ng-model="editingInfo.allowedHurryMin">
+                        </div>
+                    </div>
+                    <div class="col-sm-4 custom-check" style="text-align: right;padding-right: 41px;">
+                        <div class="custom-control custom-checkbox">
+                            <input type="checkbox" class="custom-control-input" ng-model="editingInfo.allowedHurryAddToShortageHour"
+                                id="customCheck5" name="example2">
+                            <label class="custom-control-label asp-label" for="customCheck5">
+                                اعمال کسری تاجیل
+                            </label>
+                        </div>
+                    </div>
+                    <div class="col-sm-4"></div>
+                    <div class="col-sm-4">
+                        <div class="input-group">
+                            <div class="input-group-prepend">
+                                <label class="input-group-text">
+                                    تاخیر مجاز
+                                </label>
+                            </div>
+                            <input class="form-control" type="number" ng-model="editingInfo.allowedDelayMin">
+                        </div>
+                    </div>
+                    <div class="col-sm-4 custom-check" style="text-align: right;padding-right: 41px;">
+                        <div class="custom-control custom-checkbox">
+                            <input type="checkbox" class="custom-control-input" ng-model="editingInfo.allowedDelayAddToShortageHour"
+                                    id="customCheck6" name="example2">
+                                <label class="custom-control-label asp-label" for="customCheck6">
+                                    اعمال کسری تاخیر
+                                </label>
+                        </div>
+                    </div>
+                    <div class="col-sm-4"></div>
+                    <div class="col-sm-2 custom-check" style="text-align: right;padding-right: 42px;">
+                        <div class="custom-control custom-checkbox">
+                            <input type="checkbox" class="custom-control-input" ng-model="editingInfo.isActive" id="customCheck" name="example1">
+                            <label class="custom-control-label asp-label" for="customCheck">فعال</label>
+                        </div>
+                    </div>
+                    <div class="col-sm-2 custom-check" style="text-align: right;padding-right: 42px;">
+                        <div class="custom-control custom-checkbox">
+                            <input type="checkbox" class="custom-control-input" ng-model="editingInfo.isExtraWork" id="customCheck1" name="example1">
+                            <label class="custom-control-label asp-label" for="customCheck1">دارای اضافه کار</label>
+                        </div>
+                    </div>
+                    <div class="col-sm-2 custom-check" style="text-align: right;padding-right: 42px;">
+                        <!-- <div class="custom-control custom-checkbox">
+                            <input type="checkbox" class="custom-control-input" id="customCheck2" name="example1">
+                            <label class="custom-control-label asp-label" for="customCheck2">دارای تعطیلات</label>
+                        </div> -->
+                    </div>
+                    <div class="col-sm-6"></div>
+                    <!-- <div class="col-sm-12" ng-if="editingInfo.shiftTypeId == 1">
+                        <div class="card">
+                            <div class="card-header" style="padding:0">
+                                <p class="asp-label" style="text-align: right;margin-bottom: 0;">
+                                    مشخصات شیفت عادی
+                                </p>
+                            </div> -->
+                            <!-- <div class="card-body">
+                                <div class="row"> -->
+                                    <!-- <div class="col-sm-12" style="text-align: right;">
+                                        <div class="custom-control custom-radio custom-control-inline">
+                                            <input type="radio" ng-model="repeatDay" class="custom-control-input" id="customRadio"
+                                                name="example" value="1">
+                                            <label class="custom-control-label asp-label" for="customRadio">تمام روز های
+                                                هفته</label>
+                                        </div>
+                                        <div class="custom-control custom-radio custom-control-inline">
+                                            <input type="radio" ng-model="repeatDay" class="custom-control-input" id="customRadio2"
+                                                name="example" value="2">
+                                            <label class="custom-control-label asp-label" for="customRadio2">به تفکیک
+                                                ایام هفته</label>
+                                        </div>
+                                    </div> -->
+                                    <!-- <div class="col-sm-12" ng-if="repeatDay == 1">
+                                        <div class="row">
+                                            <div class="col-sm-4">
+                                                <div class="input-group">
+                                                    <div class="input-group-prepend">
+                                                        <label class="input-group-text">
+                                                            ساعت شروع
+                                                        </label>
+                                                    </div>
+                                                    <input class="form-control date-picker" placeholder="xxxx/xx/xx">
+                                                </div>
+                                            </div>
+                                            <div class="col-sm-4">
+                                                <div class="input-group">
+                                                    <div class="input-group-prepend">
+                                                        <label class="input-group-text">
+                                                            ساعت پایان
+                                                        </label>
+                                                    </div>
+                                                    <input class="form-control date-picker" placeholder="xxxx/xx/xx">
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-12" ng-if="repeatDay == 2">
+                                        <div class="table-body">
+                                            <table class="test">
+                                                <thead>
+                                                    <tr>
+                                                        <th>
+                                                            ایام هفته
+                                                        </th>
+                                                        <th>
+                                                            ساعت شروع
+                                                        </th>
+                                                        <th>
+                                                            ساعت پایان
+                                                        </th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <tr>
+                                                        <td>
+                                                            شنبه
+                                                        </td>
+                                                        <td>
+                                                            <input class="form-control">
+                                                        </td>
+                                                        <td>
+                                                            <input class="form-control">
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>
+                                                            یکشنبه
+                                                        </td>
+                                                        <td>
+                                                            <input class="form-control">
+                                                        </td>
+                                                        <td>
+                                                            <input class="form-control">
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>
+                                                            دوشنبه
+                                                        </td>
+                                                        <td>
+                                                            <input class="form-control">
+                                                        </td>
+                                                        <td>
+                                                            <input class="form-control">
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>
+                                                            سه شنبه
+                                                        </td>
+                                                        <td>
+                                                            <input class="form-control">
+                                                        </td>
+                                                        <td>
+                                                            <input class="form-control">
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>
+                                                            چهارشنبه
+                                                        </td>
+                                                        <td>
+                                                            <input class="form-control">
+                                                        </td>
+                                                        <td>
+                                                            <input class="form-control">
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>
+                                                            پنجشنبه
+                                                        </td>
+                                                        <td>
+                                                            <input class="form-control">
+                                                        </td>
+                                                        <td>
+                                                            <input class="form-control">
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>
+                                                            جمعه
+                                                        </td>
+                                                        <td>
+                                                            <input class="form-control">
+                                                        </td>
+                                                        <td>
+                                                            <input class="form-control">
+                                                        </td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div> -->
+                    <!-- <div class="col-sm-12" ng-if="editingInfo.shiftTypeId == 2">
+                        <div class="card">
+                            <div class="card-header" style="padding:0">
+                                <p class="asp-label" style="text-align: right;margin-bottom: 0;">
+                                    مشخصات شیفت چرخشی
+                                </p>
+                            </div>
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-sm-4">
+                                        <div class="input-group">
+                                            <div class="input-group-prepend">
+                                                <label class="input-group-text">
+                                                    تاریخ شروع
+                                                </label>
+                                            </div>
+                                            <input class="form-control date-picker" placeholder="xxxx/xx/xx">
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-4">
+                                        <div class="input-group">
+                                            <div class="input-group-prepend">
+                                                <label class="input-group-text">
+                                                    تاریخ پایان
+                                                </label>
+                                            </div>
+                                            <input class="form-control date-picker" placeholder="xxxx/xx/xx">
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-4">
+                                        <div class="input-group">
+                                            <div class="input-group-prepend">
+                                                <label class="input-group-text">
+                                                    ساعت شروع
+                                                </label>
+                                            </div>
+                                            <input class="form-control date-picker" placeholder="xxxx/xx/xx">
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-4">
+                                        <div class="input-group">
+                                            <div class="input-group-prepend">
+                                                <label class="input-group-text">
+                                                    ساعات حضور
+                                                </label>
+                                            </div>
+                                            <input class="form-control">
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-4">
+                                        <div class="input-group">
+                                            <div class="input-group-prepend">
+                                                <label class="input-group-text">
+                                                    ساعات عدم حضور
+                                                </label>
+                                            </div>
+                                            <input class="form-control">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div> -->
+                    <div class="col-sm-12" ng-if="editingInfo.isExtraWork">
+                        <div class="card">
+                            <div class="card-header" style="padding:0">
+                                <p class="asp-label" style="text-align: right;margin-bottom: 0;">
+                                    مشخصات اضافه کار
+                                </p>
+                            </div>
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-sm-4">
+                                        <div class="input-group">
+                                            <div class="input-group-prepend">
+                                                <label class="input-group-text">
+                                                    ماینگین اضافه کار
+                                                </label>
+                                            </div>
+                                            <input class="form-control" type="number" ng-model="editingInfo.extraHourRate">
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-8"></div>
+                                    <div class="col-sm-4 custom-check" style="text-align: right;padding-right: 42px;">
+                                        <div class="custom-control custom-checkbox">
+                                            <input type="checkbox" ng-model="editingInfo.hasExtraBefore" class="custom-control-input" id="customCheck3"
+                                                name="example1">
+                                            <label class="custom-control-label asp-label" for="customCheck3">اضافه کاری
+                                                قبل از شروع کار</label>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-4" ng-if="editingInfo.hasExtraBefore">
+                                        <div class="input-group">
+                                            <div class="input-group-prepend">
+                                                <label class="input-group-text">
+                                                    حداقل زمان
+                                                </label>
+                                            </div>
+                                            <input class="form-control" type="number" ng-model="editingInfo.minTimeBefore">
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-4" ng-if="editingInfo.hasExtraBefore">
+                                        <div class="input-group">
+                                            <div class="input-group-prepend">
+                                                <label class="input-group-text">
+                                                    حداکثر زمان
+                                                </label>
+                                            </div>
+                                            <input class="form-control" type="number" ng-model="editingInfo.maxTimeBefore">
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-8" ng-if="!editingInfo.hasExtraBefore"></div>
+                                    <div class="col-sm-4 custom-check" style="text-align: right;padding-right: 42px;">
+                                        <div class="custom-control custom-checkbox">
+                                            <input type="checkbox" ng-model="editingInfo.hasExtraAfter" class="custom-control-input" id="customCheck4"
+                                                name="example1">
+                                            <label class="custom-control-label asp-label" for="customCheck4">اضافه کاری
+                                                بعد از اتمام کار</label>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-4" ng-if="editingInfo.hasExtraAfter">
+                                        <div class="input-group">
+                                            <div class="input-group-prepend">
+                                                <label class="input-group-text">
+                                                    حداقل زمان
+                                                </label>
+                                            </div>
+                                            <input class="form-control" type="number" ng-model="editingInfo.minTimeAfter">
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-4" ng-if="editingInfo.hasExtraAfter">
+                                        <div class="input-group">
+                                            <div class="input-group-prepend">
+                                                <label class="input-group-text">
+                                                    حداکثر زمان
+                                                </label>
+                                            </div>
+                                            <input class="form-control" type="number" ng-model="editingInfo.maxTimeAfter">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="card" ng-if="selectedLevel == 1">
+                <div style="text-align: left;">
+                    <button class="new-button red" ng-click="changeEditView()">
+                        <i class="fa fa-repeat"></i>
+                        بازگشت
+                    </button>
+                    <button class="new-button green" ng-click="confirmUpdateShift()">
+                        <i class="fa fa-check"></i>
+                        تایید
+                    </button>
+                </div>
+            </div>
+            <div ng-if="selectedLevel == 2">
+                <div ng-include="'personnels-shift.html'"></div>
+            </div>
+            <div  ng-if="selectedLevel == 3" ng-controller="calendarViewCtrl" ng-init="">
+                <div  ng-include="'calendar.html'"></div>
+                <div class="card" ng-if="loadedHoliday">
+                    <div style="text-align: left;">
+                        <button class="new-button red" ng-click="changeEditView()">
+                            <i class="fa fa-repeat"></i>
+                            بازگشت
+                        </button>
+                    </div>
+                </div>
+                <div class="modal fade" id="defineHolidayShift">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-body">
+                                <p class="HeaderForm">
+                                    تعریف تعطیلی برای {{settingDate}}
+                                    <i class="fa fa-close pointer text-danger" ng-click="cancelCustomAddingShift()"
+                                        style="float: left;margin: 0 5px;"></i>
+                                </p>
+                                <div class="card">
+                                    <div class="row">
+                                        <div class="col-sm-12">
+                                            <div class="input-group">
+                                                <div class="input-group-append">
+                                                    <label class="input-group-text">
+                                                        عنوان
+                                                    </label>
+                                                </div>
+                                                <input class="form-control" ng-model="createHoliday.name">
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-12">
+                                            <div class="input-group">
+                                                <div class="input-group-append">
+                                                    <label class="input-group-text">
+                                                        نوع تعطیلات
+                                                    </label>
+                                                </div>
+                                                <p class="form-control" style="text-align: right;">
+                                                    {{createHoliday.holidayTypeTitle}}
+                                                    <i class="fa fa-chevron-down pointer"
+                                                        ng-click="dropdownStatus ? dropdownStatus = false : dropdownStatus = true"
+                                                        style="float: left;margin: 0 5px;"></i>
+                                                </p>
+                                                <div class="dropdown-container" ng-init="getHolidayType()" ng-if="dropdownStatus">
+                                                    <div ng-if="!hasValue">
+                                                        <div class="card">
+                                                            <p ng-if="holidayTypes.item1.length == 0" class="text-danger asp-label"
+                                                                style="text-align: right;">
+                                                                نوع تعطیلاتی قبلا ثبت نشده است
+                                                            </p>
+            
+                                                            <div class="input-group">
+                                                                <div class="input-group-append">
+                                                                    <label class="input-group-text">
+                                                                        عنوان
+                                                                    </label>
+                                                                </div>
+                                                                <input class="form-control" ng-model="createTitle.name">
+                                                            </div>
+                                                        </div>
+                                                        <div class="card">
+                                                            <div style="text-align: left;">
+                                                                <button class="new-button green"
+                                                                    ng-click="confirmCreateType(createTitle)">
+                                                                    <i class="fa fa-check"></i>
+                                                                    تایید
+                                                                </button>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div ng-if="hasValue">
+                                                        <div class="card">
+                                                            <div class="table-header">
+                                                                <table>
+                                                                    <thead>
+                                                                        <tr>
+                                                                            <th>
+                                                                                عنوان
+                                                                            </th>
+                                                                        </tr>
+                                                                    </thead>
+                                                                </table>
+                                                            </div>
+                                                            <div class="table-body">
+                                                                <table class="test">
+                                                                    <tbody>
+                                                                        <tr ng-repeat="type in holidayTypes.item1"
+                                                                            ng-click="setNameForCreate(type)">
+                                                                            <td>
+                                                                                {{type.name}}
+                                                                            </td>
+                                                                        </tr>
+                                                                    </tbody>
+                                                                </table>
+                                                            </div>
+                                                        </div>
+                                                        <div class="card">
+                                                            <div class="row">
+                                                                <div class="col-sm-10" style="text-align: right;">
+                                                                    <span ng-click="loadPages('last')" style="cursor: pointer;">
+                                                                        <i class="fa fa-chevron-right"
+                                                                            style="font-size: 0.7em;"></i>
+                                                                        <i class="fa fa-chevron-right asp-label"
+                                                                            style="margin-right: -3px;font-size: 0.7em;"></i>
+                                                                    </span>
+                                                                    <i class="fa fa-chevron-right asp-label" ng-click="loadPages(1)"
+                                                                        style="margin: 0 10px;cursor: pointer;font-size: 0.7em;"></i>
+                                                                    <input class="form-control" id="pagingD"
+                                                                        placeholder="{{holidayTypes.item3}} از  {{holidayTypes.pagetotal}}"
+                                                                        style="width: 30%;display: inline-block;position: relative;top: 0px;font-size: 0.7em;"
+                                                                        ng-model="pageNumber"
+                                                                        ng-keyup="changePage($event,pageNumber);">
+                                                                    <i class="fa fa-chevron-left asp-label" ng-click="loadPages(-1)"
+                                                                        style="margin: 0 10px;cursor: pointer;font-size: 0.7em;"></i>
+                                                                    <span ng-click="loadPages('first')" style="cursor: pointer;">
+                                                                        <i class="fa fa-chevron-left asp-label"
+                                                                            style="margin-left: -3px;font-size: 0.7em;"></i>
+                                                                        <i class=" fa fa-chevron-left asp-label"
+                                                                            style="font-size: 0.7em;"></i>
+                                                                    </span>
+                                                                </div>
+                                                                <div class="col-sm-2" style="padding-left: 30px;">
+                                                                    <i class="fa fa-plus pointer"
+                                                                        ng-click="changeCreateModeType()"></i>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-12">
+                                            <div class="input-group">
+                                                <div class="input-group-append">
+                                                    <label class="input-group-text">
+                                                        توضیحات
+                                                    </label>
+                                                </div>
+                                                <textarea class="form-control" style="height: 5em !important;"
+                                                    ng-model="createHoliday.description"></textarea>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="card">
+                                    <div style="text-align: left;">
+                                        <button class="new-button red" ng-click="cancelCustomAddingShift()">
+                                            <i class="fa fa-close"></i>
+                                            انصراف
+                                        </button>
+                                        <button class="new-button green" ng-click="confirmCustomAddingShift()">
+                                            <i class="fa fa-check"></i>
+                                            تایید
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal fade" id="deleteHolidayConfirm">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-body">
+                                <p class="HeaderForm">
+                                    حذف
+                                    <i class="fa fa-close text-danger" style="float:left;margin: 0 5px;"
+                                        ng-click="cancelDeleteShift()"></i>
+                                </p>
+                                <div class="card">
+                                    <p class="text-danger asp-label" style="text-align: center;">
+                                        آیا از حذف این مورد اطمینان دارید؟
+                                    </p>
+                                </div>
+                                <div class="card">
+                                    <div style="text-align: left;">
+                                        <button class="new-button red" ng-click="cancelDeleteShift()">
+                                            <i class="fa fa-close" style="text-align: white;"></i>
+                                            انصراف
+                                        </button>
+                                        <button class="new-button green" ng-click="confirmDeleteShift()">
+                                            <i class="fa fa-check" style="text-align: white;"></i>
+                                            تایید
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal fade" id="offDayLawModalShift">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-body">
+                                <p class="HeaderForm">
+                                    تعیین قوانین
+                                    <i class="fa fa-close float-left pointer text-danger" style="margin: 0 5px;"
+                                        ng-click="cancelHolidayOffLawShift()"></i>
+                                </p>
+                                <div class="card">
+                                    <div class="row">
+                                        <div class="col-sm-12">
+                                            <div class="input-group">
+                                                <div class="input-group-append">
+                                                    <label class="input-group-text">
+                                                        ضریب اضافه کار 
+                                                    </label>
+                                                </div>
+                                                <input class="form-control" min="0" type="number" ng-model="customRateShift">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="card">
+                                    <div style="text-align: left;">
+                                        <button class="new-button red" ng-click="cancelHolidayOffLawShift()">
+                                            <i class="fa fa-close"></i>
+                                            انصراف
+                                        </button>
+                                        <button class="new-button green" ng-click="confirmDayOffLawShift()">
+                                            <i class="fa fa-check"></i>
+                                            تایید
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal fade" id="openDayLawModalShift">
+                    <div class="modal-dialog modal-xl">
+                        <div class="modal-content">
+                            <div class="modal-body">
+                                <p class="HeaderForm">
+                                    تعیین قانون
+                                    <i class="fa fa-close float-left text-danger pointer" style="margin: 0 5px;" ng-click="cacnelOpenDayLawShift()"></i>
+                                </p>
+                                <div class="card">
+                                    <div class="row">
+                                        <div class="col-sm-4">
+                                            <div class="input-group">
+                                                <div class="input-group-append">
+                                                    <label class="input-group-text">
+                                                        جا به جایی ساعت شروع به دقیقه
+                                                    </label>
+                                                </div>
+                                                <input class="form-control" ng-model="preSetLawItem.moveMinOnStart" type="number">
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-4">
+                                            <div class="input-group">
+                                                <div class="input-group-append">
+                                                    <label class="input-group-text">
+                                                        جا به جایی ساعت پایان به دقیقه
+                                                    </label>
+                                                </div>
+                                                <input class="form-control" ng-model="preSetLawItem.moveMinOnEnd" type="number">
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-4"></div>
+                                        <div class="col-sm-2 custom-check" style="text-align: right;padding-right: 42px;">
+                                            <div class="custom-control custom-checkbox">
+                                                <input type="checkbox" class="custom-control-input"
+                                                    ng-model="preSetLawItem.isExtraWork" id="customCheck-law" name="example1">
+                                                <label class="custom-control-label asp-label" for="customCheck-law">دارای اضافه
+                                                    کار</label>
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-12" ng-if="preSetLawItem.isExtraWork">
+                                            <div class="card">
+                                                <div class="card-header" style="padding:0">
+                                                    <p class="asp-label" style="text-align: right;margin-bottom: 0;">
+                                                        مشخصات اضافه کار
+                                                    </p>
+                                                </div>
+                                                <div class="card-body">
+                                                    <div class="row">
+                                                        <div class="col-sm-4">
+                                                            <div class="input-group">
+                                                                <div class="input-group-prepend">
+                                                                    <label class="input-group-text">
+                                                                        ماینگین اضافه کار
+                                                                    </label>
+                                                                </div>
+                                                                <input class="form-control" type="number"
+                                                                    ng-model="preSetLawItem.extraHourRate">
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-sm-8"></div>
+                                                        <div class="col-sm-4 custom-check"
+                                                            style="text-align: right;padding-right: 42px;">
+                                                            <div class="custom-control custom-checkbox">
+                                                                <input type="checkbox" class="custom-control-input"
+                                                                    id="customCheck3-law" name="example1"
+                                                                    ng-model="preSetLawItem.hasExtraBefore">
+                                                                <label class="custom-control-label asp-label"
+                                                                    for="customCheck3-law">اضافه کاری
+                                                                    قبل از شروع کار</label>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-sm-4" ng-if="preSetLawItem.hasExtraBefore">
+                                                            <div class="input-group">
+                                                                <div class="input-group-prepend">
+                                                                    <label class="input-group-text">
+                                                                        حداقل زمان
+                                                                    </label>
+                                                                </div>
+                                                                <input class="form-control" type="number"
+                                                                    ng-model="preSetLawItem.minTimeBefore">
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-sm-4" ng-if="preSetLawItem.hasExtraBefore">
+                                                            <div class="input-group">
+                                                                <div class="input-group-prepend">
+                                                                    <label class="input-group-text">
+                                                                        حداکثر زمان
+                                                                    </label>
+                                                                </div>
+                                                                <input class="form-control" type="number"
+                                                                    ng-model="preSetLawItem.maxTimeBefore">
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-sm-8" ng-if="!preSetLawItem.hasExtraBefore"></div>
+                                                        <div class="col-sm-4 custom-check"
+                                                            style="text-align: right;padding-right: 42px;">
+                                                            <div class="custom-control custom-checkbox">
+                                                                <input type="checkbox" class="custom-control-input"
+                                                                    ng-model="preSetLawItem.hasExtraAfter" id="customCheck4-law"
+                                                                    name="example1">
+                                                                <label class="custom-control-label asp-label"
+                                                                    for="customCheck4-law">اضافه کاری
+                                                                    بعد از اتمام کار</label>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-sm-4" ng-if="preSetLawItem.hasExtraAfter">
+                                                            <div class="input-group">
+                                                                <div class="input-group-prepend">
+                                                                    <label class="input-group-text">
+                                                                        حداقل زمان
+                                                                    </label>
+                                                                </div>
+                                                                <input class="form-control" type="number"
+                                                                    ng-model="preSetLawItem.minTimeAfter">
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-sm-4" ng-if="preSetLawItem.hasExtraAfter">
+                                                            <div class="input-group">
+                                                                <div class="input-group-prepend">
+                                                                    <label class="input-group-text">
+                                                                        حداکثر زمان
+                                                                    </label>
+                                                                </div>
+                                                                <input class="form-control" type="number"
+                                                                    ng-model="preSetLawItem.maxTimeAfter">
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="card">
+                                    <div style="text-align: left;">
+                                        <button class="new-button red" ng-click="cacnelOpenDayLawShift()">
+                                            <i class="fa fa-close"></i>
+                                            انصراف
+                                        </button>
+                                        <button class="new-button green" ng-click="confirmOpenDayLawShift()">
+                                            <i class="fa fa-check"></i>
+                                            تایید
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div ng-if="selectedLevel == 4" >
+                <div  ng-controller="shiftDetailsCtrl">
+                    <!-- loadingDetails -->
+                    <div ng-if="loadingDetails" style="text-align: center;">
+                        <div class="spinner-border text-primary spinner-border-xl"></div>
+                    </div>
+                    <div ng-if="!loadingDetails">
+                        <div ng-if="!detailsCreateMode && !detailsEditMode && !weeksDay" >
+                            <div class="card" ng-if="detailsList.length == 0">
+                                <p class="text-danger asp-label center">
+                                    ساعت کاری برای این مورد ثبت نشده است
+                                </p>
+                            </div>
+                            
+                            <div class="card" ng-if="detailsList.length != 0">
+                                <div class="table-header">
+                                    <table>
+                                        <thead>
+                                            <tr>
+                                                <th style="width: 20%;">
+                                                    عنوان
+                                                </th>
+                                                <th style="width: 20%;">
+                                                    تاریخ شروع
+                                                </th>
+                                                <th style="width: 20%;">
+                                                    تاریخ پایان
+                                                </th>
+                                                <th style="width: 20%;">
+                                                    ساعت شروع
+                                                </th>
+                                                <th style="width: 20%;">
+                                                    ساعت پایان
+                                                </th>
+                                            </tr>
+                                        </thead>
+                                    </table>
+                                </div>
+                                <div class="table-body">
+                                    <table class="test">
+                                        <tbody>
+                                            <tr ng-repeat="detail in detailsList">
+                                                <td style="width: 20%;">
+                                                    <div style="width: 100%;height: 25px;display: inline-block;border-right: 5px solid black;" ng-style="{'border-right-color':detail.color}">
+                                                        {{detail.title}}
+                                                    </div>
+                                                    
+                                                </td>
+                                                <td style="width: 20%;">
+                                                    {{changeDate(detail.fromDate)}}
+                                                </td>
+                                                <td style="width: 20%;">
+                                                    {{changeDate(detail.toDate)}}
+                                                </td>
+                                                <td style="width: 20%;">
+                                                    {{detail.startTime}}
+                                                </td>
+                                                <td style="width: 20%;">
+                                                    {{detail.endTime}}
+                                                    <i class="fa fa-edit pointer" ng-click="changeDetailEditMode(detail)"  style="float: left;margin: 0 5px;"></i>
+                                                    <i class="fa fa-trash pointer" ng-click="deleteingShiftDetails(detail)" style="float: left;margin: 0 5px;"></i>
+                                                    <!-- <i class="fa fa-calendar pointer" ng-click="showWeekDays(detail)" style="float: left;margin: 0 5px;"></i> -->
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                            <div class="card">
+                                <div style="text-align: left;">
+                                    <button class="new-button red" ng-click="changeEditView()">
+                                        <i class="fa fa-repeat"></i>
+                                        بازگشت
+                                    </button>
+                                    <button class="new-button" ng-click="changeCreateMode()">
+                                        <i class="fa fa-plus"></i>
+                                        ایجاد مورد جدید
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        <div ng-if="detailsCreateMode">
+                            <div class="card">
+                                <div class="row">
+                                    <div class="col-sm-4">
+                                        <div class="input-group">
+                                            <div class="input-group-append">
+                                                <label class="input-group-text">
+                                                    عنوان
+                                                </label>
+                                            </div>
+                                            <input class="form-control" ng-model="createDetail.title">
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-4">
+                                        <div class="input-group">
+                                            <div class="input-group-append">
+                                                <label class="input-group-text">
+                                                    رنگ
+                                                </label>
+                                            </div>
+                                            <input class="form-control" ng-model="createDetail.color" type="color">
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-4"></div>
+                                    <div class="col-sm-4">
+                                        <div class="input-group">
+                                            <div class="input-group-append">
+                                                <label class="input-group-text">
+                                                    تاریخ شروع
+                                                </label>
+                                            </div>
+                                            <input class="form-control date-picker" id="startDetail" placeholder="xxxx/xx/xx"> 
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-4">
+                                        <div class="input-group">
+                                            <div class="input-group-append">
+                                                <label class="input-group-text">
+                                                    تاریخ پایان
+                                                </label>
+                                            </div>
+                                            <input class="form-control date-picker" id="endDetail" placeholder="xxxx/xx/xx"> 
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-12">
+                                        <div class="row">
+                                            <div class="col-sm-4">
+                                                <div class="input-group">
+                                                    <div class="input-group-append">
+                                                        <label class="input-group-text">
+                                                            ساعت شروع
+                                                        </label>
+                                                    </div>
+                                                    <input class="form-control time" id="detailStartTime" ng-model="createDetail.startTime" placeholder="HH:MM">
+                                                </div>
+                                            </div>
+                                            <div class="col-sm-4">
+                                                <div class="input-group">
+                                                    <div class="input-group-append">
+                                                        <label class="input-group-text">
+                                                            ساعت پایان
+                                                        </label>
+                                                    </div>
+                                                    <input class="form-control time" id="detailEndTime" ng-model="createDetail.endTime" placeholder="HH:MM">
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-12" ng-if="editingInfo.shiftTypeId == 2">
+                                        <div class="row">
+                                            <div class="col-sm-4">
+                                                <div class="input-group">
+                                                    <div class="input-group-append">
+                                                        <label class="input-group-text">
+                                                            میزان ساعت استراحت
+                                                        </label>
+                                                    </div>
+                                                    <input class="form-control" type="number" ng-model="createDetail.nextStartHour" placeholder="HH:MM">
+                                                </div>
+                                            </div>
+                                            <div class="col-sm-4">
+                                                <div class="input-group">
+                                                    <div class="input-group-append">
+                                                        <label class="input-group-text">
+                                                            میزان دقیقه استراحت
+                                                        </label>
+                                                    </div>
+                                                    <input class="form-control" max="60" type="number" ng-model="createDetail.nextStartMin" placeholder="MM">
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-12" style="text-align: right;">
+                                        <div ng-repeat="day in shiftsDay" class="custom-check" style="text-align: right;padding-right: 35px;">
+                                            <div class="custom-control custom-checkbox">
+                                                <input type="checkbox"  ng-model="day.isOff" ng-true-value="false" ng-false-value="true" class="custom-control-input" id="customCheck-{{day.weekDaysId}}" name="example1">
+                                                <label class="custom-control-label asp-label" for="customCheck-{{day.weekDaysId}}">{{day.weekDaysTitle}}</label>
+                                              </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-12">
+                                        <div class="input-group">
+                                            <div class="input-group-append">
+                                                <label class="input-group-text">
+                                                    توضیحات
+                                                </label>
+                                            </div>
+                                            <textarea class="form-control" ng-model="createDetail.description" style="height: 8em !important;"></textarea>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="card">
+                                <div style="text-align: left;">
+                                    <button class="new-button red" ng-click="changeCreateMode()">
+                                        <i class="fa fa-close"></i>
+                                        انصراف
+                                    </button>
+                                    <button class="new-button green" ng-click="confirmDetail()">
+                                        <i class="fa fa-check"></i>
+                                        تایید
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        <div ng-if="detailsEditMode">
+                            <div class="card">
+                                <div class="row">
+                                    <div class="col-sm-4">
+                                        <div class="input-group">
+                                            <div class="input-group-append">
+                                                <label class="input-group-text">
+                                                    عنوان
+                                                </label>
+                                            </div>
+                                            <input class="form-control" ng-model="editingDetailsInfo.title">
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-4">
+                                        <div class="input-group">
+                                            <div class="input-group-append">
+                                                <label class="input-group-text">
+                                                    رنگ
+                                                </label>
+                                            </div>
+                                            <input class="form-control" ng-model="editingDetailsInfo.color" type="color">
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-4"></div>
+                                    <div class="col-sm-4">
+                                        <div class="input-group">
+                                            <div class="input-group-append">
+                                                <label class="input-group-text">
+                                                    تاریخ شروع
+                                                </label>
+                                            </div>
+                                            <input class="form-control date-picker" ng-value="changeDate(editingDetailsInfo.fromDate)" id="startDetail" placeholder="xxxx/xx/xx"> 
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-4">
+                                        <div class="input-group">
+                                            <div class="input-group-append">
+                                                <label class="input-group-text">
+                                                    تاریخ پایان
+                                                </label>
+                                            </div>
+                                            <input class="form-control date-picker" ng-value="changeDate(editingDetailsInfo.toDate)" id="endDetail" placeholder="xxxx/xx/xx"> 
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-12">
+                                        <div class="row">
+                                            <div class="col-sm-4">
+                                                <div class="input-group">
+                                                    <div class="input-group-append">
+                                                        <label class="input-group-text">
+                                                            ساعت شروع
+                                                        </label>
+                                                    </div>
+                                                    <input class="form-control time"  id="detailStartTime" ng-model="editingDetailsInfo.startTime" placeholder="HH:MM">
+                                                </div>
+                                            </div>
+                                            <div class="col-sm-4">
+                                                <div class="input-group">
+                                                    <div class="input-group-append">
+                                                        <label class="input-group-text">
+                                                            ساعت پایان
+                                                        </label>
+                                                    </div>
+                                                    <input class="form-control time" id="detailEndTime" ng-model="editingDetailsInfo.endTime" placeholder="HH:MM">
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-12" ng-if="editingInfo.shiftTypeId == 2">
+                                        <div class="row">
+                                            <div class="col-sm-4">
+                                                <div class="input-group">
+                                                    <div class="input-group-append">
+                                                        <label class="input-group-text">
+                                                            میزان ساعت استراحت
+                                                        </label>
+                                                    </div>
+                                                    <input class="form-control" type="number" ng-model="editingDetailsInfo.nextStartHour" placeholder="HH:MM">
+                                                </div>
+                                            </div>
+                                            <div class="col-sm-4">
+                                                <div class="input-group">
+                                                    <div class="input-group-append">
+                                                        <label class="input-group-text">
+                                                            میزان دقیقه استراحت
+                                                        </label>
+                                                    </div>
+                                                    <input class="form-control" max="60" type="number" ng-model="editingDetailsInfo.nextStartMin" placeholder="MM">
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-12" style="text-align: right;">
+                                        <div ng-repeat="day in shiftsDay" class="custom-check" style="text-align: right;padding-right: 35px;">
+                                            <div class="custom-control custom-checkbox">
+                                                <input type="checkbox"  ng-model="editingDetailsInfo.shiftDetailDays[$index].isOff" ng-true-value="false" ng-false-value="true" class="custom-control-input" id="customCheck-{{day.weekDaysId}}" name="example1">
+                                                <label class="custom-control-label asp-label" for="customCheck-{{day.weekDaysId}}">{{day.weekDaysTitle}}</label>
+                                              </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-12">
+                                        <div class="input-group">
+                                            <div class="input-group-append">
+                                                <label class="input-group-text">
+                                                    توضیحات
+                                                </label>
+                                            </div>
+                                            <textarea class="form-control" ng-model="editingDetailsInfo.description" style="height: 8em !important;"></textarea>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="card">
+                                <div style="text-align: left;">
+                                    <button class="new-button red" ng-click="changeDetailEditMode()">
+                                        <i class="fa fa-close"></i>
+                                        انصراف
+                                    </button>
+                                    <button class="new-button green" ng-click="confirmDetailEdit()">
+                                        <i class="fa fa-check"></i>
+                                        تایید
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="modal fade" id="deleteConfirmDetails">
+                            <div class="modal-dialog">
+                                <div class="modal-content">
+                                    <div class="modal-body">
+                                        <p class="HeaderForm">
+                                            حذف
+                                            <i class="fa fa-close text-danger" style="float:left;margin: 0 5px;"
+                                                ng-click="cancelDeleteDetails()"></i>
+                                        </p>
+                                        <div class="card">
+                                            <p class="text-danger asp-label" style="text-align: center;">
+                                                آیا از حذف این مورد اطمینان دارید؟
+                                            </p>
+                                        </div>
+                                        <div class="card">
+                                            <div style="text-align: left;">
+                                                <button class="new-button red" ng-click="cancelDeleteDetails()">
+                                                    <i class="fa fa-close" style="text-align: white;"></i>
+                                                    انصراف
+                                                </button>
+                                                <button class="new-button green" ng-click="confirmDeleteDetails()">
+                                                    <i class="fa fa-check" style="text-align: white;"></i>
+                                                    تایید
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- <div ng-if="weeksDay">
+                                <div ng-include="'weeksDay.html'"></div>
+                        </div> -->
+                    </div>
+                </div>
+            </div>
+            <div ng-if="selectedLevel == 5">
+                <div ng-include="'holidayTypeSetting.html'"></div>
+            </div>
+        </div>
+    </div>
+</div>

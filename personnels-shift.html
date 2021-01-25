@@ -1,0 +1,341 @@
+<div ng-controller="personnelsCtrl" ng-init="getPersonnels()">
+    <div class="card" ng-if="personnels.length != 0">
+        <div class="table-header">
+            <table>
+                <thead>
+                    <tr>
+                        <th style="width: 50%;">
+                            نام و نام خانوادگی
+                        </th>
+                        <th style="width: 25%;">
+                            از تاریخ
+                        </th>
+                        <th style="width: 25%;">
+                            تا تاریخ
+                        </th>
+                    </tr>
+                    <!-- <tr>
+                        <th style="width: 25%;">
+                            <input class="form-control" ng-model="searchParameter.firstName" ng-keyup="search()">
+                        </th>
+                        <th style="width: 25%;">
+                            <input class="form-control" ng-model="searchParameter.lastName" ng-keyup="search()">
+                        </th>
+                        <th style="width: 25%;">
+                            <input class="form-control">
+                        </th>
+                        <th style="width: 25%;">
+                            <input class="form-control">
+                        </th>
+                    </tr> -->
+                </thead>
+            </table>
+        </div>
+        <div class="table-body">
+            <table class="test">
+                <tr ng-repeat="personnel in personnels">
+                    <td style="width: 50%;text-align: right;">
+                        <div ng-if="deleteMode || editMode" style="display: inline-block;"  class="custom-control custom-checkbox">
+                            <input type="checkbox" class="custom-control-input" ng-click="addToPatchList(personnel)" id="customCheck-edit-{{personnel.personId}}" name="example1">
+                            <label class="custom-control-label" for="customCheck-edit-{{personnel.personId}}"></label>
+                        </div>
+                        <div class="custom-control custom-switch" ng-if="!deleteMode && !editMode" style="display: inline-block;margin-left:10px">
+                            <input type="checkbox" ng-click="addToPersonnel(personnel)"
+                                ng-checked="personnel.isActive" class="custom-control-input"
+                                id="switch-{{personnel.personId}}">
+                            <label class="custom-control-label" for="switch-{{personnel.personId}}"></label>
+                        </div>
+                        {{personnel.personName}}
+                    </td>
+                    <td style="width: 25%;">
+                        <span ng-if="personnel.activeFrom != null">
+                            {{changeDate(personnel.activeFrom)}}
+                        </span>
+                        <span ng-if="personnel.activeFrom == null">
+                            -
+                        </span>
+                    </td>
+                    <td style="width: 25%;">
+                        <span ng-if="personnel.activeTo != null">
+                            {{changeDate(personnel.activeTo)}}
+                            <!-- {{personnel.activeTo}} -->
+                        </span>
+                        <span ng-if="personnel.activeTo == null">
+                            -
+                        </span>
+                    </td>
+                </tr>
+            </table>
+        </div>
+    </div>
+    <div class="card" ng-if="personnels.length == 0">
+        <p class="center asp-label text-danger">
+            برای این شیفت پرسنلی نسبت داده نشده است
+        </p>
+    </div>
+    <div class="card">
+        <div class="row">
+            <div class="col" style="text-align: right;padding-right: 20px;">
+                <!-- <div ng-if="personnels.length != 0">
+                    <span ng-click="loadPages('last')" style="cursor: pointer;">
+                        <i class="fa fa-chevron-right" style="font-size: 0.7em;"></i>
+                        <i class="fa fa-chevron-right asp-label" style="margin-right: -3px;font-size: 0.7em;"></i>
+                    </span>
+                    <i class="fa fa-chevron-right asp-label" ng-click="loadPages(1)"
+                        style="margin: 0 10px;cursor: pointer;font-size: 0.7em;"></i>
+                    <input class="form-control" id="pagingD"
+                        placeholder="{{personnels.item3}} از  {{personnels.pagetotal}}"
+                        style="width: 30%;display: inline-block;position: relative;top: 0px;font-size: 0.7em;"
+                        ng-model="pageNumber" ng-keyup="changePage($event,pageNumber);">
+                    <i class="fa fa-chevron-left asp-label" ng-click="loadPages(-1)"
+                        style="margin: 0 10px;cursor: pointer;font-size: 0.7em;"></i>
+                    <span ng-click="loadPages('first')" style="cursor: pointer;">
+                        <i class="fa fa-chevron-left asp-label" style="margin-left: -3px;font-size: 0.7em;"></i>
+                        <i class=" fa fa-chevron-left asp-label" style="font-size: 0.7em;"></i>
+                    </span>
+                </div> -->
+            </div>
+            <div class="col" style="text-align: left;">
+                <button class="new-button red" ng-if="!deleteMode && !editMode" ng-click="changeEditView()">
+                    <i class="fa fa-repeat"></i>
+                    بازگشت
+                </button>
+                <button class="new-button btn-warning" ng-if="!deleteMode && !editMode" ng-click="changeDeleteMode()">
+                    <i class="fa fa-trash"></i>
+                    حذف پرسنل
+                </button>
+                <button class="new-button btn-info" ng-click="changeEditMode()" ng-if="!deleteMode && !editMode">
+                    <i class="fa fa-edit"></i>
+                    ویرایش اطلاعات
+                </button>
+                <button class="new-button" ng-if="!deleteMode && !editMode" ng-click="openPersonnel()">
+                    <i class="fa fa-plus"></i>
+                    انتساب پرسنل جدید
+                </button>
+                <button class="new-button red" ng-if="deleteMode" ng-click="cancelDeleteMode()">
+                    <i class="fa fa-close"></i>
+                    انصراف
+                </button>
+                <button class="new-button green" ng-if="deleteMode" ng-click="confirmDeleteMode()">
+                    <i class="fa fa-check"></i>
+                    تایید
+                </button>
+                <button class="new-button red" ng-if="editMode" ng-click="cancelEditMode()">
+                    <i class="fa fa-close"></i>
+                    انصراف
+                </button>
+                <button class="new-button green" ng-if="editMode" ng-click="confirmEditMode()">
+                    <i class="fa fa-check"></i>
+                    تایید
+                </button>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="connecting">
+        <div class="modal-dialog modal-xl">
+            <div class="modal-content">
+                <div class="modal-body">
+                    <p class="HeaderForm">
+                        انتساب شیفت
+                        <i class="fa fa-close text-danger" style="float: left;margin: 0 5px;"
+                            ng-click="cancelConnecting()"></i>
+                    </p>
+                    <div class="card">
+                        <div class="row">
+                            <div class="col-sm-12 asp-label" style="text-align: right;">
+                                <div class="custom-control custom-switch"
+                                    style="display: inline-block;margin-left:10px">
+                                    <input type="checkbox" ng-model="connectItem.connectActive"
+                                        class="custom-control-input" id="switch-active">
+                                    <label class="custom-control-label" for="switch-active">
+                                        فعال
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="col-sm-6">
+                                <div class="input-group">
+                                    <div class="input-group-append">
+                                        <label class="input-group-text">
+                                            از تاریخ
+                                        </label>
+                                    </div>
+                                    <input class="form-control date-picker" id="formDate1" placeholder="xxxx/xx/xx">
+                                </div>
+                            </div>
+                            <div class="col-sm-6">
+                                <div class="input-group">
+                                    <div class="input-group-append">
+                                        <label class="input-group-text">
+                                            تا تاریخ
+                                        </label>
+                                    </div>
+                                    <input class="form-control date-picker" id="toDate1" placeholder="xxxx/xx/xx">
+                                </div>
+                            </div>
+                            <div class="col-sm-12">
+                                <div class="input-group">
+                                    <div class="input-group-append">
+                                        <label class="input-group-text">
+                                            توضیحات
+                                        </label>
+                                    </div>
+                                    <textarea class="form-control" style="height: 5em !important;"
+                                        ng-model="connectItem.description"></textarea>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <div style="text-align: left;">
+                            <button class="new-button red" ng-click="cancelConnecting()">
+                                <i class="fa fa-close"></i>
+                                انصراف
+                            </button>
+                            <button class="new-button green" ng-click="confirmConneccting(true)">
+                                <i class="fa fa-check"></i>
+                                تایید
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="addingPersonnelModal">
+        <div class="modal-dialog modal-xl">
+            <div class="modal-content">
+                <div class="modal-body">
+                    <p class="HeaderForm">
+                        انتساب پرسنل
+                        <i class="fa fa-close text-danger float-left pointer" style="margin: 0 5px;"
+                            ng-click="cancelAddingPersonnel()"></i>
+                    </p>
+                    <div class="card">
+                        <div class="row">
+                            <div class="col-sm-4">
+                                <div class="input-group">
+                                    <div class="input-group-append">
+                                        <label class="input-group-text">
+                                            از تاریخ
+                                        </label>
+                                    </div>
+                                    <input class="form-control date-picker" id="formDate" placeholder="xxxx/xx/xx">
+                                </div>
+                            </div>
+                            <div class="col-sm-4">
+                                <div class="input-group">
+                                    <div class="input-group-append">
+                                        <label class="input-group-text">
+                                            تا تاریخ
+                                        </label>
+                                    </div>
+                                    <input class="form-control date-picker" id="toDate" placeholder="xxxx/xx/xx">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div ng-if="loadingPersonnel" ng-include="'modules/personnelSelect.html'"></div>
+                    <div class="card">
+                        <div style="text-align: left;">
+                            <button class="new-button red" ng-click="cancelAddingPersonnel()">
+                                <i class="fa fa-close"></i>
+                                انصراف
+                            </button>
+                            <button class="new-button green" ng-click="confirmAddingPersonnel()">
+                                <i class="fa fa-check"></i>
+                                تایید
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="deletePersonnelConfirm">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-body">
+                    <p class="HeaderForm">
+                        حذف
+                        <i class="fa fa-close text-danger" style="float:left;margin: 0 5px;"
+                            ng-click="cancelDeleteModal()"></i>
+                    </p>
+                    <div class="card">
+                        <p class="text-danger asp-label" style="text-align: center;">
+                            آیا از حذف این مورد اطمینان دارید؟
+                        </p>
+                    </div>
+                    <div class="card">
+                        <div style="text-align: left;">
+                            <button class="new-button red" ng-click="cancelDeleteModal()">
+                                <i class="fa fa-close" style="text-align: white;"></i>
+                                انصراف
+                            </button>
+                            <button class="new-button green" ng-click="confirmDeleteModal()">
+                                <i class="fa fa-check" style="text-align: white;"></i>
+                                تایید
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="confirmEditModal">
+        <div class="modal-dialog modal-xl">
+            <div class="modal-content">
+                <div class="modal-body">
+                    <p class="HeaderForm">
+                        ویرایش اطلاعات
+                        <i class="fa fa-close text-danger float-left pointer" ng-click="cancelEditModal()" style="margin: 0 5px;"></i>
+                    </p>
+                    <div class="card">
+                        <div class="row">
+                            <div class="col-sm-4 asp-label" style="text-align: right;">
+                                <div  class="custom-control custom-switch">
+                                    <input type="checkbox" ng-checked="true" class="custom-control-input" id="activeEdit" name="example1">
+                                    <label class="custom-control-label" for="activeEdit">
+                                        فعال
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="col-sm-8"></div>
+                            <div class="col-sm-6">
+                                <div class="input-group">
+                                    <div class="input-group-append">
+                                        <label class="input-group-text">
+                                             تاریخ شروع
+                                        </label>
+                                    </div>
+                                    <input class="form-control date-picker" id="editStartDate" placeholder="xxxx/xx/xx">
+                                </div>
+                            </div>
+                            <div class="col-sm-6">
+                                <div class="input-group">
+                                    <div class="input-group-append">
+                                        <label class="input-group-text">
+                                            تاریخ پایان
+                                        </label>
+                                    </div>
+                                    <input class="form-control date-picker" id="editEndDate" placeholder="xxxx/xx/xx">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <div style="text-align: left;">
+                            <button class="new-button red" ng-click="cancelEditModal()">
+                                <i class="fa fa-close"></i>
+                                انصراف
+                            </button>
+                            <button class="new-button green" ng-click="confirmEditModal()">
+                                <i class="fa fa-check"></i>
+                                تایید
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

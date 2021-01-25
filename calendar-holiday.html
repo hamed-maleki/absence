@@ -1,0 +1,565 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta content="text/html;charset=utf-8" http-equiv="Content-Type">
+    <meta content="utf-8" http-equiv="encoding">
+    <link href="firefoxStyle/bootstrap.min.css" rel="stylesheet">
+    <link href="firefoxStyle/main.css" rel="stylesheet">
+    <link href="firefoxStyle/newElementsStyle.css" rel="stylesheet">
+    <link href="firefoxStyle/font-awesome.min.css" rel="stylesheet">
+    <link href="firefoxStyle/datepicker/bootstrap-datepicker.min.css" rel="stylesheet">
+    <script src="firefoxStyle/newJavascript/angular.min.js"></script>
+    
+    <script src="firefoxStyle/newJavascript/jquery.min.js"></script>
+    <script src="firefoxStyle/newJavascript/propper.js"></script>
+    <script src="firefoxStyle/newJavascript/bootstrap.min.js"></script>
+    <script src="firefoxStyle/newJavascript/moment.js"></script>
+    <script src="firefoxStyle/newJavascript/moment-jalaali.js"></script>
+    <script src="firefoxstyle/newJavascript/custom-holiday.js"></script>
+    <script src="firefoxStyle/newJavascript/calendar.js"></script>
+    <script src="firefoxStyle/newJavascript/requests.js"></script>
+    <script src="firefoxStyle/datepicker/bootstrap-datepicker.js"></script>
+    <script src="firefoxStyle/datepicker/bootstrap-datepicker.fa.min.js"></script>
+    <script src="firefoxStyle/newJavascript/filesaver.min.js"></script>
+    <style>
+        .dropdown-container {
+            position: absolute;
+            width: 100%;
+            min-height: 6em;
+            background-color: white;
+            border: 1px solid lightgray;
+            border-radius: 5px;
+            top: 24px;
+            z-index: 10;
+        }
+        .disabled {
+            background-color: #e9ecef;
+        }
+    </style>
+</head>
+<body ng-app="myApp" ng-controller="customCtrl">
+    <div ng-include="'calendar.html'"></div>
+    <div class="modal fade" id="defineHoliday">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-body">
+                    <p class="HeaderForm">
+                        تعریف تعطیلی برای  {{settingDate}}
+                        <i class="fa fa-close pointer text-danger" ng-click="cancelCustom()" style="float: left;margin: 0 5px;"></i>
+                    </p>
+                    <div class="card">
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <div class="input-group">
+                                    <div class="input-group-append">
+                                        <label class="input-group-text">
+                                            عنوان
+                                        </label>
+                                    </div>
+                                    <input class="form-control" ng-model="createHoliday.name">
+                                </div>
+                            </div>
+                            <div class="col-sm-12">
+                                <div class="input-group">
+                                    <div class="input-group-append">
+                                        <label class="input-group-text">
+                                            نوع تعطیلات
+                                        </label>
+                                    </div>
+                                    <p class="form-control" style="text-align: right;">
+                                        {{createHoliday.holidayTypeTitle}}
+                                        <i class="fa fa-chevron-down pointer" ng-click="dropdownStatus ? dropdownStatus = false : dropdownStatus = true" style="float: left;margin: 0 5px;"></i>
+                                    </p>
+                                    <div class="dropdown-container" ng-init="getHolidayType()" ng-if="dropdownStatus">
+                                        <div ng-if="!hasValue">
+                                            <div class="card">
+                                                <p ng-if="holidayTypes.item1.length == 0" class="text-danger asp-label" style="text-align: right;">
+                                                    نوع تعطیلاتی قبلا ثبت نشده است
+                                                </p>
+                                                
+                                                <div class="input-group">
+                                                    <div class="input-group-append">
+                                                        <label class="input-group-text">
+                                                            عنوان
+                                                        </label>
+                                                    </div>
+                                                    <input class="form-control" ng-model="createTitle.name">
+                                                </div>
+                                            </div>
+                                            <div class="card">
+                                                <div style="text-align: left;">
+                                                    <button class="new-button green" ng-click="confirmCreateType(createTitle)">
+                                                        <i class="fa fa-check"></i>
+                                                        تایید
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div  ng-if="hasValue">
+                                            <div class="card">
+                                                <div class="table-header">
+                                                    <table>
+                                                        <thead>
+                                                            <tr>
+                                                                <th>
+                                                                    عنوان
+                                                                </th>
+                                                            </tr>
+                                                        </thead>
+                                                    </table>
+                                                </div>
+                                                <div class="table-body">
+                                                    <table class="test">
+                                                        <tbody>
+                                                            <tr ng-repeat="type in holidayTypes.item1" ng-click="setNameForCreate(type)">
+                                                                <td>
+                                                                    {{type.name}}
+                                                                </td>
+                                                            </tr>
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+                                            </div>
+                                            <div class="card">
+                                                <div class="row">
+                                                    <div class="col-sm-10" style="text-align: right;">
+                                                        <span ng-click="loadPages('last')" style="cursor: pointer;">
+                                                            <i class="fa fa-chevron-right" style="font-size: 0.7em;"></i>
+                                                            <i class="fa fa-chevron-right asp-label" style="margin-right: -3px;font-size: 0.7em;"></i>
+                                                        </span>
+                                                        <i class="fa fa-chevron-right asp-label" ng-click="loadPages(1)"
+                                                            style="margin: 0 10px;cursor: pointer;font-size: 0.7em;"></i>
+                                                        <input class="form-control" id="pagingD"
+                                                            placeholder="{{holidayTypes.item3}} از  {{holidayTypes.pagetotal}}"
+                                                            style="width: 30%;display: inline-block;position: relative;top: 0px;font-size: 0.7em;"
+                                                            ng-model="pageNumber" ng-keyup="changePage($event,pageNumber);">
+                                                        <i class="fa fa-chevron-left asp-label" ng-click="loadPages(-1)"
+                                                            style="margin: 0 10px;cursor: pointer;font-size: 0.7em;"></i>
+                                                        <span ng-click="loadPages('first')" style="cursor: pointer;">
+                                                            <i class="fa fa-chevron-left asp-label" style="margin-left: -3px;font-size: 0.7em;"></i>
+                                                            <i class=" fa fa-chevron-left asp-label" style="font-size: 0.7em;"></i>
+                                                        </span>
+                                                    </div>
+                                                    <div class="col-sm-2" style="padding-left: 30px;">
+                                                        <i class="fa fa-plus pointer" ng-click="changeCreateModeType()"></i>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-sm-12">
+                                <div class="input-group">
+                                    <div class="input-group-append">
+                                        <label class="input-group-text">
+                                            توضیحات
+                                        </label>
+                                    </div>
+                                    <textarea class="form-control" style="height: 5em !important;" ng-model="createHoliday.description"></textarea>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <div style="text-align: left;">
+                            <button class="new-button red" ng-click="cancelCustom()">
+                                <i class="fa fa-close"></i>
+                                انصراف
+                            </button>
+                            <button class="new-button green" ng-click="confirmCustom()">
+                                <i class="fa fa-check"></i>
+                                تایید
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="editHoliday">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-body">
+                    <p class="HeaderForm">
+                        ویرایش تعطیلات در تاریخ {{settingDate}}
+                        <i class="fa fa-close text-danger pointer" style="float: left;margin: 0 5px;" ng-click="cancelEditHoliday()"></i>
+                    </p>
+                    <div class="card" ng-if="!deleteMode">
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <div class="input-group">
+                                    <div class="input-group-append">
+                                        <label class="input-group-text">
+                                            عنوان
+                                        </label>
+                                    </div>
+                                    <input ng-disabled="!editMode" class="form-control" ng-model="editHolidayValue.name">
+                                </div>
+                            </div>
+                            <div class="col-sm-12">
+                                <div class="input-group">
+                                    <div class="input-group-append">
+                                        <label class="input-group-text">
+                                            نوع تعطیلات
+                                        </label>
+                                    </div>
+                                    <p class="form-control" ng-class="{'disabled':editMode == false}" style="text-align: right;">
+                                        {{editHolidayValue.holidayTypeTitle}}
+                                        <i class="fa fa-chevron-down pointer" ng-if="editMode" ng-click="dropdownStatus ? dropdownStatus = false : dropdownStatus = true" style="float: left;margin: 0 5px;"></i>
+                                    </p>
+                                    <div class="dropdown-container" ng-init="getHolidayType()" ng-if="dropdownStatus">
+                                        <div ng-if="!hasValue">
+                                            <div class="card">
+                                                <p ng-if="holidayTypes.item1.length == 0" class="text-danger asp-label" style="text-align: right;">
+                                                    نوع تعطیلاتی قبلا ثبت نشده است
+                                                </p>
+                                                
+                                                <div class="input-group">
+                                                    <div class="input-group-append">
+                                                        <label class="input-group-text">
+                                                            عنوان
+                                                        </label>
+                                                    </div>
+                                                    <input class="form-control" ng-model="createTitle.name">
+                                                </div>
+                                            </div>
+                                            <div class="card">
+                                                <div style="text-align: left;">
+                                                    <button class="new-button green" ng-click="confirmCreateType(createTitle)">
+                                                        <i class="fa fa-check"></i>
+                                                        تایید
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div  ng-if="hasValue">
+                                            <div class="card">
+                                                <div class="table-header">
+                                                    <table>
+                                                        <thead>
+                                                            <tr>
+                                                                <th>
+                                                                    عنوان
+                                                                </th>
+                                                            </tr>
+                                                        </thead>
+                                                    </table>
+                                                </div>
+                                                <div class="table-body">
+                                                    <table class="test">
+                                                        <tbody>
+                                                            <tr ng-repeat="type in holidayTypes.item1" ng-click="setNameForEdit(type)">
+                                                                <td>
+                                                                    {{type.name}}
+                                                                </td>
+                                                            </tr>
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+                                            </div>
+                                            <div class="card">
+                                                <div class="row">
+                                                    <div class="col-sm-10" style="text-align: right;">
+                                                        <span ng-click="loadPages('last')" style="cursor: pointer;">
+                                                            <i class="fa fa-chevron-right" style="font-size: 0.7em;"></i>
+                                                            <i class="fa fa-chevron-right asp-label" style="margin-right: -3px;font-size: 0.7em;"></i>
+                                                        </span>
+                                                        <i class="fa fa-chevron-right asp-label" ng-click="loadPages(1)"
+                                                            style="margin: 0 10px;cursor: pointer;font-size: 0.7em;"></i>
+                                                        <input class="form-control" id="pagingD"
+                                                            placeholder="{{holidayTypes.item3}} از  {{holidayTypes.pagetotal}}"
+                                                            style="width: 30%;display: inline-block;position: relative;top: 0px;font-size: 0.7em;"
+                                                            ng-model="pageNumber" ng-keyup="changePage($event,pageNumber);">
+                                                        <i class="fa fa-chevron-left asp-label" ng-click="loadPages(-1)"
+                                                            style="margin: 0 10px;cursor: pointer;font-size: 0.7em;"></i>
+                                                        <span ng-click="loadPages('first')" style="cursor: pointer;">
+                                                            <i class="fa fa-chevron-left asp-label" style="margin-left: -3px;font-size: 0.7em;"></i>
+                                                            <i class=" fa fa-chevron-left asp-label" style="font-size: 0.7em;"></i>
+                                                        </span>
+                                                    </div>
+                                                    <div class="col-sm-2" style="padding-left: 30px;">
+                                                        <i class="fa fa-plus pointer" ng-click="changeCreateModeType()"></i>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-sm-12">
+                                <div class="input-group">
+                                    <div class="input-group-append">
+                                        <label class="input-group-text">
+                                            توضیحات
+                                        </label>
+                                    </div>
+                                    <textarea class="form-control" ng-disabled="!editMode" style="height: 5em !important;" ng-model="editHolidayValue.description"></textarea>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card" ng-if="deleteMode">
+                        <p class="asp-label text-danger" style="text-align: center;">
+                            آیا از حذف این مورد اطمینان دارید؟
+                        </p>
+                    </div>
+                    <div class="card">
+                        <div style="text-align: left;">
+                            <i class="fa fa-trash" ng-show="!editMode && !deleteMode" ng-click="deleteMode = true"></i>
+                            <i class="fa fa-edit" ng-show="!editMode && !deleteMode" ng-click="editMode = true"></i>
+                            <button class="new-button red" ng-show="editMode" ng-click="editMode = false">
+                                <i class="fa fa-close"></i>
+                                انصراف
+                            </button>
+                            <button class="new-button green" ng-show="editMode" ng-click="confirmEdit()">
+                                <i class="fa fa-check"></i>
+                                تایید
+                            </button>
+                            <button class="new-button red" ng-show="deleteMode" ng-click="deleteMode = false">
+                                <i class="fa fa-close"></i>
+                                انصراف
+                            </button>
+                            <button class="new-button green" ng-show="deleteMode" ng-click="confirmDelete()">
+                                <i class="fa fa-check"></i>
+                                تایید
+                            </button>
+                            <!-- <button class="new-button btn-info" ng-click="deleteEdit()">
+                                <i class="fa fa-trash"></i>
+                                حذف
+                            </button> -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="createDayOff">
+        <div class="modal-dialog ">
+            <div class="modal-content">
+                <div class="modal-body">
+                    <p class="HeaderForm">
+                        تعطیلی روز هفته
+                        <i class="fa fa-close text-danger pointer" style="margin: 0 5px;float: left;" ng-click="cancelDayOff()"></i>
+                    </p>
+                    <div class="card">
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <div class="input-group">
+                                    <div class="input-group-append">
+                                        <label class="input-group-text">
+                                            عنوان
+                                        </label>
+                                    </div>
+                                    <input class="form-control" ng-model="createHoliday.name">
+                                </div>
+                            </div>
+                            <div class="col-sm-6">
+                                <div class="input-group">
+                                    <div class="input-group-append">
+                                        <label class="input-group-text">
+                                            تاریخ شروع
+                                        </label>
+                                    </div>
+                                    <input ng-disabled="true" class="form-control date-picker" ng-value="settingDate" placeholder="xxxx/xx/xx" id="startDayOff">
+                                </div>
+                            </div>
+                            <div class="col-sm-6">
+                                <div class="input-group">
+                                    <div class="input-group-append">
+                                        <label class="input-group-text">
+                                            تاریخ پایان
+                                        </label>
+                                    </div>
+                                    <input class="form-control date-picker" placeholder="xxxx/xx/xx" id="endDayOff">
+                                </div>
+                            </div>
+                            <div class="col-sm-12">
+                                <div class="input-group">
+                                    <div class="input-group-append">
+                                        <label class="input-group-text">
+                                            نوع تعطیلات
+                                        </label>
+                                    </div>
+                                    <p class="form-control" style="text-align: right;">
+                                        {{createHoliday.holidayTypeTitle}}
+                                        <i class="fa fa-chevron-down pointer" ng-click="dropdownStatus ? dropdownStatus = false : dropdownStatus = true" style="float: left;margin: 0 5px;"></i>
+                                    </p>
+                                    <div class="dropdown-container" ng-init="getHolidayType()" ng-if="dropdownStatus">
+                                        <div ng-if="!hasValue">
+                                            <div class="card">
+                                                <p ng-if="holidayTypes.item1.length == 0" class="text-danger asp-label" style="text-align: right;">
+                                                    نوع تعطیلاتی قبلا ثبت نشده است
+                                                </p>
+                                                
+                                                <div class="input-group">
+                                                    <div class="input-group-append">
+                                                        <label class="input-group-text">
+                                                            عنوان
+                                                        </label>
+                                                    </div>
+                                                    <input class="form-control" ng-model="createTitle.name">
+                                                </div>
+                                            </div>
+                                            <div class="card">
+                                                <div style="text-align: left;">
+                                                    <button class="new-button green" ng-click="confirmCreateType(createTitle)">
+                                                        <i class="fa fa-check"></i>
+                                                        تایید
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div  ng-if="hasValue">
+                                            <div class="card">
+                                                <div class="table-header">
+                                                    <table>
+                                                        <thead>
+                                                            <tr>
+                                                                <th>
+                                                                    عنوان
+                                                                </th>
+                                                            </tr>
+                                                        </thead>
+                                                    </table>
+                                                </div>
+                                                <div class="table-body">
+                                                    <table class="test">
+                                                        <tbody>
+                                                            <tr ng-repeat="type in holidayTypes.item1" ng-click="setNameForCreate(type)">
+                                                                <td>
+                                                                    {{type.name}}
+                                                                </td>
+                                                            </tr>
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+                                            </div>
+                                            <div class="card">
+                                                <div class="row">
+                                                    <div class="col-sm-10" style="text-align: right;">
+                                                        <span ng-click="loadPages('last')" style="cursor: pointer;">
+                                                            <i class="fa fa-chevron-right" style="font-size: 0.7em;"></i>
+                                                            <i class="fa fa-chevron-right asp-label" style="margin-right: -3px;font-size: 0.7em;"></i>
+                                                        </span>
+                                                        <i class="fa fa-chevron-right asp-label" ng-click="loadPages(1)"
+                                                            style="margin: 0 10px;cursor: pointer;font-size: 0.7em;"></i>
+                                                        <input class="form-control" id="pagingD"
+                                                            placeholder="{{holidayTypes.item3}} از  {{holidayTypes.pagetotal}}"
+                                                            style="width: 30%;display: inline-block;position: relative;top: 0px;font-size: 0.7em;"
+                                                            ng-model="pageNumber" ng-keyup="changePage($event,pageNumber);">
+                                                        <i class="fa fa-chevron-left asp-label" ng-click="loadPages(-1)"
+                                                            style="margin: 0 10px;cursor: pointer;font-size: 0.7em;"></i>
+                                                        <span ng-click="loadPages('first')" style="cursor: pointer;">
+                                                            <i class="fa fa-chevron-left asp-label" style="margin-left: -3px;font-size: 0.7em;"></i>
+                                                            <i class=" fa fa-chevron-left asp-label" style="font-size: 0.7em;"></i>
+                                                        </span>
+                                                    </div>
+                                                    <div class="col-sm-2" style="padding-left: 30px;">
+                                                        <i class="fa fa-plus pointer" ng-click="changeCreateModeType()"></i>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <div style="text-align: left;">
+                            <button class="red new-button" ng-click="cancelDayOff()">
+                                <i class="fa fa-close"></i>
+                                انصراف
+                            </button>
+                            <button class="new-button green" ng-click="confirmCreateDayOff()">
+                                <i class="fa fa-check"></i>
+                                تایید
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="deleteConfirm">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-body">
+                    <p class="HeaderForm">
+                        تایید حذف
+                        <i class="fa fa-close text-danger pointer" style="float: left;margin:0 5px" ng-click="cancelDelete()"></i>
+                    </p>
+                    <div class="card">
+                        <p class="asp-label text-danger" style="text-align: center;">
+                            آیا از حذف این مورد اطمینان دارید؟
+                        </p>
+                    </div>
+                    <div class="card">
+                        <div style="text-align: left;">
+                            <button class="new-button red"  ng-click="cancelDelete()">
+                                <i class="fa fa-close"></i>
+                                انصراف
+                            </button>
+                            <button class="new-button green"  ng-click="confirmDelete()">
+                                <i class="fa fa-check"></i>
+                                تایید
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="deleteDayOff">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-body">
+                    <p class="HeaderForm">
+                        تایید حذف
+                        <i class="fa fa-close text-danger pointer" style="float: left;margin: 0 5px;" ng-click="cancelDeleteDayOff()"></i>
+                    </p>
+                    <div class="card">
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <div class="input-group">
+                                    <div class="input-group-append">
+                                        <label class="input-group-text">
+                                            تاریخ شروع
+                                        </label>
+                                    </div>
+                                    <input class="form-control date-picker" placeholder="xxxx/xx/xx"  id="generalStart">
+                                </div>
+                            </div>
+                            <div class="col-sm-12">
+                                <div class="input-group">
+                                    <div class="input-group-append">
+                                        <label class="input-group-text">
+                                            تاریخ پایان
+                                        </label>
+                                    </div>
+                                    <input class="form-control date-picker" placeholder="xxxx/xx/xx" id="generalEnd">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <div style="text-align: left;">
+                            <button class="red new-button" ng-click="cancelDeleteDayOff()">
+                                <i class="fa fa-close"></i>
+                                انصراف
+                            </button>
+                            <button class="new-button green" ng-click="confirmDeleteOffDay()">
+                                <i class="fa fa-check"></i>
+                                تایید
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>
