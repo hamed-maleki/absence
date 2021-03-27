@@ -260,20 +260,73 @@ app.controller('MissionCtrl', ["$scope", "$timeout", 'currencyConverter', 'reque
     //----------------------- Create hour mission ----------------------
     $scope.createHourMissionModal = function () {
         $scope.createHourMissionData = {
-            personId: 0,
+            personId: $scope.selectPersonnel.id,
             missionDate: null,
-            "fromTime": {},
-            "toTime": {},
-            "hourMissionStateId": 0,
-            "hourMissionStateTitle": "string",
-            "id": 0,
-            "createdBy": 0,
-            "createdAt": "2021-03-27T08:38:14.160Z",
-            "updatedBy": 0,
-            "updatedAt": "2021-03-27T08:38:14.160Z",
-            "isDeleted": true,
-            "crossCheck": "string"
+            fromTime: {},
+            toTime: {},
+            hourMissionStateId: 0,
+            hourMissionStateTitle: null,
+            id: null
         };
-        $('#createMissionModal').modal();
+        $('#createHourModal').modal();
     }
+    $scope.cancelCreateModalBtn = function () {
+        $scope.createHourMissionData = {};
+        $('#createHourModal').modal('hide');
+    }
+    $scope.cancelHourMissionCreate = function () {
+        $scope.createHourMissionData = {};
+        $('#createHourModal').modal('hide');
+    }
+
+    $scope.confirmHourMissionCreate = function () {
+        //todo...
+    }
+
+
+    //----------------------- Create day mission ----------------------
+    $scope.createDayMissionModal = function () {
+        $scope.createDayMissionData = {
+            personId: $scope.selectPersonnel.id,
+            personName: $scope.selectPersonnel.Name,
+            requestId: null,
+            fromDate: null,
+            toDate: null,
+            missionReport: null,
+            ticketPrice: null,
+            kilometer: null,
+            withoutDayCount: null,
+            withDayCount: null,
+            otherExpense: null,
+            hokmNO: null,
+            hardWork: null,
+            residencePrice: true,
+            rewardableMission1: null,
+            rewardableMission2: null,
+            rewardableMission3: null,
+            rewardableMission4: null,
+            rewardableMission5: null,
+            rewardableMission6: null,
+            rewardableMission7: null,
+            dayMissionStateId: null,
+            missionStateTitle: null,
+            dayMissionTypeId: null,
+            missionTypeTitle: null,
+            description: null,
+            id: null
+        };
+        $('#createDayModal').modal();
+    }
+    $scope.cancelCreateDayModalBtn = function () {
+        $scope.createDayMissionData = {};
+        $('#createDayModal').modal('hide');
+    }
+    $scope.cancelDayMissionCreate = function () {
+        $scope.createDayMissionData = {};
+        $('#createDayModal').modal('hide');
+    }
+    $scope.confirmDayMissionCreate = function () {
+        //todo...
+    }
+
 }])
