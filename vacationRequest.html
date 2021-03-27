@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta content="text/html;charset=utf-8" http-equiv="Content-Type">
+    <meta content="utf-8" http-equiv="encoding">
+
+    <!-------------------------- styles  ---------------------->
+
+    <link rel="stylesheet" href="firefoxStyle/bootstrap.min.css">
+    <link rel="stylesheet" href="firefoxStyle/font-awesome2.min.css">
+    <link rel="stylesheet" href="firefoxStyle/font-awesome.min.css">
+    <link href="firefoxStyle/datepicker/bootstrap-datepicker.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="firefoxStyle/main.css">
+    <link rel="stylesheet" href="firefoxStyle/newElementsStyle.css">
+    <link href="firefoxStyle/time.min.css" rel="stylesheet">
+    <style>
+        input:focus {
+            border: none;
+            outline: none;
+        }
+    </style>
+    <!------------------ scripts ----------------------->
+
+    <!------------------ scripts ----------------------->
+
+    <script src="firefoxStyle/newJavascript/angular.min.js"></script>
+    <script src="firefoxStyle/newJavascript/jquery.min.js"></script>
+    <script src="firefoxStyle/newJavascript/propper.js"></script>
+    <script src="firefoxStyle/newJavascript/bootstrap.min.js"></script>
+    <script src="firefoxStyle/newJavascript/moment.js"></script>
+    <script src="firefoxStyle/newJavascript/moment-jalaali.js"></script>
+    <script src="firefoxStyle/datepicker/bootstrap-datepicker.js"></script>
+    <script src="firefoxStyle/datepicker/bootstrap-datepicker.fa.min.js"></script>
+    <script src="firefoxStyle/newJavascript/time.min.js"></script>
+    <script src="firefoxStyle/newJavascript/requests.js"></script>
+    <script src="firefoxStyle/newJavascript/VacationRequest.js"></script>
+
+    <title>ثبت درخواست مرخصی</title>
+</head>
+
+<body dir="rtl" ng-app="myApp" ng-controller="PersonnelVacationCtrl">
+    <p class="HeaderForm">ثبت درخواست مرخصی</p>
+
+    <!----------------------- table -------------------------->
+    <div class="card" ng-init="GetPersonalVacationList()">
+        <div class="table-header">
+            <table class="text-center">
+                <thead>
+                    <tr class="col-12 row">
+                        <th class="col-3">نام شخص</th>
+                        <th class="col-3">نوع مرخصی</th>
+                        <th class="col-3">مدت مرخصی(روز)</th>
+                        <th class="col-3">وضعیت</th>
+                    </tr>
+                </thead>
+            </table>
+        </div>
+        <div class="table-body">
+            <table>
+                <tbody>
+                    <tr class="col-12 row" ng-repeat="item in vacation.item1">
+                        <td class="col-3" ng-bind="item.personName"></td>
+                        <td class="col-3" ng-bind="item.leaveTypeTitle"></td>
+                        <td class="col-3" ng-bind="getVacationDays(item.fromDate,item.toDate)"></td>
+                        <td class="col-3" ng-bind="item.leaveStateTitle"></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</body>
+
+</html>

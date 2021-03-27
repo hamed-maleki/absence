@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta content="text/html;charset=utf-8" http-equiv="Content-Type">
+    <meta content="utf-8" http-equiv="encoding">
+
+    <!-------------------------- styles  ---------------------->
+
+    <link rel="stylesheet" href="firefoxStyle/bootstrap.min.css">
+    <link rel="stylesheet" href="firefoxStyle/font-awesome2.min.css">
+    <link rel="stylesheet" href="firefoxStyle/font-awesome.min.css">
+    <link href="firefoxStyle/datepicker/bootstrap-datepicker.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="firefoxStyle/main.css">
+    <link rel="stylesheet" href="firefoxStyle/newElementsStyle.css">
+    <link href="firefoxStyle/time.min.css" rel="stylesheet">
+    <style>
+        .default-bg {
+            background-image: url("Images/polygon.png");
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            height: 100vh;
+        }
+
+        body {
+            overflow: hidden;
+
+        }
+
+        body>div {
+            direction: rtl;
+        }
+
+        .cursor-pointer {
+            cursor: pointer;
+        }
+    </style>
+    <!------------------ scripts ----------------------->
+
+    <script src="firefoxStyle/newJavascript/angular.min.js"></script>
+    <script src="firefoxStyle/newJavascript/jquery.min.js"></script>
+    <script src="firefoxStyle/newJavascript/propper.js"></script>
+    <script src="firefoxStyle/newJavascript/bootstrap.min.js"></script>
+    <script src="firefoxStyle/newJavascript/moment.js"></script>
+    <script src="firefoxStyle/newJavascript/moment-jalaali.js"></script>
+    <script src="firefoxStyle/datepicker/bootstrap-datepicker.js"></script>
+    <script src="firefoxStyle/datepicker/bootstrap-datepicker.fa.min.js"></script>
+    <script src="firefoxStyle/newJavascript/time.min.js"></script>
+    <script src="firefoxStyle/newJavascript/MissionCtrl.js"></script>
+    <script src="firefoxStyle/newJavascript/requests.js"></script>
+    <script src="firefoxStyle/newJavascript/modules/sharing.js"></script>
+    <script src="firefoxStyle/newJavascript/modules/selectingChart.js"></script>
+    <script src="firefoxStyle/newJavascript/modules/personnel.js"></script>
+
+
+    <title>ثبت مأموریت</title>
+</head>
+
+<body dir="rtl" ng-app="myApp" ng-controller="MissionCtrl">
+    <p class="HeaderForm">ثبت مأموریت</p>
+</body>
+<div class="card">
+    <div class="row">
+        <div class="col-sm-6">
+            <div class="input-group">
+                <div class="input-group-prepend">
+                    <label class="input-group-text">
+                        نام فرد
+                    </label>
+                </div>
+                <input class="form-control" ng-model="searchPInMission.value" id="personnel-input" ng-value="searchPInMission.value"
+                    ng-focus="selectFormLocal()" ng-keyup="serachPersonel(searchPInMission.value)"
+                    placeholder="نام/ نام خانوادگی/ کد ملی/ شماره کارمند">
+                <i class="fa fa-download text-success pointer" ng-show="!localPersonnel && !searchingPosition"
+                    ng-click="localPersonnel = true" style="position: absolute;top: 0.3em;left: 5%;z-index: 3;"></i>
+                <i class="fa fa-bars pointer" ng-click="selectPersonnel()"
+                    style="position: relative;top:5px;right:3px"></i>
+                <i class="fa fa-close text-danger pointer" ng-if="searchingPosition"
+                    ng-click="searchingPositionChange()" style="position: absolute;top: 0.3em;left: 5%;z-index: 3;"></i>
+                <i class="fa fa-close text-danger pointer" ng-show="localPersonnel" ng-click="localPersonnel = false"
+                    style="position: absolute;top: 0.3em;left: 5%;z-index: 3;"></i>
+                <div ng-if="searchingPosition" style="position: absolute;top:1.6em;width: 100%;z-index: 2;"
+                    ng-include="'modules/personnelSelectDropdown.html'"></div>
+                <div ng-if="localPersonnel" style="position: absolute;top:1.6em;width: 100%;z-index: 2;"
+                    ng-include="'modules/personnelSelectLocal.html'"></div>
+            </div>
+        </div>
+        <div class="col-sm-6" style="text-align: center;">
+            <div class="spinner-border text-primary" ng-if="loading"></div>
+        </div>
+    </div>
+</div>
+<div class="card" ng-if="oneSelected">
+    <div class="row">
+        <div class="col-sm-4">
+            <div class="input-group">
+                <div class="input-group-prepend">
+                    <label class="input-group-text">
+                        تاریخ شروع
+                    </label>
+                </div>
+                <input class="form-control date-picker" placeholder="xxxx/xx/xx" id="startEnterDate">
+            </div>
+        </div>
+        <div class="col-sm-4">
+            <div class="input-group">
+                <div class="input-group-prepend">
+                    <label class="input-group-text">
+                        تاریخ پایان
+                    </label>
+                </div>
+                <input class="form-control date-picker" placeholder="xxxx/xx/xx" id="finishEnterDate">
+            </div>
+        </div>
+        <div class="col-sm-4">
+            <div class="input-group">
+                <div class="input-group-prepend">
+                    <label class="input-group-text">
+                        فیلتر موارد
+                    </label>
+                </div>
+                <p class="form-control" style="text-align: right;height: auto !important;">
+                    <span class="alert alert-success" ng-if="eValue.selected"
+                        style="margin: 0 2.5px;padding: 0 5px;display: inline-block;" ng-repeat="eValue in filterItems">
+                        {{eValue.title}}
+                        <i class="fa fa-close pointer" ng-click="removeFilter(eValue)"></i>
+                    </span>
+                </p>
+                <div class="dropdownInMission">
+                    <i class="fa fa-chevron-down" style="position: absolute;left: 5px;top: 0.3em;"
+                        data-toggle="dropdown"></i>
+                    <div class="dropdown-menu"
+                        style="top: 4px !important;left: -6px !important;height: auto;overflow-y: auto;overflow-x: hidden;width: 30.5em;">
+                        <div class="card">
+                            <input class="form-control" ng-model="search.title">
+                            <div class="table-header">
+                                <table>
+                                    <thead>
+                                        <tr>
+                                            <th style="width: 10%;">
+                                            </th>
+                                            <th style="width: 90%;">
+                                                عنوان
+                                            </th>
+                                        </tr>
+                                    </thead>
+                                </table>
+                            </div>
+                            <div class="table-body">
+                                <table class="test">
+                                    <tbody>
+                                        <tr ng-repeat="item in filterItems|filter:search">
+                                            <td style="width: 10%;">
+                                                <div class="custom-control custom-checkbox"
+                                                    style="display: inline-block;margin-top: -38px;">
+                                                    <input type="checkbox" ng-model="item.selected"
+                                                        class="custom-control-input" id="check-enter-{{item.id}}"
+                                                        name="example1">
+                                                    <label class="custom-control-label"
+                                                        for="check-enter-{{item.id}}"></label>
+                                                </div>
+                                            </td>
+                                            <td style="width: 90%;">
+                                                {{item.title}}
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-12" style="text-align: left;">
+            <button class="new-button" ng-click="changeCheckingDate()">
+                <i class="fa fa-eye"></i>
+                مشاهده
+            </button>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="selectPersonnel">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+            <div class="modal-head">
+                <p class="HeaderForm">
+                    انتخاب پرسنل
+                    <i class="fa  fa-close text-danger pointer" style="float: left;margin: 0 5px;"
+                        data-dismiss="modal"></i>
+                </p>
+            </div>
+            <div class="modal-body" style="padding-top: 0;">
+                <div ng-if="loadingPersonnel" ng-include="'modules/personnelSelect.html'"></div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="card" ng-show="!personnelInfoExist">
+    <div class="col-sm-6">
+        <div class="input-group">
+            <div class="input-group-prepend">
+                <label class="input-group-text">
+                    نوع ماموریت کاری
+                </label>
+            </div>
+            <select class="form-control" id="selectMissionType">
+                <option ng-value="0">
+                    لطفا انتخاب نمایید...
+                </option>
+                <option ng-value="1">
+                    ساعتی
+                </option>
+                <option ng-value="2">
+                    روزانه
+                </option>
+            </select>
+        </div>
+    </div>
+</div>
+<!----------------  if mission was daily  ---------------------->
+<div class="hidden" id="DayMissionList">
+    <div class="card" ng-init="GetDayMissionList()">
+        <div class="table-header">
+            <table class="text-center">
+                <thead>
+                    <tr class="col-12 row">
+                        <th class="col-3">نام شخص</th>
+                        <th class="col-1">نوع ماموریت</th>
+                        <th class="col-1">از</th>
+                        <th class="col-1">تا</th>
+                        <th class="col-2">مدت ماموریت(روز)</th>
+                        <th class="col-4">وضعیت
+                        </th>
+                    </tr>
+                </thead>
+            </table>
+        </div>
+        <div class="table-body">
+            <table>
+                <tbody>
+                    <tr class="col-12 row" ng-repeat="item in dayMission.item1">
+                        <td class="col-3" ng-bind="item.personName"></td>
+                        <td class="col-1" ng-bind="item.missionTypeTitle"></td>
+                        <td class="col-1" ng-bind="convertToShamsi(item.fromDate)"></td>
+                        <td class="col-1" ng-bind="convertToShamsi(item.toDate)"></td>
+                        <td class="col-2" ng-bind="getMissionDays(item.fromDate,item.toDate)"></td>
+                        <td class="col-4 row">
+                            <div class="col-8">
+                                {{item.missionStateTitle}}</div>
+                            <div class="row col-4 d-flex justify-content-end">
+                                <p class="ml-1 h6 cursor-pointer"><i class="fa fa-close" title="رد درخواست"></i></p>
+                                <p class="ml-1 h6 cursor-pointer"><i class="fa fa-trash" title="لغو درخواست"></i></p>
+                                <p class="ml-1 h6 cursor-pointer"><i class="fa fa-clock" title="در انتظار پاسخ"></i></p>
+                                <p class="ml-1 h6 cursor-pointer"><i class="fa fa-check" title="تایید درخواست"></i></p>
+                            </div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <!------------------ table btns ------------------->
+    <div class="card">
+        <div class="row">
+            <div class="col-sm-6" style="text-align: right;">
+                <span ng-click="loadPages('last')" style="cursor: pointer;">
+                    <i class="fa fa-chevron-right" style="font-size: 0.7em;"></i>
+                    <i class="fa fa-chevron-right asp-label" style="margin-right: -3px;font-size: 0.7em;"></i>
+                </span>
+                <i class="fa fa-chevron-right asp-label" ng-click="loadPages(1)"
+                    style="margin: 0 10px;cursor: pointer;font-size: 0.7em;"></i>
+                <input class="form-control" id="pagingD1" placeholder="{{config.item3}} از  {{config.pagetotal}}"
+                    style="width: 30%;display: inline-block;position: relative;top: 0px;font-size: 0.7em;"
+                    ng-model="pageNumber" ng-keyup="changePage($event,pageNumber);">
+                <i class="fa fa-chevron-left asp-label" ng-click="loadPages(-1)"
+                    style="margin: 0 10px;cursor: pointer;font-size: 0.7em;"></i>
+                <span ng-click="loadPages('first')" style="cursor: pointer;">
+                    <i class="fa fa-chevron-left asp-label" style="margin-left: -3px;font-size: 0.7em;"></i>
+                    <i class=" fa fa-chevron-left asp-label" style="font-size: 0.7em;"></i>
+                </span>
+            </div>
+            <div class="col-sm-4"></div>
+            <div class="col-sm-2" style="padding-left: 30px;">
+                <i class="fa fa-plus" title="افزودن" ng-click="CreateWorkSetting()"></i>
+            </div>
+        </div>
+    </div>
+</div>
+<!----------------  if mission was hourly  ---------------------->
+<div class="hidden" id="HourMissionList">
+    <div class="card " ng-init="GetHourMissionList()">
+        <div class="table-header">
+            <table class="text-center">
+                <thead>
+                    <tr class="col-12 row">
+                        <th class="col-2">نام شخص</th>
+                        <th class="col-2">از</th>
+                        <th class="col-2">تا</th>
+                        <th class="col-2">تاریخ</th>
+                        <th class="col-4">وضعیت
+
+                        </th>
+                    </tr>
+                </thead>
+            </table>
+        </div>
+        <div class="table-body">
+            <table>
+                <tbody>
+                    <tr class="col-12 row" ng-repeat="item in hourMission.item1">
+                        <td class="col-2" ng-bind="item.personId"></td>
+                        <td class="col-2" ng-bind="item.fromTime"></td>
+                        <td class="col-2" ng-bind="item.toTime"></td>
+                        <td class="col-2" ng-bind="convertToShamsi(item.missionDate)"></td>
+                        <td class="col-4 row">
+                            <div class="col-8">
+                                {{item.hourMissionStateTitle}}</div>
+                            <div class="row col-4 d-flex justify-content-end">
+                                <p class="ml-1 h6 cursor-pointer"><i class="fa fa-close" title="رد درخواست"></i></p>
+                                <p class="ml-1 h6 cursor-pointer"><i class="fa fa-trash" title="لغو درخواست"></i></p>
+                                <p class="ml-1 h6 cursor-pointer"><i class="fa fa-clock" title="در انتظار پاسخ"></i></p>
+                                <p class="ml-1 h6 cursor-pointer"><i class="fa fa-check" title="تایید درخواست"></i></p>
+                            </div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <!------------------ table btns ------------------->
+    <div class="card">
+        <div class="row">
+            <div class="col-sm-6" style="text-align: right;">
+                <span ng-click="loadPages('last')" style="cursor: pointer;">
+                    <i class="fa fa-chevron-right" style="font-size: 0.7em;"></i>
+                    <i class="fa fa-chevron-right asp-label" style="margin-right: -3px;font-size: 0.7em;"></i>
+                </span>
+                <i class="fa fa-chevron-right asp-label" ng-click="loadPages(1)"
+                    style="margin: 0 10px;cursor: pointer;font-size: 0.7em;"></i>
+                <input class="form-control" id="pagingD2" placeholder="{{config.item3}} از  {{config.pagetotal}}"
+                    style="width: 30%;display: inline-block;position: relative;top: 0px;font-size: 0.7em;"
+                    ng-model="pageNumber" ng-keyup="changePage($event,pageNumber);">
+                <i class="fa fa-chevron-left asp-label" ng-click="loadPages(-1)"
+                    style="margin: 0 10px;cursor: pointer;font-size: 0.7em;"></i>
+                <span ng-click="loadPages('first')" style="cursor: pointer;">
+                    <i class="fa fa-chevron-left asp-label" style="margin-left: -3px;font-size: 0.7em;"></i>
+                    <i class=" fa fa-chevron-left asp-label" style="font-size: 0.7em;"></i>
+                </span>
+            </div>
+            <div class="col-sm-4"></div>
+            <div class="col-sm-2" style="padding-left: 30px;">
+                <i class="fa fa-plus" title="افزودن" ng-click="CreateWorkSetting()"></i>
+            </div>
+        </div>
+    </div>
+</div>
+
+</html>

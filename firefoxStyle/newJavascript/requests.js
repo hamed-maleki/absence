@@ -1,8 +1,8 @@
 var app = angular.module('customService', []);
-app.factory('requests',['$http', function ($http) {
-    return{
-        postingData:function (url, data, callback) {
-            var path = "https://localhost:44302/"
+app.factory('requests', ['$http', function ($http) {
+    return {
+        postingData: function (url, data, callback) {
+            var path = "http://192.168.200.2/rcapi/"
             var authHeaders = {};
             var accesstoken = localStorage.getItem('jwtToken');
             var refreshtoken = localStorage.getItem('refreshToken');
@@ -35,8 +35,8 @@ app.factory('requests',['$http', function ($http) {
                     }
                 })
         },
-        gettingData:function(url,callback) {
-            var path = "https://localhost:44302/"
+        gettingData: function (url, callback) {
+            var path = "http://192.168.200.2/rcapi/"
             var authHeaders = {};
             var accesstoken = localStorage.getItem('jwtToken');
             var refreshtoken = localStorage.getItem('refreshToken');
@@ -69,8 +69,8 @@ app.factory('requests',['$http', function ($http) {
                     }
                 })
         },
-        deleteing:function(url,data,callback){
-            var path = "https://localhost:44302/"
+        deleteing: function (url, data, callback) {
+            var path = "http://192.168.200.2/rcapi/"
             var authHeaders = {};
             var accesstoken = localStorage.getItem('jwtToken');
             var refreshtoken = localStorage.getItem('refreshToken');
@@ -93,8 +93,8 @@ app.factory('requests',['$http', function ($http) {
                     }
                 })
         },
-        deleteingJson:function(url,data,callback){
-            var path = "https://localhost:44302/"
+        deleteingJson: function (url, data, callback) {
+            var path = "http://192.168.200.2/rcapi/"
             var authHeaders = {};
             var accesstoken = localStorage.getItem('jwtToken');
             var refreshtoken = localStorage.getItem('refreshToken');
@@ -118,8 +118,8 @@ app.factory('requests',['$http', function ($http) {
                     }
                 })
         },
-        updating:function(url,data,callback) {
-            var path = "https://localhost:44302/"
+        updating: function (url, data, callback) {
+            var path = "http://192.168.200.2/rcapi/"
             var authHeaders = {};
             var accesstoken = localStorage.getItem('jwtToken');
             var refreshtoken = localStorage.getItem('refreshToken');
@@ -143,4 +143,4 @@ app.factory('requests',['$http', function ($http) {
                 })
         }
     }
-    }]);
+}]);

@@ -1,9 +1,358 @@
 <!DOCTYPE html>
 <html>
-    <head>
 
-    </head>
-    <body>
-        
-    </body>
+<head>
+    <meta content="text/html;charset=utf-8" http-equiv="Content-Type">
+    <meta content="utf-8" http-equiv="encoding">
+
+    <!-------------------------- styles  ---------------------->
+
+    <link rel="stylesheet" href="firefoxStyle/bootstrap.min.css">
+    <link rel="stylesheet" href="firefoxStyle/font-awesome2.min.css">
+    <link rel="stylesheet" href="firefoxStyle/font-awesome.min.css">
+    <link href="firefoxStyle/datepicker/bootstrap-datepicker.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="firefoxStyle/main.css">
+    <link rel="stylesheet" href="firefoxStyle/newElementsStyle.css">
+    <link href="firefoxStyle/time.min.css" rel="stylesheet">
+    <style>
+        .default-bg {
+            background-image: url("Images/polygon.png");
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            height: 100vh;
+        }
+
+        body {
+            overflow: hidden;
+
+        }
+
+        body > div {
+            direction: rtl;
+        }
+
+        input:focus {
+            border: none;
+            outline: none;
+        }
+    </style>
+    <!------------------ scripts ----------------------->
+
+    <script src="firefoxStyle/newJavascript/angular.min.js"></script>
+    <script src="firefoxStyle/newJavascript/jquery.min.js"></script>
+    <script src="firefoxStyle/newJavascript/propper.js"></script>
+    <script src="firefoxStyle/newJavascript/bootstrap.min.js"></script>
+    <script src="firefoxStyle/newJavascript/moment.js"></script>
+    <script src="firefoxStyle/newJavascript/moment-jalaali.js"></script>
+    <script src="firefoxStyle/datepicker/bootstrap-datepicker.js"></script>
+    <script src="firefoxStyle/datepicker/bootstrap-datepicker.fa.min.js"></script>
+    <script src="firefoxStyle/newJavascript/time.min.js"></script>
+    <script src="firefoxStyle/newJavascript/generalSetting.js"></script>
+    <script src="firefoxStyle/newJavascript/requests.js"></script>
+
+    <title>تنظیمات پایه</title>
+</head>
+
+<body class="default-bg " ng-app="myApp" ng-controller="generalSettingsCtrl">
+<p class="HeaderForm">
+    تنظیمات پایه
+</p>
+
+<!------------ table ------------------->
+<div class="card" ng-init="getConfigList()">
+    <div class="table-header">
+        <table class="text-center">
+            <thead>
+            <tr class="col-12 row">
+                <th class="col-6">عنوان</th>
+                <th class="col-6">مقادیر</th>
+            </tr>
+            </thead>
+        </table>
+    </div>
+    <div class="table-body">
+        <table class="test" id="inputFields">
+            <tbody>
+            <tr class="col-12 row" ng-repeat="conf in config.item1">
+
+                <td class="col-6">
+                    {{conf.displayName}}
+                </td>
+                <td class="col-6">
+                    {{conf.value}}
+                    <div class="row float-left">
+
+                        <div class="col-3 float-right">
+                            <p class="h6" ng-click="removeRow(conf)"><i class="fa fa-trash" title="حذف"
+                                                                        style="cursor: pointer"></i></p>
+                        </div>
+                        <div class="col-3 float-left">
+                            <p class="h6" ng-click="editRow(conf)"><i class="fa fa-edit" title="ویرایش"
+                                                                      style="cursor: pointer"></i></p>
+                        </div>
+                    </div>
+                </td>
+
+            </tr>
+            </tbody>
+        </table>
+    </div>
+
+</div>
+
+<!----------------- create buttons ---------------->
+<div class="card">
+    <div class="row">
+        <div class="col-sm-6" style="text-align: right;">
+            <span ng-click="loadPages('last')" style="cursor: pointer;">
+                <i class="fa fa-chevron-right"
+                   style="font-size: 0.7em;"></i>
+                <i class="fa fa-chevron-right asp-label"
+                   style="margin-right: -3px;font-size: 0.7em;"></i>
+            </span>
+            <i class="fa fa-chevron-right asp-label" ng-click="loadPages(1)"
+               style="margin: 0 10px;cursor: pointer;font-size: 0.7em;"></i>
+            <input class="form-control" id="pagingD"
+                   placeholder="{{config.item3}} از  {{config.pagetotal}}"
+                   style="width: 30%;display: inline-block;position: relative;top: 0px;font-size: 0.7em;"
+                   ng-model="pageNumber"
+                   ng-keyup="changePage($event,pageNumber);">
+            <i class="fa fa-chevron-left asp-label" ng-click="loadPages(-1)"
+               style="margin: 0 10px;cursor: pointer;font-size: 0.7em;"></i>
+            <span ng-click="loadPages('first')" style="cursor: pointer;">
+                <i class="fa fa-chevron-left asp-label"
+                   style="margin-left: -3px;font-size: 0.7em;"></i>
+                <i class=" fa fa-chevron-left asp-label"
+                   style="font-size: 0.7em;"></i>
+            </span>
+        </div>
+        <div class="col-sm-4"></div>
+        <div class="col-sm-2" style="padding-left: 30px;">
+
+                <i class="fa fa-plus" title="افزودن" ng-click="CreateNewConfig()"></i>
+        </div>
+    </div>
+</div>
+
+
+
+<!-------  modal for create new --------------->
+<div class="modal fade" id="configCreateModal">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+            <div class="modal-body">
+                <p class="HeaderForm">
+                    ایجاد تنطیمات پایه جدید
+                    <i class="fa fa-close text-danger pointer" style="float: left;margin: 0 5px;"
+                       ng-click="cancelCreate()"></i>
+                </p>
+
+                <!------------------   create new config modal ------------------>
+                <div class="row col-12">
+                    <div class="col-sm-4">
+                        <div class="input-group">
+                            <div class="input-group-prepend">
+                                <label class="input-group-text">
+                                    عنوان انگلیسی
+                                </label>
+                            </div>
+                            <input type="text" class="form-control" ng-model="createConfig.name">
+                        </div>
+                    </div>
+                    <div class="col-sm-4">
+                        <div class="input-group">
+                            <div class="input-group-prepend">
+                                <label class="input-group-text">
+                                    عنوان فارسی
+                                </label>
+                            </div>
+                            <input type="text" class="form-control" ng-model="createConfig.displayName">
+                        </div>
+                    </div>
+                    <div class="col-sm-4">
+                        <div class="input-group">
+                            <div class="input-group-prepend">
+                                <label class="input-group-text">
+                                    مقدار
+                                </label>
+                            </div>
+                            <input class="form-control" ng-model="createConfig.value">
+                        </div>
+                    </div>
+                    <div class="col-sm-4">
+                        <div class="input-group">
+                            <div class="input-group-prepend">
+                                <label class="input-group-text">
+                                    نوع
+                                </label>
+                            </div>
+                            <input type="text" class="form-control" ng-model="createConfig.type">
+                        </div>
+                    </div>
+                    <div class="col-sm-4">
+                        <div class="input-group">
+                            <div class="input-group-prepend">
+                                <label class="input-group-text">
+                                    تاریخ فعال سازی
+                                </label>
+                            </div>
+                            <input type="text" autocomplete="off" class="form-control date-picker"
+                                   placeholder="xxxx/xx/xx" id="startDate" ng-model="createConfig.activateDate">
+                        </div>
+                    </div>
+                    <div class="col-sm-12">
+                        <div class="input-group">
+                            <div class="input-group-prepend">
+                                <label class="input-group-text">
+                                    توضیحات
+                                </label>
+                            </div>
+                            <textarea class="form-control" ng-model="createConfig.description"
+                                      style="height: 5em !important;"></textarea>
+                        </div>
+                    </div>
+                </div>
+
+                <!------------------   create new config btns ------------------>
+                <div class="card row">
+                    <div style="text-align: left;">
+                        <button class="new-button red" ng-click="cancelConfig()"><i
+                                class="fa fa-close ml-1"></i>انصراف
+                        </button>
+                        <button class="new-button green" ng-click="CreateConfig()"><i
+                                class="fa fa-check ml-1"></i>تایید
+                        </button>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-------  modal for edit exist data --------------->
+<div class="modal fade" id="configEditModal">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+            <div class="modal-body">
+                <p class="HeaderForm">
+                    ویرایش {{editConfigInfo.name}}
+                    <i class="fa fa-close text-danger pointer" style="float: left;margin: 0 5px;"
+                       ng-click="cancelEdit()"></i>
+                </p>
+
+                <!------------------   create new config modal ------------------>
+                <div class="row col-12">
+                    <div class="col-sm-4">
+                        <div class="input-group">
+                            <div class="input-group-prepend">
+                                <label class="input-group-text">
+                                    عنوان انگلیسی
+                                </label>
+                            </div>
+                            <input type="text" class="form-control" ng-model="editConfigInfo.name">
+                        </div>
+                    </div>
+                    <div class="col-sm-4">
+                        <div class="input-group">
+                            <div class="input-group-prepend">
+                                <label class="input-group-text">
+                                    عنوان فارسی
+                                </label>
+                            </div>
+                            <input type="text" class="form-control" ng-model="editConfigInfo.displayName">
+                        </div>
+                    </div>
+                    <div class="col-sm-4">
+                        <div class="input-group">
+                            <div class="input-group-prepend">
+                                <label class="input-group-text">
+                                    مقدار
+                                </label>
+                            </div>
+                            <input class="form-control" ng-model="editConfigInfo.value">
+                        </div>
+                    </div>
+                    <div class="col-sm-4">
+                        <div class="input-group">
+                            <div class="input-group-prepend">
+                                <label class="input-group-text">
+                                    نوع
+                                </label>
+                            </div>
+                            <input type="text" class="form-control" ng-model="editConfigInfo.type">
+                        </div>
+                    </div>
+                    <div class="col-sm-4">
+                        <div class="input-group">
+                            <div class="input-group-prepend">
+                                <label class="input-group-text">
+                                    تاریخ ویرایش
+                                </label>
+                            </div>
+                            <input type="text" autocomplete="off" class="form-control date-picker"
+                                   placeholder="xxxx/xx/xx" id="eStartDate">
+                        </div>
+                    </div>
+                    <div class="col-sm-12">
+                        <div class="input-group">
+                            <div class="input-group-prepend">
+                                <label class="input-group-text">
+                                    توضیحات
+                                </label>
+                            </div>
+                            <textarea class="form-control" ng-model="editConfigInfo.description"
+                                      style="height: 5em !important;"></textarea>
+                        </div>
+                    </div>
+                </div>
+
+                <!------------------   create new config btns ------------------>
+                <div class="card row">
+                    <div style="text-align: left;">
+                        <button class="new-button red" ng-click="cancelEditOnModal()"><i
+                                class="fa fa-close ml-1"></i>انصراف
+                        </button>
+                        <button class="new-button green" ng-click="confirmEditConfig()"><i
+                                class="fa fa-check ml-1"></i>تایید
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-------  modal for remove data --------------->
+<div class="modal fade" id="configRemoveModal">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+            <div class="modal-body">
+                <p class="HeaderForm">
+                    حذف {{config.faName}}
+                    <i class="fa fa-close text-danger pointer" style="float: left;margin: 0 5px;"
+                       ng-click="cancelRemove()"></i>
+                </p>
+
+                <div class="card row">
+                    <p class="text-danger asp-label" style="text-align: center;">
+                        آیا از حذف این مورد اطمینان دارید؟
+                    </p>
+                    <div style="text-align: left;">
+                        <button class="new-button red" ng-click="cancelDelete()"><i
+                                class="fa fa-close ml-1"></i>انصراف
+                        </button>
+                        <button class="new-button green" ng-click="deleteConfig()"><i
+                                class="fa fa-check ml-1"></i>تایید
+                        </button>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+
 </html>
