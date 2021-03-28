@@ -11,7 +11,7 @@ app.controller("generalSettingsCtrl", ["$scope", "$timeout", 'requests', functio
         });
     }, 500)
     //=============== edit showing date ================
-    $scope.editShowDate = function(date){
+    $scope.editShowDate = function (date) {
         if (date != null) {
             return moment(date, 'YYYY/M/D').format('jYYYY/jMM/jDD');
         } else {
@@ -83,10 +83,10 @@ app.controller("generalSettingsCtrl", ["$scope", "$timeout", 'requests', functio
 
     //------------- btns in row at table ------------------------
     $scope.editRow = function (data) {
-        requests.gettingData("RollCallConfigs/GetById/"+ data.id ,function(response){
-            if(response == null){
+        requests.gettingData("RollCallConfigs/GetById/" + data.id, function (response) {
+            if (response == null) {
                 console.log('error');
-            }else{
+            } else {
                 $('#eStartDate').val($scope.editShowDate(data.updatedAt));
                 $scope.editConfigInfo = response.data;
                 console.log(response.data);
@@ -109,7 +109,6 @@ app.controller("generalSettingsCtrl", ["$scope", "$timeout", 'requests', functio
             type: null,
             activateDate: null,
             description: null,
-            id: 0,
             createdBy: 0,
             createdAt: null,
             updatedBy: 0,
@@ -132,16 +131,16 @@ app.controller("generalSettingsCtrl", ["$scope", "$timeout", 'requests', functio
     }
 
     $scope.CreateConfig = function () {
-        $scope.createConfig.activateDate  = $scope.createConfig.createdAt = moment($("#startDate").val(), 'jYYYY/jM/jD').format('YYYY-MM-DD');
-        requests.postingData("RollCallConfigs/UpsertRollCallConfigsBatch", $scope.createConfig ,function(response){
-           if(!response.data == undefined){
-               $("#configCreateModal").modal("hide");
-               $scope.getConfigList();
-               console.log(response);
+        $scope.createConfig.activateDate = $scope.createConfig.createdAt = moment($("#startDate").val(), 'jYYYY/jM/jD').format('YYYY-MM-DD');
+        requests.postingData("RollCallConfigs/UpsertRollCallConfigsBatch", $scope.createConfig, function (response) {
+            if (!response.data == undefined) {
+                $("#configCreateModal").modal("hide");
+                $scope.getConfigList();
+                console.log(response);
 
-           }else{
-               console.log('error');
-           }
+            } else {
+                console.log('error');
+            }
         })
     }
 
@@ -155,12 +154,12 @@ app.controller("generalSettingsCtrl", ["$scope", "$timeout", 'requests', functio
     }
     $scope.confirmEditConfig = function () {
         $scope.editConfigInfo.updatedAt = moment($("#eStartDate").val(), 'jYYYY/jM/jD').format('YYYY-MM-DD');
-        requests.postingData("RollCallConfigs/UpsertRollCallConfigsBatch", $scope.editConfigInfo ,function(response){
-            if(!response.data == undefined){
+        requests.postingData("RollCallConfigs/UpsertRollCallConfigsBatch", $scope.editConfigInfo, function (response) {
+            if (!response.data == undefined) {
                 $("#configCreateModal").modal("hide");
                 $scope.getConfigList();
                 console.log("success");
-            }else{
+            } else {
                 console.log('error');
             }
         })
