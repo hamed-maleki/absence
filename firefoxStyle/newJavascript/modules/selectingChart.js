@@ -9,7 +9,7 @@ app.controller('organizationSelectController', ['$scope', '$http', '$compile', '
     //     $scope.path = "http://" + window.location.toString().split("/")[2] + "/" + window.location.toString().split("/")[3] + "/api/";
     // }
     // console.log(window.location.toString().split("/")[3])
-    $scope.path = "http://localhost:57347/api/"
+    $scope.path = "http://192.168.43.106/api/"
     $scope.getOfficialPositions = function () {
         $scope.chargesData = [];
         var route = "charts/" + $scope.editingRow.ChartId + "/charges"
@@ -251,5 +251,5 @@ app.controller('organizationSelectController', ['$scope', '$http', '$compile', '
     $scope.createModalType = "";
     $scope.ParentIdToCreate = null;
     $scope.locationChoosing = false;
-    
+
 }])

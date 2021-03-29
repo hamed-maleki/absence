@@ -7,7 +7,7 @@ app.controller('PersonnelCtrl', ['$scope', '$http', '$compile', '$timeout', 'cur
             changeYear: true
         });
     }, 100)
-    $scope.path = "http://localhost:57347/api/"
+    $scope.path = "http://192.168.43.106/api/"
     // console.log(window.location.toString().split("/")[3])
     // if (window.location.toString().split("/")[3] == "Organization" || window.location.toString().split("/")[3] == "Kargozini" || window.location.toString().split("/")[3] == "EvaluatinForm" || window.location.toString().split("/")[3] == "Personnels" || window.location.toString().split("/")[3] == "PersonnelActionForm"|| window.location.toString().split("/")[3] =="GlobalValue") {
     //     $scope.path = "http://localhost:2232"
@@ -37,8 +37,8 @@ app.controller('PersonnelCtrl', ['$scope', '$http', '$compile', '$timeout', 'cur
         personnelCode: "",
         employeeCode: "",
         sex: "",
-        tri:null,
-        treeName:null,
+        tri: null,
+        treeName: null,
         marrige: [],
         ageFrom: "",
         ageUntil: "",
@@ -51,15 +51,15 @@ app.controller('PersonnelCtrl', ['$scope', '$http', '$compile', '$timeout', 'cur
         childrenCountFrom: "",
         childrenCountUntil: ""
     }
-    $scope.getStateArray = function() {
-        $scope.getData("employees/state?paging.pn=1",function(response){
+    $scope.getStateArray = function () {
+        $scope.getData("employees/state?paging.pn=1", function (response) {
             $scope.stateArray = response;
             $scope.statePath = "employees/state?paging.pn="
         })
     }
-    $scope.searchState = function(item) {
+    $scope.searchState = function (item) {
         $scope.stateSearch = item;
-        $scope.getData($scope.statePath + "1&search.q="+item,function(response){
+        $scope.getData($scope.statePath + "1&search.q=" + item, function (response) {
             $scope.stateArray = response;
         })
     }
@@ -69,8 +69,8 @@ app.controller('PersonnelCtrl', ['$scope', '$http', '$compile', '$timeout', 'cur
             if (response.status == undefined) {
                 $scope.tableData = response;
                 console.log($scope.setAll)
-                if($scope.setAll) {
-                    for(var i = 0; i < $scope.tableData.Items.length;i++) {
+                if ($scope.setAll) {
+                    for (var i = 0; i < $scope.tableData.Items.length; i++) {
                         $scope.multiSelectArray.push($scope.tableData.Items[i]);
                     }
                 }
@@ -80,15 +80,15 @@ app.controller('PersonnelCtrl', ['$scope', '$http', '$compile', '$timeout', 'cur
         })
     }
     $scope.getTableDataSearch = function (url) {
-        
+
         $scope.getData(url, function (response) {
             $scope.searchTableData = response;
         })
     }
-    $scope.$on("getAllPersonnel" , function(evt){
+    $scope.$on("getAllPersonnel", function (evt) {
         var searchParameter = '?page=1';
         if ($scope.searchItems.name != "") {
-            searchParameter =searchParameter + "&&search.n=" + $scope.searchItems.name
+            searchParameter = searchParameter + "&&search.n=" + $scope.searchItems.name
         }
         if ($scope.searchItems.family != "") {
             searchParameter = searchParameter + "&&search.f=" + $scope.searchItems.family
@@ -126,7 +126,7 @@ app.controller('PersonnelCtrl', ['$scope', '$http', '$compile', '$timeout', 'cur
         if ($("#until").val() != '') {
             searchParameter = searchParameter + "&&search.eud=" + $("#until").val()
         }
-        if($scope.searchItems.tri != null) {
+        if ($scope.searchItems.tri != null) {
             searchParameter = searchParameter + "&&search.tri=" + $scope.searchItems.tri
         }
         if ($scope.searchItems.marrige.length != 0) {
@@ -165,14 +165,14 @@ app.controller('PersonnelCtrl', ['$scope', '$http', '$compile', '$timeout', 'cur
             searchParameter = searchParameter + "&&search.es=" + jValue;
         }
         $scope.searchParam = searchParameter;
-        $scope.getData("personnel/nopg" + searchParameter,function(response){
+        $scope.getData("personnel/nopg" + searchParameter, function (response) {
             // console.log(response);
             $scope.confirmAllPersonnel(response)
         })
     })
-    $scope.$on("changingMulti",function(evt) {
-        if($scope.setAll){
-            for(var i = 0; i < $scope.tableData.Items.length;i++) {
+    $scope.$on("changingMulti", function (evt) {
+        if ($scope.setAll) {
+            for (var i = 0; i < $scope.tableData.Items.length; i++) {
                 $scope.addToMutliPerSetAll($scope.tableData.Items[i])
             }
         }
@@ -250,8 +250,8 @@ app.controller('PersonnelCtrl', ['$scope', '$http', '$compile', '$timeout', 'cur
             $scope.getTableData(newPath);
         }
     }
-    $scope.getTableDataState = function(path) {
-        $scope.getData(path,function(response){
+    $scope.getTableDataState = function (path) {
+        $scope.getData(path, function (response) {
             $scope.stateArray = response;
         })
     }
@@ -261,7 +261,7 @@ app.controller('PersonnelCtrl', ['$scope', '$http', '$compile', '$timeout', 'cur
             if (!$scope.stateArray.LastPage) {
                 var page = Number($scope.stateArray.PageIndex) + 1;
                 // $scope.currentPage = page;
-                newPath = $scope.statePath  + page + "&search.q=" +$scope.stateSearch
+                newPath = $scope.statePath + page + "&search.q=" + $scope.stateSearch
                 $scope.getTableDataState(newPath);
 
             }
@@ -269,19 +269,19 @@ app.controller('PersonnelCtrl', ['$scope', '$http', '$compile', '$timeout', 'cur
             if ($scope.stateArray.PageIndex > 1) {
                 var page = Number($scope.stateArray.PageIndex) - 1;
                 // $scope.currentPage = page;
-                newPath = $scope.statePath  + page + "&search.q=" +$scope.stateSearch
+                newPath = $scope.statePath + page + "&search.q=" + $scope.stateSearch
                 $scope.getTableDataState(newPath);
 
             }
         } else if (method == "first") {
             var page = 1;
             // $scope.currentPage = 1;
-            newPath = $scope.statePath  + page + "&search.q=" +$scope.stateSearch
+            newPath = $scope.statePath + page + "&search.q=" + $scope.stateSearch
             $scope.getTableDataState(newPath);
         } else {
             var page = $scope.stateArray.TotalPages;
             // $scope.currentPage = page;
-            newPath = $scope.statePath  + page + "&search.q=" +$scope.stateSearch
+            newPath = $scope.statePath + page + "&search.q=" + $scope.stateSearch
             $scope.getTableDataState(newPath);
         }
     }
@@ -327,8 +327,8 @@ app.controller('PersonnelCtrl', ['$scope', '$http', '$compile', '$timeout', 'cur
             personnelCode: "",
             employeeCode: "",
             sex: "",
-            tri:null,
-            treeName:null,
+            tri: null,
+            treeName: null,
             marrige: [],
             ageFrom: "",
             ageUntil: "",
@@ -343,7 +343,7 @@ app.controller('PersonnelCtrl', ['$scope', '$http', '$compile', '$timeout', 'cur
         }
         $scope.setPersonnel(personnel, 2);
     }
-    
+
     $scope.changeSearchTable = function () {
         var searchParameter = '';
         if ($scope.searchItems.name != "") {
@@ -408,11 +408,11 @@ app.controller('PersonnelCtrl', ['$scope', '$http', '$compile', '$timeout', 'cur
             }
         }
     }
-    $scope.removeService = function(index,id) {
-        $scope.searchItems.serviceStatus.splice(index,1);
+    $scope.removeService = function (index, id) {
+        $scope.searchItems.serviceStatus.splice(index, 1);
         $("#check-s-service-" + id).prop("checked", false);
     }
-    $scope.removeEmployee = function(index,id) {
+    $scope.removeEmployee = function (index, id) {
         $scope.searchItems.employeeStatus.splice(index, 1);
     }
     $scope.eStateChange = function (item) {
@@ -426,10 +426,10 @@ app.controller('PersonnelCtrl', ['$scope', '$http', '$compile', '$timeout', 'cur
             }
         }
     }
-    $scope.checkingState = function(item) {
+    $scope.checkingState = function (item) {
         var found = false;
-        for(var i = 0; i< $scope.searchItems.employeeStatus.length;i++) {
-            if(item.Id == $scope.searchItems.employeeStatus[i].Id) {
+        for (var i = 0; i < $scope.searchItems.employeeStatus.length; i++) {
+            if (item.Id == $scope.searchItems.employeeStatus[i].Id) {
                 found = true;
                 break
             }
@@ -447,7 +447,7 @@ app.controller('PersonnelCtrl', ['$scope', '$http', '$compile', '$timeout', 'cur
             }
         }
     }
-    $scope.removeWar = function(index,id) {
+    $scope.removeWar = function (index, id) {
         $scope.searchItems.warStatus.splice(index, 1);
         $("#check-w-war-" + id).prop("checked", false);
     }
@@ -462,7 +462,7 @@ app.controller('PersonnelCtrl', ['$scope', '$http', '$compile', '$timeout', 'cur
             }
         }
     }
-    $scope.removeJob = function(index,id) {
+    $scope.removeJob = function (index, id) {
         $scope.searchItems.jobType.splice(index, 1);
         $("#customCheck-work-" + id).prop("checked", false);
     }
@@ -509,7 +509,7 @@ app.controller('PersonnelCtrl', ['$scope', '$http', '$compile', '$timeout', 'cur
         if ($("#until").val() != '') {
             searchParameter = searchParameter + "&&search.eud=" + $("#until").val()
         }
-        if($scope.searchItems.tri != null) {
+        if ($scope.searchItems.tri != null) {
             searchParameter = searchParameter + "&&search.tri=" + $scope.searchItems.tri
         }
         if ($scope.searchItems.marrige.length != 0) {
@@ -561,8 +561,8 @@ app.controller('PersonnelCtrl', ['$scope', '$http', '$compile', '$timeout', 'cur
             personnelCode: "",
             employeeCode: "",
             sex: "",
-            tri:null,
-            treeName:null,
+            tri: null,
+            treeName: null,
             marrige: [],
             ageFrom: "",
             ageUntil: "",
@@ -607,21 +607,21 @@ app.controller('PersonnelCtrl', ['$scope', '$http', '$compile', '$timeout', 'cur
             $scope.storagedPersonnel = JSON.parse($scope.localStoragePersonnel);
         }
     }
-    $scope.changeSelectPostStatus = function() {
+    $scope.changeSelectPostStatus = function () {
         $("form").submit(function () { return false; });
-        if($scope.selectPostStatus) {
+        if ($scope.selectPostStatus) {
             $scope.selectPostStatus = false;
-        }else {
+        } else {
             $scope.selectPostStatus = true;
         }
     }
-    $scope.settingChart = function(item) {
+    $scope.settingChart = function (item) {
         $scope.selectPostStatus = false;
         // console.log(item);
         $scope.searchItems.tri = item.Id;
         $scope.searchItems.treeName = item.Title
     }
-    $scope.clearChart = function() {
+    $scope.clearChart = function () {
         $scope.searchItems.tri = null;
         $scope.searchItems.treeName = null
     }

@@ -15,15 +15,28 @@
     <link rel="stylesheet" href="firefoxStyle/newElementsStyle.css">
     <link href="firefoxStyle/time.min.css" rel="stylesheet">
     <style>
-        input:focus {
-            border: none;
-            outline: none;
+        .default-bg {
+            background-image: url("Images/polygon.png");
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            height: 100vh;
+        }
+
+        body {
+            overflow: hidden;
+
+        }
+
+        body>div {
+            direction: rtl;
+        }
+
+        .cursor-pointer {
+            cursor: pointer;
         }
     </style>
     <!------------------ scripts ----------------------->
-
-    <!------------------ scripts ----------------------->
-
     <script src="firefoxStyle/newJavascript/angular.min.js"></script>
     <script src="firefoxStyle/newJavascript/jquery.min.js"></script>
     <script src="firefoxStyle/newJavascript/propper.js"></script>
@@ -33,9 +46,11 @@
     <script src="firefoxStyle/datepicker/bootstrap-datepicker.js"></script>
     <script src="firefoxStyle/datepicker/bootstrap-datepicker.fa.min.js"></script>
     <script src="firefoxStyle/newJavascript/time.min.js"></script>
-    <script src="firefoxStyle/newJavascript/requests.js"></script>
     <script src="firefoxStyle/newJavascript/VacationRequest.js"></script>
-
+    <script src="firefoxStyle/newJavascript/requests.js"></script>
+    <script src="firefoxStyle/newJavascript/modules/sharing.js"></script>
+    <script src="firefoxStyle/newJavascript/modules/selectingChart.js"></script>
+    <script src="firefoxStyle/newJavascript/modules/personnel.js"></script>
     <title>ثبت درخواست مرخصی</title>
 </head>
 
@@ -43,30 +58,358 @@
     <p class="HeaderForm">ثبت درخواست مرخصی</p>
 
     <!----------------------- table -------------------------->
-    <div class="card" ng-init="GetPersonalVacationList()">
-        <div class="table-header">
-            <table class="text-center">
-                <thead>
-                    <tr class="col-12 row">
-                        <th class="col-3">نام شخص</th>
-                        <th class="col-3">نوع مرخصی</th>
-                        <th class="col-3">مدت مرخصی(روز)</th>
-                        <th class="col-3">وضعیت</th>
-                    </tr>
-                </thead>
-            </table>
+    <!------------------- filter for search and select personnel ---------------------->
+    <div class="card">
+        <div class="row">
+            <div class="col-sm-6">
+                <div class="input-group">
+                    <div class="input-group-prepend">
+                        <label class="input-group-text">
+                            نام فرد
+                        </label>
+                    </div>
+                    <input class="form-control" ng-model="searchPInMission.value" id="personnel-input" ng-value="searchPInMission.value" ng-focus="selectFormLocal()"
+                        ng-keyup="serachPersonel(searchPInMission.value)" placeholder="نام/ نام خانوادگی/ کد ملی/ شماره کارمند">
+                    <i class="fa fa-download text-success pointer" ng-show="!localPersonnel && !searchingPosition" ng-click="localPersonnel = true"
+                        style="position: absolute;top: 0.3em;left: 5%;z-index: 3;"></i>
+                    <i class="fa fa-bars pointer" ng-click="selectPersonnel()" style="position: relative;top:5px;right:3px"></i>
+                    <i class="fa fa-close text-danger pointer" ng-if="searchingPosition" ng-click="searchingPositionChange()" style="position: absolute;top: 0.3em;left: 5%;z-index: 3;"></i>
+                    <i class="fa fa-close text-danger pointer" ng-show="localPersonnel" ng-click="localPersonnel = false" style="position: absolute;top: 0.3em;left: 5%;z-index: 3;"></i>
+                    <div ng-if="searchingPosition" style="position: absolute;top:1.6em;width: 100%;z-index: 2;" ng-include="'modules/personnelSelectDropdown.html'"></div>
+                    <div ng-if="localPersonnel" style="position: absolute;top:1.6em;width: 100%;z-index: 2;" ng-include="'modules/personnelSelectLocal.html'"></div>
+                </div>
+            </div>
+            <div class="col-sm-6" style="text-align: center;">
+                <div class="spinner-border text-primary" ng-if="loading"></div>
+            </div>
         </div>
-        <div class="table-body">
-            <table>
-                <tbody>
-                    <tr class="col-12 row" ng-repeat="item in vacation.item1">
-                        <td class="col-3" ng-bind="item.personName"></td>
-                        <td class="col-3" ng-bind="item.leaveTypeTitle"></td>
-                        <td class="col-3" ng-bind="getVacationDays(item.fromDate,item.toDate)"></td>
-                        <td class="col-3" ng-bind="item.leaveStateTitle"></td>
-                    </tr>
-                </tbody>
-            </table>
+    </div>
+    <!------------------- select personnel ---------------------->
+    <div class="modal fade" id="selectPersonnel">
+        <div class="modal-dialog modal-xl">
+            <div class="modal-content">
+                <div class="modal-head">
+                    <p class="HeaderForm">
+                        انتخاب پرسنل
+                        <i class="fa  fa-close text-danger pointer" style="float: left;margin: 0 5px;" data-dismiss="modal"></i>
+                    </p>
+                </div>
+                <div class="modal-body" style="padding-top: 0;">
+                    <div ng-if="loadingPersonnel" ng-include="'modules/personnelSelect.html'"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!------------------- select mission type ---------------------->
+    <div class="card" ng-show="personnelInfoExist">
+        <div class="col-sm-6">
+            <div class="input-group">
+                <div class="input-group-prepend">
+                    <label class="input-group-text">
+                        نوع مرخصی
+                    </label>
+                </div>
+                <select class="form-control" id="selectVacationType">
+                    <option ng-value="0">
+                        لطفا انتخاب نمایید...
+                    </option>
+                    <option ng-value="1">
+                        ساعتی
+                    </option>
+                    <option ng-value="2">
+                        روزانه
+                    </option>
+                </select>
+            </div>
+        </div>
+    </div>
+    <!----------------  if Vacation was daily  ---------------------->
+    <div class="hidden" id="DayVacationList">
+        <div class="card" ng-init="GetDayVacationList()">
+            <div class="table-header">
+                <table class="text-center">
+                    <thead>
+                        <tr class="col-12 row">
+                            <th class="col-2">نام شخص</th>
+                            <th class="col-2">از</th>
+                            <th class="col-2">تا</th>
+                            <th class="col-2">مدت مرخصی(روز)</th>
+                            <th class="col-2">وضعیت
+                            </th>
+                        </tr>
+                    </thead>
+                </table>
+            </div>
+            <div class="table-body">
+                <table>
+                    <tbody>
+                        <tr class="col-12 row" ng-repeat="item in dayVacation.item1">
+                            <td class="col-2 text-center" ng-bind="item.personName"></td>
+                            <td class="col-2 text-center" ng-bind="convertToShamsi(item.fromDate)"></td>
+                            <td class="col-2 text-center" ng-bind="convertToShamsi(item.toDate)"></td>
+                            <td class="col-1 text-center" ng-bind="getVacationDays(item.fromDate,item.toDate)"></td>
+                            <td class="col-3 row">
+                                <div class="col-8">
+                                    {{item.VacationStateTitle}}</div>
+                                <div class="row col-4 d-flex justify-content-end">
+                                    <p class="ml-1 h6 cursor-pointer"><i class="fa fa-trash" title="حذف درخواست"></i></p>
+                                    <p class="ml-1 h6 cursor-pointer"><i class="fa fa-edit" title="ویرایش درخواست"></i></p>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <!------------------ table btns ------------------->
+        <div class="card">
+            <div class="row">
+                <div class="col-sm-6" style="text-align: right;">
+                    <span ng-click="loadPages('last')" style="cursor: pointer;">
+                        <i class="fa fa-chevron-right" style="font-size: 0.7em;"></i>
+                        <i class="fa fa-chevron-right asp-label" style="margin-right: -3px;font-size: 0.7em;"></i>
+                    </span>
+                    <i class="fa fa-chevron-right asp-label" ng-click="loadPages(1)" style="margin: 0 10px;cursor: pointer;font-size: 0.7em;"></i>
+                    <input class="form-control" id="pagingD1" placeholder="{{config.item3}} از  {{config.pagetotal}}"
+                        style="width: 30%;display: inline-block;position: relative;top: 0px;font-size: 0.7em;" ng-model="pageNumber" ng-keyup="changePage($event,pageNumber);">
+                    <i class="fa fa-chevron-left asp-label" ng-click="loadPages(-1)" style="margin: 0 10px;cursor: pointer;font-size: 0.7em;"></i>
+                    <span ng-click="loadPages('first')" style="cursor: pointer;">
+                        <i class="fa fa-chevron-left asp-label" style="margin-left: -3px;font-size: 0.7em;"></i>
+                        <i class=" fa fa-chevron-left asp-label" style="font-size: 0.7em;"></i>
+                    </span>
+                </div>
+                <div class="col-sm-4"></div>
+                <div class="col-sm-2" style="padding-left: 30px;">
+                    <i class="fa fa-plus" title="افزودن" ng-click="createDayVacationModal()"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!----------------  if Vacation was hourly  ---------------------->
+    <div class="hidden" id="HourVacationList">
+        <div class="card " ng-init="GetHourVacationList()">
+            <div class="table-header">
+                <table class="text-center">
+                    <thead>
+                        <tr class="col-12 row">
+                            <th class="col-2">نام شخص</th>
+                            <th class="col-2">از</th>
+                            <th class="col-2">تا</th>
+                            <th class="col-2"> تاریخ مرخصی</th>
+                            <th class="col-4">وضعیت
+
+                            </th>
+                        </tr>
+                    </thead>
+                </table>
+            </div>
+            <div class="table-body">
+                <table>
+                    <tbody>
+                        <tr class="col-12 row" ng-repeat="item in hourVacation.item1">
+                            <td class="col-2" ng-bind="item.personId"></td>
+                            <td class="col-2" ng-bind="item.fromTime"></td>
+                            <td class="col-2" ng-bind="item.toTime"></td>
+                            <td class="col-2" ng-bind="convertToShamsi(item.leaveDate)"></td>
+                            <td class="col-4 row">
+                                <div class="col-8">
+                                    {{item.hourVacationStateTitle}}</div>
+                                <div class="row col-4 d-flex justify-content-end">
+                                    <p class="ml-1 h6 cursor-pointer"><i class="fa fa-trash" title="حذف درخواست"></i></p>
+                                    <p class="ml-1 h6 cursor-pointer"><i class="fa fa-edit" title="ویرایش درخواست"></i></p>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <!------------------ table btns ------------------->
+        <div class="card">
+            <div class="row">
+                <div class="col-sm-6" style="text-align: right;">
+                    <span ng-click="loadPages('last')" style="cursor: pointer;">
+                        <i class="fa fa-chevron-right" style="font-size: 0.7em;"></i>
+                        <i class="fa fa-chevron-right asp-label" style="margin-right: -3px;font-size: 0.7em;"></i>
+                    </span>
+                    <i class="fa fa-chevron-right asp-label" ng-click="loadPages(1)" style="margin: 0 10px;cursor: pointer;font-size: 0.7em;"></i>
+                    <input class="form-control" id="pagingD2" placeholder="{{config.item3}} از  {{config.pagetotal}}"
+                        style="width: 30%;display: inline-block;position: relative;top: 0px;font-size: 0.7em;" ng-model="pageNumber" ng-keyup="changePage($event,pageNumber);">
+                    <i class="fa fa-chevron-left asp-label" ng-click="loadPages(-1)" style="margin: 0 10px;cursor: pointer;font-size: 0.7em;"></i>
+                    <span ng-click="loadPages('first')" style="cursor: pointer;">
+                        <i class="fa fa-chevron-left asp-label" style="margin-left: -3px;font-size: 0.7em;"></i>
+                        <i class=" fa fa-chevron-left asp-label" style="font-size: 0.7em;"></i>
+                    </span>
+                </div>
+                <div class="col-sm-4"></div>
+                <div class="col-sm-2" style="padding-left: 30px;">
+                    <i class="fa fa-plus" title="افزودن" ng-click="createHourVacationModal()"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!------------------- create hour Vacation modal ---------------------->
+    <div class="modal" id="createHourModal">
+        <div class="modal-dialog modal-xl">
+            <div class="modal-content">
+                <div class="modal-body">
+                    <p class="HeaderForm">
+                        ایجاد درخواست مرخصی ساعتی جدید
+                        <i class="fa fa-close float-left" title="انصراف" ng-click="cancelCreateModalBtn()"></i>
+                    </p>
+                    <div class="col-12">
+                        <div class="row">
+                            <div class="col-4">
+                                <div class="mb-1">
+                                    <div class="input-group">
+                                        <div class="input-group-prepend">
+                                            <label class="input-group-text">
+                                                تاریخ مرخصی
+                                            </label>
+                                        </div>
+                                        <input type="text" autocomplete="off" class="form-control date-picker" placeholder="xxxx/xx/xx" id="startHDate">
+
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-4">
+                                <div>
+                                    <div class="input-group">
+                                        <div class="input-group-prepend">
+                                            <label class="input-group-text">
+                                                ساعت خروج
+                                            </label>
+                                        </div>
+                                        <input class="form-control" id="fromTime" placeholder="HH:MM" type="text">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-4">
+                                <div class="mb-1">
+                                    <div class="input-group">
+                                        <div class="input-group-prepend">
+                                            <label class="input-group-text">
+                                                ساعت ورود
+                                            </label>
+                                        </div>
+                                        <input class="form-control" id="toTime" placeholder="HH:MM" type="text">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+                <div class="card row">
+                    <div style="text-align: left;">
+                        <button class="new-button red" ng-click="cancelHourVacationCreate()"><i class="fa fa-close ml-1"></i>انصراف
+                        </button>
+                        <button class="new-button green" ng-click="confirmHourVacationCreate()"><i class="fa fa-check ml-1"></i>تایید
+                        </button>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    </div>
+
+    <!------------------- create day Vacation modal ---------------------->
+    <div class="modal" id="createDayModal">
+        <div class="modal-dialog modal-xl">
+            <div class="modal-content">
+                <div class="modal-body">
+                    <p class="HeaderForm">
+                        ایجاد درخواست مرخصی روزانه جدید
+                        <i class="fa fa-close float-left" title="انصراف" ng-click="cancelCreateDayModalBtn()"></i>
+                    </p>
+                    <div class="col-12 row">
+                        <div class="col-sm-8 row">
+                            <div class="col-6">
+                                <div class="mb-1">
+                                    <div class="input-group">
+                                        <div class="input-group-prepend">
+                                            <label class="input-group-text">
+                                                نوع مرخصی
+                                            </label>
+                                        </div>
+                                        <select ng-if="loadCreateModal" class="form-control" id="groupVacationType" ng-model="createDayMissionModal.dayMissionTypeId">
+                                            <option ng-value="1" selected>
+                                                لطفا انتخاب نمایید...
+                                            </option>
+                                            <option ng-repeat="item in selectgroupVacationType.item1" ng-value="item.id">
+                                                {{item.name}}
+                                            </option>
+                                        </select>
+                                    </div>
+                                </div>
+
+                            </div>
+                            <div class="col-6">
+                                <div class="mb-1">
+                                    <div class="input-group">
+                                        <div class="input-group-prepend">
+                                            <label class="input-group-text">
+                                                عنوان مرخصی
+                                            </label>
+                                        </div>
+                                        <input class="form-control" type="text" ng-model="createDayVacationModal.subject">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-4">
+                            <div class="col-12">
+                                <div style="margin-bottom: 15px;">
+                                    <div class="input-group">
+                                        <div class="input-group-prepend">
+                                            <label class="input-group-text">
+                                                تاریخ شروع مرخصی
+                                            </label>
+                                        </div>
+                                        <input type="text" autocomplete="off" class="form-control date-picker" placeholder="xxxx/xx/xx" id="startDate" ng-model="createDayMissionModal.fromDate">
+                                    </div>
+                                </div>
+                                <div>
+                                    <div class="input-group">
+                                        <div class="input-group-prepend">
+                                            <label class="input-group-text">
+                                                تاریخ پایان مرخصی
+                                            </label>
+                                        </div>
+                                        <input type="text" autocomplete="off" class="form-control date-picker" placeholder="xxxx/xx/xx" id="endDate" ng-model="createDayMissionModal.toDate">
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                        <div class="col-12">
+                            <div class="mt-3">
+                                <div class="input-group">
+                                    <div class="input-group-prepend">
+                                        <label class="input-group-text">
+                                            توضیحات
+                                        </label>
+                                    </div>
+                                    <input class="form-control" type="text" multiple="true" ng-model="createDayVacationModal.descriptions" style="min-height: 150px;">
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+
+                    <div class="card row">
+                        <div style="text-align: left;">
+                            <button class="new-button red" ng-click="cancelDayVacationCreate()"><i class="fa fa-close ml-1"></i>انصراف
+                            </button>
+                            <button class="new-button green" ng-click="confirmDayVacationCreate()"><i class="fa fa-check ml-1"></i>تایید
+                            </button>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 </body>
