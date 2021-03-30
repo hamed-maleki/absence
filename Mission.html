@@ -71,22 +71,15 @@
                         نام فرد
                     </label>
                 </div>
-                <input class="form-control" ng-model="searchPInMission.value" id="personnel-input"
-                    ng-value="searchPInMission.value" ng-focus="selectFormLocal()"
-                    ng-keyup="serachPersonel(searchPInMission.value)"
-                    placeholder="نام/ نام خانوادگی/ کد ملی/ شماره کارمند">
-                <i class="fa fa-download text-success pointer" ng-show="!localPersonnel && !searchingPosition"
-                    ng-click="localPersonnel = true" style="position: absolute;top: 0.3em;left: 5%;z-index: 3;"></i>
-                <i class="fa fa-bars pointer" ng-click="selectPersonnel()"
-                    style="position: relative;top:5px;right:3px"></i>
-                <i class="fa fa-close text-danger pointer" ng-if="searchingPosition"
-                    ng-click="searchingPositionChange()" style="position: absolute;top: 0.3em;left: 5%;z-index: 3;"></i>
-                <i class="fa fa-close text-danger pointer" ng-show="localPersonnel" ng-click="localPersonnel = false"
+                <input class="form-control" ng-model="searchPInMission.value" id="personnel-input" ng-value="searchPInMission.value" ng-focus="selectFormLocal()"
+                    ng-keyup="serachPersonel(searchPInMission.value)" placeholder="نام/ نام خانوادگی/ کد ملی/ شماره کارمند">
+                <i class="fa fa-download text-success pointer" ng-show="!localPersonnel && !searchingPosition" ng-click="localPersonnel = true"
                     style="position: absolute;top: 0.3em;left: 5%;z-index: 3;"></i>
-                <div ng-if="searchingPosition" style="position: absolute;top:1.6em;width: 100%;z-index: 2;"
-                    ng-include="'modules/personnelSelectDropdown.html'"></div>
-                <div ng-if="localPersonnel" style="position: absolute;top:1.6em;width: 100%;z-index: 2;"
-                    ng-include="'modules/personnelSelectLocal.html'"></div>
+                <i class="fa fa-bars pointer" ng-click="selectPersonnel()" style="position: relative;top:5px;right:3px"></i>
+                <i class="fa fa-close text-danger pointer" ng-if="searchingPosition" ng-click="searchingPositionChange()" style="position: absolute;top: 0.3em;left: 5%;z-index: 3;"></i>
+                <i class="fa fa-close text-danger pointer" ng-show="localPersonnel" ng-click="localPersonnel = false" style="position: absolute;top: 0.3em;left: 5%;z-index: 3;"></i>
+                <div ng-if="searchingPosition" style="position: absolute;top:1.6em;width: 100%;z-index: 2;" ng-include="'modules/personnelSelectDropdown.html'"></div>
+                <div ng-if="localPersonnel" style="position: absolute;top:1.6em;width: 100%;z-index: 2;" ng-include="'modules/personnelSelectLocal.html'"></div>
             </div>
         </div>
         <div class="col-sm-6" style="text-align: center;">
@@ -101,8 +94,7 @@
             <div class="modal-head">
                 <p class="HeaderForm">
                     انتخاب پرسنل
-                    <i class="fa  fa-close text-danger pointer" style="float: left;margin: 0 5px;"
-                        data-dismiss="modal"></i>
+                    <i class="fa  fa-close text-danger pointer" style="float: left;margin: 0 5px;" data-dismiss="modal"></i>
                 </p>
             </div>
             <div class="modal-body" style="padding-top: 0;">
@@ -110,18 +102,60 @@
             </div>
             <div class="card">
                 <div class="float-left">
-                    <button class="new-button red" ng-click="CancelAddPersonnel()"><i
-                            class="fa fa-close"></i>انصراف</button>
-                    <button class="new-button green" ng-click="confirmAddingPersonnel()"><i
-                            class="fa fa-check"></i>تایید</button>
+                    <button class="new-button red" ng-click="CancelAddPersonnel()"><i class="fa fa-close"></i>انصراف</button>
+                    <button class="new-button green" ng-click="confirmAddingPersonnel()"><i class="fa fa-check"></i>تایید</button>
                 </div>
             </div>
         </div>
     </div>
 </div>
+<div class="card" ng-if="personnelInfoExist">
+    <p class="HeaderForm">
+        افراد انتخاب شده
+    </p>
+    <div class="table-header">
+        <table>
+            <thead>
+                <tr class="row col-12">
+                    <th class="col-3 text-center">
+                        نام
+                    </th>
+                    <th class="col-3 text-center">
+                        نام خانوادگی
+                    </th>
+                    <th class="col-3 text-center">
+                        شماره پرسنلی
+                    </th>
+                    <th class="col-3 text-center">
+                        کد مستخدمی
+                    </th>
+                </tr>
 
+            </thead>
+        </table>
+    </div>
+    <div class="table-body">
+        <table class="test">
+            <tr class="row col-12" ng-repeat="item in selectPersonnelFromDbArray">
+                <td class="col-3 text-center">
+                    {{item.FirstName}}
+                </td>
+                <td class="col-3 text-center">
+                    {{item.LastName}}
+                </td>
+                <td class="col-3 text-center">
+                    {{item.PersonnelNo}}
+                </td>
+                <td class="col-3 text-center">
+                    {{item.DossierNo}}
+                    <i class="fa  fa-trash text-danger pointer" title="حذف فرد انتخاب شده" ng-click="RemovePersonnelSelection(item.Id)" style="float: left;margin: 0 5px;" data-dismiss="modal"></i>
+                </td>
+            </tr>
+        </table>
+    </div>
+</div>
 <!------------------- select mission type ---------------------->
-<div class="card" ng-show="!personnelInfoExist">
+<div class="card" ng-show="personnelInfoExist">
     <div class="col-sm-6">
         <div class="input-group">
             <div class="input-group-prepend">
@@ -192,13 +226,10 @@
                     <i class="fa fa-chevron-right" style="font-size: 0.7em;"></i>
                     <i class="fa fa-chevron-right asp-label" style="margin-right: -3px;font-size: 0.7em;"></i>
                 </span>
-                <i class="fa fa-chevron-right asp-label" ng-click="loadPages(1)"
-                    style="margin: 0 10px;cursor: pointer;font-size: 0.7em;"></i>
-                <input class="form-control" id="pagingD1" placeholder="{{config.item3}} از  {{config.pagetotal}}"
-                    style="width: 30%;display: inline-block;position: relative;top: 0px;font-size: 0.7em;"
+                <i class="fa fa-chevron-right asp-label" ng-click="loadPages(1)" style="margin: 0 10px;cursor: pointer;font-size: 0.7em;"></i>
+                <input class="form-control" id="pagingD1" placeholder="{{config.item3}} از  {{config.pagetotal}}" style="width: 30%;display: inline-block;position: relative;top: 0px;font-size: 0.7em;"
                     ng-model="pageNumber" ng-keyup="changePage($event,pageNumber);">
-                <i class="fa fa-chevron-left asp-label" ng-click="loadPages(-1)"
-                    style="margin: 0 10px;cursor: pointer;font-size: 0.7em;"></i>
+                <i class="fa fa-chevron-left asp-label" ng-click="loadPages(-1)" style="margin: 0 10px;cursor: pointer;font-size: 0.7em;"></i>
                 <span ng-click="loadPages('first')" style="cursor: pointer;">
                     <i class="fa fa-chevron-left asp-label" style="margin-left: -3px;font-size: 0.7em;"></i>
                     <i class=" fa fa-chevron-left asp-label" style="font-size: 0.7em;"></i>
@@ -258,13 +289,10 @@
                     <i class="fa fa-chevron-right" style="font-size: 0.7em;"></i>
                     <i class="fa fa-chevron-right asp-label" style="margin-right: -3px;font-size: 0.7em;"></i>
                 </span>
-                <i class="fa fa-chevron-right asp-label" ng-click="loadPages(1)"
-                    style="margin: 0 10px;cursor: pointer;font-size: 0.7em;"></i>
-                <input class="form-control" id="pagingD2" placeholder="{{config.item3}} از  {{config.pagetotal}}"
-                    style="width: 30%;display: inline-block;position: relative;top: 0px;font-size: 0.7em;"
+                <i class="fa fa-chevron-right asp-label" ng-click="loadPages(1)" style="margin: 0 10px;cursor: pointer;font-size: 0.7em;"></i>
+                <input class="form-control" id="pagingD2" placeholder="{{config.item3}} از  {{config.pagetotal}}" style="width: 30%;display: inline-block;position: relative;top: 0px;font-size: 0.7em;"
                     ng-model="pageNumber" ng-keyup="changePage($event,pageNumber);">
-                <i class="fa fa-chevron-left asp-label" ng-click="loadPages(-1)"
-                    style="margin: 0 10px;cursor: pointer;font-size: 0.7em;"></i>
+                <i class="fa fa-chevron-left asp-label" ng-click="loadPages(-1)" style="margin: 0 10px;cursor: pointer;font-size: 0.7em;"></i>
                 <span ng-click="loadPages('first')" style="cursor: pointer;">
                     <i class="fa fa-chevron-left asp-label" style="margin-left: -3px;font-size: 0.7em;"></i>
                     <i class=" fa fa-chevron-left asp-label" style="font-size: 0.7em;"></i>
@@ -297,8 +325,7 @@
                                             تاریخ مأموریت
                                         </label>
                                     </div>
-                                    <input type="text" autocomplete="off" class="form-control date-picker"
-                                        placeholder="xxxx/xx/xx" id="startHDate">
+                                    <input type="text" autocomplete="off" class="form-control date-picker" placeholder="xxxx/xx/xx" id="startHDate">
 
                                 </div>
                             </div>
@@ -333,11 +360,9 @@
             </div>
             <div class="card row">
                 <div style="text-align: left;">
-                    <button class="new-button red" ng-click="cancelHourMissionCreate()"><i
-                            class="fa fa-close ml-1"></i>انصراف
+                    <button class="new-button red" ng-click="cancelHourMissionCreate()"><i class="fa fa-close ml-1"></i>انصراف
                     </button>
-                    <button class="new-button green" ng-click="confirmHourMissionCreate()"><i
-                            class="fa fa-check ml-1"></i>تایید
+                    <button class="new-button green" ng-click="confirmHourMissionCreate()"><i class="fa fa-check ml-1"></i>تایید
                     </button>
 
                 </div>
@@ -366,8 +391,7 @@
                                             نوع مأموریت
                                         </label>
                                     </div>
-                                    <select ng-if="loadCreateModal" class="form-control" id="groupMissionType"
-                                        ng-model="createDayMissionModal.dayMissionTypeId">
+                                    <select ng-if="loadCreateModal" class="form-control" id="groupMissionType" ng-model="createDayMissionModal.dayMissionTypeId">
                                         <option ng-value="-1">
                                             لطفا انتخاب نمایید...
                                         </option>
@@ -399,13 +423,11 @@
                                             محل مأموریت
                                         </label>
                                     </div>
-                                    <select class="form-control" id="selectZoneType"
-                                        ng-model="createDayMissionModal.zoneId">
+                                    <select class="form-control" id="selectZoneType" ng-model="createDayMissionModal.zoneId">
                                         <option ng-value="0">
                                             لطفا انتخاب نمایید...
                                         </option>
-                                        <option ng-repeat="item in selectZoneType" ng-value="item.id"
-                                            ng-bind="item.name">
+                                        <option ng-repeat="item in selectZoneType" ng-value="item.id" ng-bind="item.name">
                                         </option>
                                     </select>
                                 </div>
@@ -433,8 +455,7 @@
                                             مبلغ بلیط
                                         </label>
                                     </div>
-                                    <input class="form-control" type="number"
-                                        ng-model="createDayMissionModal.ticketPrice">
+                                    <input class="form-control" type="number" ng-model="createDayMissionModal.ticketPrice">
                                 </div>
                             </div>
 
@@ -447,8 +468,7 @@
                                             مسافت (کیلومتر)
                                         </label>
                                     </div>
-                                    <input class="form-control" type="number"
-                                        ng-model="createDayMissionModal.kilometer">
+                                    <input class="form-control" type="number" ng-model="createDayMissionModal.kilometer">
                                 </div>
                             </div>
 
@@ -461,8 +481,7 @@
                                             تعداد روزهای فاقد بیتوته
                                         </label>
                                     </div>
-                                    <input class="form-control" type="number"
-                                        ng-model="createDayMissionModal.withoutDayCount">
+                                    <input class="form-control" type="number" ng-model="createDayMissionModal.withoutDayCount">
                                 </div>
                             </div>
 
@@ -475,8 +494,7 @@
                                             تعداد روزهای دارای بیتوته
                                         </label>
                                     </div>
-                                    <input class="form-control" type="number"
-                                        ng-model="createDayMissionModal.withDayCount">
+                                    <input class="form-control" type="number" ng-model="createDayMissionModal.withDayCount">
                                 </div>
                             </div>
 
@@ -491,9 +509,7 @@
                                             تاریخ شروع مأموریت
                                         </label>
                                     </div>
-                                    <input type="text" autocomplete="off" class="form-control date-picker"
-                                        placeholder="xxxx/xx/xx" id="startDate"
-                                        ng-model="createDayMissionModal.fromDate">
+                                    <input type="text" autocomplete="off" class="form-control date-picker" placeholder="xxxx/xx/xx" id="startDate" ng-model="createDayMissionModal.fromDate">
                                 </div>
                             </div>
                             <div>
@@ -503,8 +519,7 @@
                                             تاریخ پایان مأموریت
                                         </label>
                                     </div>
-                                    <input type="text" autocomplete="off" class="form-control date-picker"
-                                        placeholder="xxxx/xx/xx" id="endDate" ng-model="createDayMissionModal.toDate">
+                                    <input type="text" autocomplete="off" class="form-control date-picker" placeholder="xxxx/xx/xx" id="endDate" ng-model="createDayMissionModal.toDate">
                                 </div>
                             </div>
                         </div>
@@ -516,8 +531,7 @@
                                             هزینه های متفرقه
                                         </label>
                                     </div>
-                                    <input class="form-control" type="number"
-                                        ng-model="createDayMissionModal.otherExpense">
+                                    <input class="form-control" type="number" ng-model="createDayMissionModal.otherExpense">
                                 </div>
                             </div>
 
@@ -531,8 +545,7 @@
                                         توضیحات
                                     </label>
                                 </div>
-                                <input class="form-control" type="text" multiple="true"
-                                    ng-model="createDayMissionModal.descriptions" style="min-height: 150px;">
+                                <input class="form-control" type="text" multiple="true" ng-model="createDayMissionModal.descriptions" style="min-height: 150px;">
                             </div>
                         </div>
 
@@ -541,11 +554,9 @@
 
                 <div class="card row">
                     <div style="text-align: left;">
-                        <button class="new-button red" ng-click="cancelDayMissionCreate()"><i
-                                class="fa fa-close ml-1"></i>انصراف
+                        <button class="new-button red" ng-click="cancelDayMissionCreate()"><i class="fa fa-close ml-1"></i>انصراف
                         </button>
-                        <button class="new-button green" ng-click="confirmDayMissionCreate()"><i
-                                class="fa fa-check ml-1"></i>تایید
+                        <button class="new-button green" ng-click="confirmDayMissionCreate()"><i class="fa fa-check ml-1"></i>تایید
                         </button>
 
                     </div>

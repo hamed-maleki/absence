@@ -11,17 +11,28 @@ app.controller('MissionCtrl', ["$scope", "$timeout", 'currencyConverter', 'reque
         });
     }, 500)
     //================== search and get personnel ===============================
+    $scope.personnelInfoExist = false;
+    $scope.searchP = {
+        value: null
+    }
     $scope.selectMulti = true;
-
-    $scope.CancelAddPersonnel = function () {
-        $("#selectPersonnel").modal("hide");
+    $scope.openPersonnel = function () {
+        $(".date-picker").datepicker({
+            dateFormat: "yy/mm/dd",
+            changeMonth: true,
+            changeYear: true
+        });
+        $("#addingPersonnelModal").modal();
+        $scope.loadingPersonnel = true;
+        $timeout(function () {
+            currencyConverter.call()
+        }, 100)
+    }
+    $scope.cancelAddingPersonnel = function () {
+        $("#addingPersonnelModal").modal("hide");
         $scope.loadingPersonnel = false;
     }
-
-    $scope.searchPInMission = {
-        value: null
-    };
-    $('.dropdownInMission').on({
+    $('.dropdownInVacation').on({
         "click": function (event) {
             if ($(event.target).closest('.dropdown-toggle').length) {
                 $(this).data('closable', true);
@@ -29,13 +40,12 @@ app.controller('MissionCtrl', ["$scope", "$timeout", 'currencyConverter', 'reque
                 $(this).data('closable', false);
             }
         },
-        "hide.bs.dropdownInMission": function (event) {
+        "hide.bs.dropdownInVacation": function (event) {
             hide = $(this).data('closable');
             $(this).data('closable', true);
             return hide;
         }
     });
-    $scope.oneSelected = false;
     $scope.selectPersonnel = function () {
         $scope.localPersonnel = false;
         $("#selectPersonnel").modal();
@@ -44,18 +54,7 @@ app.controller('MissionCtrl', ["$scope", "$timeout", 'currencyConverter', 'reque
             currencyConverter.call()
         }, 500)
     }
-    $scope.checkMulti = function (id) {
-        var found = false;
-        for (var i = 0; i < $scope.multiSelectArray.length; i++) {
-            if ($scope.multiSelectArray[i].Id == id) {
-                found = true;
-                break;
-            }
-        }
-        return found;
-    }
     $scope.settingPersonnelInfo = function (data) {
-        $scope.selectedPersonnel = data;
         localStorage.setItem("lastSelected", JSON.stringify(data));
         $scope.oneSelected = true;
         $scope.loading = false;
@@ -70,12 +69,9 @@ app.controller('MissionCtrl', ["$scope", "$timeout", 'currencyConverter', 'reque
 
         }, 100);
     }
-    $scope.multiSelectArrayR = [];
+    $scope.selectPersonnelsFromDb = [];
     $scope.setPersonnel = function (data, method) {
         var dataLocal = localStorage.getItem("localPersonnelItem");
-        var currentData = localStorage.getItem("lastSelected");
-        datass = JSON.parse(currentData)
-
         if (dataLocal == null) {
             var itemToSet = [
                 data
@@ -95,26 +91,32 @@ app.controller('MissionCtrl', ["$scope", "$timeout", 'currencyConverter', 'reque
             if (flag) {
                 dataLocal.unshift(data);
             }
-            // var dataToShift = JSON.stringify(dataLocal);
             localStorage.setItem("localPersonnelItem", JSON.stringify(dataLocal));
         }
         $scope.localPersonnel = false;
-        $scope.selectedPersonnel = data;
-        $scope.searchP = {
-            value: null
-        }
-        if (data.Name == undefined) {
-            $scope.searchP.value = data.PoliteName
-        } else {
-            $scope.searchP.value = data.Name + " " + data.Family;
-            $("#personnel-input").val(data.Name + " " + data.Family)
-        }
-        $scope.searchingPosition = false;
         $scope.loading = true;
         // $("#selectPersonnel").modal('hide');
-        $scope.settingPersonnelInfo($scope.selectedPersonnel);
-        $scope.multiSelectArrayR.push($scope.selectedPersonnel);
+        $scope.settingPersonnelInfo(data);
+        $scope.selectPersonnelsFromDb.push(data);
+        localStorage.setItem('MultiSelectionPersonnel', JSON.stringify($scope.selectPersonnelsFromDb));
+        console.log(JSON.parse(localStorage.getItem('lastSelected')));
+
     }
+
+    $scope.confirmAddingPersonnel = function () {
+        $scope.selectPersonnelFromDbArray = JSON.parse(localStorage.getItem('MultiSelectionPersonnel'));
+        $scope.PersonnelIds = "";
+        for (let i = 0; i < $scope.selectPersonnelFromDbArray.length; i++) {
+            $scope.PersonnelIds += $scope.selectPersonnelFromDbArray[i].Id.toString() + ",";
+        }
+        if ($scope.selectPersonnelFromDbArray.length != 0) {
+            $scope.personnelInfoExist = true;
+        }
+        console.log($scope.PersonnelIds);
+        console.log($scope.selectPersonnelFromDbArray.length)
+        // $("#selectPersonnel").modal('hide');
+    }
+
     $scope.checkLocal = function () {
         if (localStorage.getItem("lastSelected") != null) {
             var data = localStorage.getItem("lastSelected");
@@ -127,13 +129,19 @@ app.controller('MissionCtrl', ["$scope", "$timeout", 'currencyConverter', 'reque
             $scope.notLocal = true;
         }
     }
-    $scope.confirmAddingPersonnel = function () {
-        for (let index = 0; index < $scope.multiSelectArrayR.length; index++) {
-            console.log($scope.multiSelectArrayR[index].Id);
+
+    $scope.RemovePersonnelSelection = function (id) {
+        var personnelFromData = [];
+        personnelFromData.push(JSON.parse(localStorage.getItem('lastSelected')));
+        if (personnelFromData.length >= 1) {
+            for (let i = 0; i < personnelFromData.length; i++) {
+                if (personnelFromData[i].Id == id) {
+                    $scope.personnelInfoExist = false;
+                }
+            }
         }
     }
     //================ Initialize mission type ==========================
-    $scope.personnelInfoExist = false;
     if ($scope.selectedPersonnel != undefined) {
         $scope.personnelInfoExist = true;
     }

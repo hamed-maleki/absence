@@ -11,8 +11,7 @@
                     <p class="form-control pointer" style="text-align: right;" ng-click="changeSelectPostStatus()">
                         {{searchItems.treeName}}
                         <i class="fa fa-chevron-down float-left" style="font-size: 16px;"></i>
-                        <i class="fa fa-close text-danger float-left" style="font-size: 16px;margin-left: 10px;"
-                            ng-if="searchItems.tri != null" ng-click="clearChart()"></i>
+                        <i class="fa fa-close text-danger float-left" style="font-size: 16px;margin-left: 10px;" ng-if="searchItems.tri != null" ng-click="clearChart()"></i>
                     </p>
                     <div ng-if="selectPostStatus" class="top-Ab">
                         <div ng-controller="organizationSelectController" ng-init="getRootData()">
@@ -29,8 +28,7 @@
                         </label>
                     </div>
                     <input class="form-control" type="text" ng-model="searchItems.name">
-                    <i class="fa fa-close text-danger" style="position: absolute;left: 5%;top: 0.3em;"
-                        ng-show="searchItems.name != ''" ng-click="searchItems.name = '';"></i>
+                    <i class="fa fa-close text-danger" style="position: absolute;left: 5%;top: 0.3em;" ng-show="searchItems.name != ''" ng-click="searchItems.name = '';"></i>
                 </div>
             </div>
             <div class="col-sm-3">
@@ -41,8 +39,7 @@
                         </label>
                     </div>
                     <input class="form-control" type="text" ng-model="searchItems.family">
-                    <i class="fa fa-close text-danger" style="position: absolute;left: 5%;top: 0.3em;"
-                        ng-show="searchItems.family != ''" ng-click="searchItems.family = '';"></i>
+                    <i class="fa fa-close text-danger" style="position: absolute;left: 5%;top: 0.3em;" ng-show="searchItems.family != ''" ng-click="searchItems.family = '';"></i>
                 </div>
             </div>
             <div class="col-sm-3">
@@ -53,8 +50,7 @@
                         </label>
                     </div>
                     <input class="form-control" type="text" ng-model="searchItems.fatherName">
-                    <i class="fa fa-close text-danger" style="position: absolute;left: 5%;top: 0.3em;"
-                        ng-show="searchItems.fatherName != ''" ng-click="searchItems.fatherName = '';"></i>
+                    <i class="fa fa-close text-danger" style="position: absolute;left: 5%;top: 0.3em;" ng-show="searchItems.fatherName != ''" ng-click="searchItems.fatherName = '';"></i>
                 </div>
             </div>
             <div class="col-sm-3">
@@ -65,8 +61,7 @@
                         </label>
                     </div>
                     <input type="text" class="form-control" ng-model="searchItems.nationalCode">
-                    <i class="fa fa-close text-danger" style="position: absolute;left: 5%;top: 0.3em;"
-                        ng-show="searchItems.nationalCode != ''" ng-click="searchItems.nationalCode = '';"></i>
+                    <i class="fa fa-close text-danger" style="position: absolute;left: 5%;top: 0.3em;" ng-show="searchItems.nationalCode != ''" ng-click="searchItems.nationalCode = '';"></i>
                 </div>
             </div>
             <div class="col-sm-3">
@@ -103,16 +98,14 @@
                         </span>
                     </p>
                     <div class="dropdown">
-                        <i class="fa fa-chevron-down" style="position: absolute;left: 5px;top: 0.3em;"
-                            data-toggle="dropdown" ng-click="openMarige()"></i>
+                        <i class="fa fa-chevron-down" style="position: absolute;left: 5px;top: 0.3em;" data-toggle="dropdown" ng-click="openMarige()"></i>
                         <!-- <div style="position: absolute;width: 100%;top: 1.7em;height: 7em;background-color: white;border-radius: 5px;border: 1px solid lightgray;z-index: 2;"></div> -->
                         <div class="dropdown-menu" style="top: 4px !important;left: -6px !important;">
                             <div>
                                 <div class="row" ng-repeat="marige in marigeStatus">
                                     <div class="col-sm-2">
                                         <div class="custom-control custom-checkbox">
-                                            <input type="checkbox" ng-click="MarigeStateChange(marige)"
-                                                class="custom-control-input" id="check-m-{{marige.Id}}" name="example1">
+                                            <input type="checkbox" ng-click="MarigeStateChange(marige)" class="custom-control-input" id="check-m-{{marige.Id}}" name="example1">
                                             <label class="custom-control-label" for="check-m-{{marige.Id}}"></label>
                                         </div>
                                     </div>
@@ -141,8 +134,7 @@
                         </label>
                     </div>
                     <input type="text" class="form-control" ng-model="searchItems.ageFrom">
-                    <i class="fa fa-close text-danger" style="position: absolute;left: 5%;top: 0.3em;"
-                        ng-show="searchItems.ageFrom != ''" ng-click="searchItems.ageFrom = '';"></i>
+                    <i class="fa fa-close text-danger" style="position: absolute;left: 5%;top: 0.3em;" ng-show="searchItems.ageFrom != ''" ng-click="searchItems.ageFrom = '';"></i>
                 </div>
             </div>
             <div class="col-sm-3">
@@ -153,8 +145,7 @@
                         </label>
                     </div>
                     <input type="text" class="form-control" ng-model="searchItems.ageUntil">
-                    <i class="fa fa-close text-danger" style="position: absolute;left: 5%;top: 0.3em;"
-                        ng-show="searchItems.ageUntil != ''" ng-click="searchItems.ageUntil = '';"></i>
+                    <i class="fa fa-close text-danger" style="position: absolute;left: 5%;top: 0.3em;" ng-show="searchItems.ageUntil != ''" ng-click="searchItems.ageUntil = '';"></i>
                 </div>
             </div>
             <div class="col-sm-3">
@@ -165,9 +156,7 @@
                         </label>
                     </div>
                     <input type="text" class="form-control" ng-model="searchItems.childrenCountFrom">
-                    <i class="fa fa-close text-danger" style="position: absolute;left: 5%;top: 0.3em;"
-                        ng-show="searchItems.childrenCountFrom != ''"
-                        ng-click="searchItems.childrenCountFrom = '';"></i>
+                    <i class="fa fa-close text-danger" style="position: absolute;left: 5%;top: 0.3em;" ng-show="searchItems.childrenCountFrom != ''" ng-click="searchItems.childrenCountFrom = '';"></i>
                 </div>
             </div>
             <div class="col-sm-3">
@@ -178,8 +167,7 @@
                         </label>
                     </div>
                     <input type="text" class="form-control" ng-model="searchItems.childrenCountUntil">
-                    <i class="fa fa-close text-danger" style="position: absolute;left: 5%;top: 0.3em;"
-                        ng-show="searchItems.childrenCountUntil != ''"
+                    <i class="fa fa-close text-danger" style="position: absolute;left: 5%;top: 0.3em;" ng-show="searchItems.childrenCountUntil != ''"
                         ng-click="searchItems.childrenCountUntil = '';"></i>
                 </div>
             </div>
@@ -241,9 +229,7 @@
                             {{eValue.Title}}
                             <i class="fa fa-close pointer" ng-click="removeEmployee($index,eValue.Id)"></i>
                         </span>
-                        <i class="fa fa-chevron-down pointer"
-                            ng-click="stateSituation? stateSituation = false : stateSituation = true"
-                            style="float:left;margin:0 -7px;font-size: 16px;"></i>
+                        <i class="fa fa-chevron-down pointer" ng-click="stateSituation? stateSituation = false : stateSituation = true" style="float:left;margin:0 -7px;font-size: 16px;"></i>
                     </p>
                     <div ng-if="stateSituation" ng-init="getStateArray()"
                         style="position: absolute;width: 100%;top: 1.7em;min-height: 7em;background-color: white;border-radius: 5px;border: 1px solid lightgray;z-index: 2;padding: 5px;">
@@ -269,11 +255,9 @@
                                         <tr ng-repeat="state in stateArray.Items">
                                             <td style="width: 26%;">
                                                 <div class="custom-control custom-checkbox">
-                                                    <input type="checkbox" ng-checked="checkingState(state)"
-                                                        ng-click="eStateChange(state)" class="custom-control-input"
-                                                        id="check-e-{{state.Id}}" name="example1">
-                                                    <label class="custom-control-label"
-                                                        for="check-e-{{state.Id}}"></label>
+                                                    <input type="checkbox" ng-checked="checkingState(state)" ng-click="eStateChange(state)" class="custom-control-input" id="check-e-{{state.Id}}"
+                                                        name="example1">
+                                                    <label class="custom-control-label" for="check-e-{{state.Id}}"></label>
                                                 </div>
                                             </td>
                                             <td style="width: 74%;">
@@ -289,20 +273,14 @@
                                 <div class="col-sm-10" style="text-align: right;">
                                     <span ng-click="loadPageS('last')" style="cursor: pointer;">
                                         <i class="fa fa-chevron-right" style="font-size: 0.7em;"></i>
-                                        <i class="fa fa-chevron-right asp-label"
-                                            style="margin-right: -3px;font-size: 0.7em;"></i>
+                                        <i class="fa fa-chevron-right asp-label" style="margin-right: -3px;font-size: 0.7em;"></i>
                                     </span>
-                                    <i class="fa fa-chevron-right asp-label" ng-click="loadPageS(1)"
-                                        style="margin: 0 10px;cursor: pointer;font-size: 0.7em;"></i>
-                                    <input class="form-control" id="pagingL"
-                                        placeholder="{{stateArray.PageIndex}} از  {{stateArray.TotalPages}}"
-                                        style="width: 30%;display: inline-block;position: relative;top: 0px;font-size: 0.7em;"
-                                        ng-model="pageNumber" ng-keyup="changePageS($event,pageNumber);">
-                                    <i class="fa fa-chevron-left asp-label" ng-click="loadPageS(-1)"
-                                        style="margin: 0 10px;cursor: pointer;font-size: 0.7em;"></i>
+                                    <i class="fa fa-chevron-right asp-label" ng-click="loadPageS(1)" style="margin: 0 10px;cursor: pointer;font-size: 0.7em;"></i>
+                                    <input class="form-control" id="pagingL" placeholder="{{stateArray.PageIndex}} از  {{stateArray.TotalPages}}"
+                                        style="width: 30%;display: inline-block;position: relative;top: 0px;font-size: 0.7em;" ng-model="pageNumber" ng-keyup="changePageS($event,pageNumber);">
+                                    <i class="fa fa-chevron-left asp-label" ng-click="loadPageS(-1)" style="margin: 0 10px;cursor: pointer;font-size: 0.7em;"></i>
                                     <span ng-click="loadPageS('first')" style="cursor: pointer;">
-                                        <i class="fa fa-chevron-left asp-label"
-                                            style="margin-left: -3px;font-size: 0.7em;"></i>
+                                        <i class="fa fa-chevron-left asp-label" style="margin-left: -3px;font-size: 0.7em;"></i>
                                         <i class=" fa fa-chevron-left asp-label" style="font-size: 0.7em;"></i>
                                     </span>
                                 </div>
@@ -319,16 +297,14 @@
                         </label>
                     </div>
                     <p class="form-control" style="text-align: right;">
-                        <span class="alert alert-success" style="margin: 0 2.5px;padding: 0 5px;display: inline-block;" ng-repeat="eValue in searchItems.serviceStatus" >
+                        <span class="alert alert-success" style="margin: 0 2.5px;padding: 0 5px;display: inline-block;" ng-repeat="eValue in searchItems.serviceStatus">
                             {{eValue.Title}}
                             <i class="fa fa-close pointer" ng-click="removeService($index,eValue.Id)"></i>
                         </span>
                     </p>
                     <div class="dropdown">
-                        <i class="fa fa-chevron-down" style="position: absolute;left: 5px;top: 0.3em;"
-                            data-toggle="dropdown"></i>
-                        <div class="dropdown-menu"
-                            style="top: 4px !important;left: -6px !important;height: auto;overflow-y: auto;overflow-x: hidden;width: 32.5em;">
+                        <i class="fa fa-chevron-down" style="position: absolute;left: 5px;top: 0.3em;" data-toggle="dropdown"></i>
+                        <div class="dropdown-menu" style="top: 4px !important;left: -6px !important;height: auto;overflow-y: auto;overflow-x: hidden;width: 32.5em;">
                             <div class="card">
                                 <input class="form-control" ng-model="serviceFilter.Title">
                                 <div class="row">
@@ -344,20 +320,17 @@
                                                     </tr>
                                                 </thead>
                                             </table>
-                                           
+
                                         </div>
                                         <div class="table-body" style="max-height: 24vh;">
                                             <table class="test">
                                                 <tbody>
                                                     <tr ng-repeat="marige in employeeType | filter:serviceFilter">
                                                         <td style="width: 10%;">
-                                                            <div class="custom-control custom-checkbox"
-                                                                style="display: inline-block;margin-top: -38px;">
-                                                                <input type="checkbox" ng-click="serviceStateChange(marige)"
-                                                                    class="custom-control-input" id="check-s-service-{{marige.Id}}"
+                                                            <div class="custom-control custom-checkbox" style="display: inline-block;margin-top: -38px;">
+                                                                <input type="checkbox" ng-click="serviceStateChange(marige)" class="custom-control-input" id="check-s-service-{{marige.Id}}"
                                                                     name="example1">
-                                                                <label class="custom-control-label"
-                                                                    for="check-s-service-{{marige.Id}}"></label>
+                                                                <label class="custom-control-label" for="check-s-service-{{marige.Id}}"></label>
                                                             </div>
                                                         </td>
                                                         <td style="width: 90%;">
@@ -388,8 +361,7 @@
                         </span>
                     </p>
                     <div class="dropdown">
-                        <i class="fa fa-chevron-down" style="position: absolute;left: 5px;top: 0.3em;"
-                            data-toggle="dropdown" ng-click="openWar()"></i>
+                        <i class="fa fa-chevron-down" style="position: absolute;left: 5px;top: 0.3em;" data-toggle="dropdown" ng-click="openWar()"></i>
                         <!-- <div style="position: absolute;width: 100%;top: 1.7em;height: 7em;background-color: white;border-radius: 5px;border: 1px solid lightgray;z-index: 2;"></div> -->
                         <div class="dropdown-menu" style="top: 4px !important;left: -6px !important;width: 32.5em;">
                             <div class="card">
@@ -412,8 +384,7 @@
                                             <tr ng-repeat="war in warStatus|filter:warFilter">
                                                 <td style="width:10%">
                                                     <div class="custom-control custom-checkbox">
-                                                        <input type="checkbox" ng-click="warStateChange(war)"
-                                                            class="custom-control-input" id="check-w-war-{{war.Id}}" name="example1">
+                                                        <input type="checkbox" ng-click="warStateChange(war)" class="custom-control-input" id="check-w-war-{{war.Id}}" name="example1">
                                                         <label class="custom-control-label" for="check-w-war-{{war.Id}}"></label>
                                                     </div>
                                                 </td>
@@ -444,8 +415,7 @@
                         </span>
                     </p>
                     <div class="dropdown">
-                        <i class="fa fa-chevron-down" style="position: absolute;left: 5px;top: 0.3em;"
-                            data-toggle="dropdown" ng-click="openJob()"></i>
+                        <i class="fa fa-chevron-down" style="position: absolute;left: 5px;top: 0.3em;" data-toggle="dropdown" ng-click="openJob()"></i>
                         <!-- <div style="position: absolute;width: 100%;top: 1.7em;height: 7em;background-color: white;border-radius: 5px;border: 1px solid lightgray;z-index: 2;"></div> -->
                         <div class="dropdown-menu" style="top: 4px !important;left: -6px !important;width: 32.5em;">
                             <div class="card">
@@ -467,8 +437,7 @@
                                             <tr ng-repeat="job in jobStatus">
                                                 <td style="width: 10%;">
                                                     <div class="custom-control custom-checkbox">
-                                                        <input type="checkbox" class="custom-control-input"
-                                                            id="customCheck-work-{{job.Id}}" ng-click="jobStateChange(job)" name="example1">
+                                                        <input type="checkbox" class="custom-control-input" id="customCheck-work-{{job.Id}}" ng-click="jobStateChange(job)" name="example1">
                                                         <label class="custom-control-label" for="customCheck-work-{{job.Id}}"></label>
                                                     </div>
                                                 </td>
@@ -512,47 +481,36 @@
                     <tr>
                         <th style="width: 6%;">
                             <div class="custom-control custom-checkbox" ng-if="selectMulti">
-                                <input type="checkbox"  ng-click="setAllPersonnel()" class="custom-control-input" id="customCheck-all"
-                                    name="example1">
+                                <input type="checkbox" ng-click="setAllPersonnel()" class="custom-control-input" id="customCheck-all" name="example1">
                                 <label class="custom-control-label" for="customCheck-all"></label>
                             </div>
                         </th>
                         <th style="width: 25%;">
                             <div style="position: relative;">
-                                <i class="fa fa-close text-danger" style="position: absolute;left: 5%;top: 0.5em;"
-                                    ng-show="searchItems.name != ''"
+                                <i class="fa fa-close text-danger" style="position: absolute;left: 5%;top: 0.5em;" ng-show="searchItems.name != ''"
                                     ng-click="searchItems.name = '';changeSearchTable()"></i>
-                                <input type="text" style="font-size: 1em !important;" ng-model="searchItems.name"
-                                    ng-keyup="changeSearchTable()" class="form-control">
+                                <input type="text" style="font-size: 1em !important;" ng-model="searchItems.name" ng-keyup="changeSearchTable()" class="form-control">
                             </div>
                         </th>
                         <th style="width: 25%;">
                             <div style="position: relative;">
-                                <i class="fa fa-close text-danger" style="position: absolute;left: 5%;top: 0.5em;"
-                                    ng-show="searchItems.family != ''"
+                                <i class="fa fa-close text-danger" style="position: absolute;left: 5%;top: 0.5em;" ng-show="searchItems.family != ''"
                                     ng-click="searchItems.family = '';changeSearchTable()"></i>
-                                <input type="text" style="font-size: 1em !important;" ng-model="searchItems.family"
-                                    ng-keyup="changeSearchTable()" class="form-control">
+                                <input type="text" style="font-size: 1em !important;" ng-model="searchItems.family" ng-keyup="changeSearchTable()" class="form-control">
                             </div>
                         </th>
                         <th style="width: 22%;">
                             <div style="position: relative;">
-                                <i class="fa fa-close text-danger" style="position: absolute;left: 5%;top: 0.5em;"
-                                    ng-show="searchItems.personnelCode!= ''"
+                                <i class="fa fa-close text-danger" style="position: absolute;left: 5%;top: 0.5em;" ng-show="searchItems.personnelCode!= ''"
                                     ng-click="searchItems.personnelCode= '';changeSearchTable()"></i>
-                                <input type="text" style="font-size: 1em !important;"
-                                    ng-model="searchItems.personnelCode" ng-keyup="changeSearchTable()"
-                                    class="form-control">
+                                <input type="text" style="font-size: 1em !important;" ng-model="searchItems.personnelCode" ng-keyup="changeSearchTable()" class="form-control">
                             </div>
                         </th>
                         <th style="width: 22%;">
                             <div style="position: relative;">
-                                <i class="fa fa-close text-danger" style="position: absolute;left: 5%;top: 0.5em;"
-                                    ng-show="searchItems.employeeCode != ''"
+                                <i class="fa fa-close text-danger" style="position: absolute;left: 5%;top: 0.5em;" ng-show="searchItems.employeeCode != ''"
                                     ng-click="searchItems.employeeCode = '';changeSearchTable()"></i>
-                                <input type="text" style="font-size: 1em !important;"
-                                    ng-model="searchItems.employeeCode" ng-keyup="changeSearchTable()"
-                                    class="form-control">
+                                <input type="text" style="font-size: 1em !important;" ng-model="searchItems.employeeCode" ng-keyup="changeSearchTable()" class="form-control">
                             </div>
                         </th>
                     </tr>
@@ -565,12 +523,10 @@
                     <tr ng-repeat="personnel in tableData.Items" ng-click="setPersonnelModal(personnel)">
                         <td style="width: 6%;">
                             <div class="custom-control custom-checkbox" ng-if="selectMulti">
-                                <input type="checkbox" ng-checked="checkMulti(personnel.Id)" class="custom-control-input" id="customCheck-{{personnel.Id}}"
-                                    name="example1">
+                                <input type="checkbox" ng-checked="checkMulti(personnel.Id)" class="custom-control-input" id="customCheck-{{personnel.Id}}" name="example1">
                                 <label class="custom-control-label" for="customCheck-{{personnel.Id}}"></label>
                             </div>
-                            <input type="radio" ng-if="!selectMulti" name="select"
-                                ng-click="setPersonnelModal(personnel)">
+                            <input type="radio" ng-if="!selectMulti" name="select" ng-click="setPersonnelModal(personnel)">
                         </td>
                         <td style="width: 25%;">
                             {{personnel.FirstName}}
@@ -603,14 +559,10 @@
                     <i class="fa fa-chevron-right" style="font-size: 0.7em;"></i>
                     <i class="fa fa-chevron-right asp-label" style="margin-right: -3px;font-size: 0.7em;"></i>
                 </span>
-                <i class="fa fa-chevron-right asp-label" ng-click="loadPage(1)"
-                    style="margin: 0 10px;cursor: pointer;font-size: 0.7em;"></i>
-                <input class="form-control" id="pagingD"
-                    placeholder="{{tableData.PageIndex}} از  {{tableData.TotalPages}}"
-                    style="width: 30%;display: inline-block;position: relative;top: 0px;font-size: 0.7em;"
-                    ng-model="pageNumber" ng-keyup="changePage($event,pageNumber);">
-                <i class="fa fa-chevron-left asp-label" ng-click="loadPage(-1)"
-                    style="margin: 0 10px;cursor: pointer;font-size: 0.7em;"></i>
+                <i class="fa fa-chevron-right asp-label" ng-click="loadPage(1)" style="margin: 0 10px;cursor: pointer;font-size: 0.7em;"></i>
+                <input class="form-control" id="pagingD" placeholder="{{tableData.PageIndex}} از  {{tableData.TotalPages}}"
+                    style="width: 30%;display: inline-block;position: relative;top: 0px;font-size: 0.7em;" ng-model="pageNumber" ng-keyup="changePage($event,pageNumber);">
+                <i class="fa fa-chevron-left asp-label" ng-click="loadPage(-1)" style="margin: 0 10px;cursor: pointer;font-size: 0.7em;"></i>
                 <span ng-click="loadPage('first')" style="cursor: pointer;">
                     <i class="fa fa-chevron-left asp-label" style="margin-left: -3px;font-size: 0.7em;"></i>
                     <i class=" fa fa-chevron-left asp-label" style="font-size: 0.7em;"></i>

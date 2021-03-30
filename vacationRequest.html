@@ -67,24 +67,15 @@
                             نام فرد
                         </label>
                     </div>
-                    <input class="form-control" ng-model="searchPInMission.value" id="personnel-input"
-                        ng-value="searchPInMission.value" ng-focus="selectFormLocal()"
-                        ng-keyup="serachPersonel(searchPInMission.value)"
-                        placeholder="نام/ نام خانوادگی/ کد ملی/ شماره کارمند">
-                    <i class="fa fa-download text-success pointer" ng-show="!localPersonnel && !searchingPosition"
-                        ng-click="localPersonnel = true" style="position: absolute;top: 0.3em;left: 5%;z-index: 3;"></i>
-                    <i class="fa fa-bars pointer" ng-click="selectPersonnel()"
-                        style="position: relative;top:5px;right:3px"></i>
-                    <i class="fa fa-close text-danger pointer" ng-if="searchingPosition"
-                        ng-click="searchingPositionChange()"
+                    <input class="form-control" ng-model="searchPInMission.value" id="personnel-input" ng-value="searchPInMission.value" ng-focus="selectFormLocal()"
+                        ng-keyup="serachPersonel(searchPInMission.value)" placeholder="نام/ نام خانوادگی/ کد ملی/ شماره کارمند">
+                    <i class="fa fa-download text-success pointer" ng-show="!localPersonnel && !searchingPosition" ng-click="localPersonnel = true"
                         style="position: absolute;top: 0.3em;left: 5%;z-index: 3;"></i>
-                    <i class="fa fa-close text-danger pointer" ng-show="localPersonnel"
-                        ng-click="localPersonnel = false"
-                        style="position: absolute;top: 0.3em;left: 5%;z-index: 3;"></i>
-                    <div ng-if="searchingPosition" style="position: absolute;top:1.6em;width: 100%;z-index: 2;"
-                        ng-include="'modules/personnelSelectDropdown.html'"></div>
-                    <div ng-if="localPersonnel" style="position: absolute;top:1.6em;width: 100%;z-index: 2;"
-                        ng-include="'modules/personnelSelectLocal.html'"></div>
+                    <i class="fa fa-bars pointer" ng-click="selectPersonnel()" style="position: relative;top:5px;right:3px"></i>
+                    <i class="fa fa-close text-danger pointer" ng-if="searchingPosition" ng-click="searchingPositionChange()" style="position: absolute;top: 0.3em;left: 5%;z-index: 3;"></i>
+                    <i class="fa fa-close text-danger pointer" ng-show="localPersonnel" ng-click="localPersonnel = false" style="position: absolute;top: 0.3em;left: 5%;z-index: 3;"></i>
+                    <div ng-if="searchingPosition" style="position: absolute;top:1.6em;width: 100%;z-index: 2;" ng-include="'modules/personnelSelectDropdown.html'"></div>
+                    <div ng-if="localPersonnel" style="position: absolute;top:1.6em;width: 100%;z-index: 2;" ng-include="'modules/personnelSelectLocal.html'"></div>
                 </div>
             </div>
             <div class="col-sm-6" style="text-align: center;">
@@ -99,8 +90,7 @@
                 <div class="modal-head">
                     <p class="HeaderForm">
                         انتخاب پرسنل
-                        <i class="fa  fa-close text-danger pointer" style="float: left;margin: 0 5px;"
-                            data-dismiss="modal"></i>
+                        <i class="fa  fa-close text-danger pointer" style="float: left;margin: 0 5px;" data-dismiss="modal"></i>
                     </p>
                 </div>
                 <div class="modal-body" style="padding-top: 0;">
@@ -148,9 +138,8 @@
                     </td>
                     <td class="col-3 text-center">
                         {{selectPersonnelFromDb.DossierNo}}
-                        <i class="fa  fa-trash text-danger pointer" title="حذف فرد انتخاب شده"
-                            ng-click="RemovePersonnelSelection(selectPersonnelFromDb.Id)"
-                            style="float: left;margin: 0 5px;" data-dismiss="modal"></i>
+                        <i class="fa  fa-trash text-danger pointer" title="حذف فرد انتخاب شده" ng-click="RemovePersonnelSelection(selectPersonnelFromDb.Id)" style="float: left;margin: 0 5px;"
+                            data-dismiss="modal"></i>
                     </td>
                 </tr>
             </table>
@@ -187,6 +176,7 @@
                     <thead>
                         <tr class="col-12 row">
                             <th class="col-2">نام شخص</th>
+                            <th class="col-2">نوع مرخصی</th>
                             <th class="col-2">از</th>
                             <th class="col-2">تا</th>
                             <th class="col-2">مدت مرخصی(روز)</th>
@@ -201,18 +191,17 @@
                     <tbody>
                         <tr class="col-12 row" ng-repeat="item in dayVacation.item1">
                             <td class="col-2 text-center" ng-bind="item.personName"></td>
+                            <td class="col-2 text-center" ng-bind="item.leaveTypeTitle"></td>
                             <td class="col-2 text-center" ng-bind="convertToShamsi(item.fromDate)"></td>
                             <td class="col-2 text-center" ng-bind="convertToShamsi(item.toDate)"></td>
-                            <td class="col-1 text-center" ng-bind="getVacationDays(item.fromDate,item.toDate)"></td>
-                            <td class="col-3 row">
+                            <td class="col-2 text-center" ng-bind="getVacationDays(item.fromDate,item.toDate)"></td>
+                            <td class="col-2 row">
                                 <div class="col-8">
                                     {{item.VacationStateTitle}}</div>
                                 <div class="row col-4 d-flex justify-content-end">
-                                    <p class="ml-1 h6 cursor-pointer" ng-click="DeleteRowDayRequest()"><i
-                                            class="fa fa-trash" title="حذف درخواست"></i>
+                                    <p class="ml-1 h6 cursor-pointer" ng-click="DeleteRowDayRequest(item.id)"><i class="fa fa-trash" title="حذف درخواست"></i>
                                     </p>
-                                    <p class="ml-1 h6 cursor-pointer" ng-click="EditRowDayRequest()"><i
-                                            class="fa fa-edit" title="ویرایش درخواست"></i>
+                                    <p class="ml-1 h6 cursor-pointer" ng-click="EditRowDayRequest(item.id)"><i class="fa fa-edit" title="ویرایش درخواست"></i>
                                     </p>
                                 </div>
                             </td>
@@ -229,13 +218,10 @@
                         <i class="fa fa-chevron-right" style="font-size: 0.7em;"></i>
                         <i class="fa fa-chevron-right asp-label" style="margin-right: -3px;font-size: 0.7em;"></i>
                     </span>
-                    <i class="fa fa-chevron-right asp-label" ng-click="loadPages(1)"
-                        style="margin: 0 10px;cursor: pointer;font-size: 0.7em;"></i>
+                    <i class="fa fa-chevron-right asp-label" ng-click="loadPages(1)" style="margin: 0 10px;cursor: pointer;font-size: 0.7em;"></i>
                     <input class="form-control" id="pagingD1" placeholder="{{config.item3}} از  {{config.pagetotal}}"
-                        style="width: 30%;display: inline-block;position: relative;top: 0px;font-size: 0.7em;"
-                        ng-model="pageNumber" ng-keyup="changePage($event,pageNumber);">
-                    <i class="fa fa-chevron-left asp-label" ng-click="loadPages(-1)"
-                        style="margin: 0 10px;cursor: pointer;font-size: 0.7em;"></i>
+                        style="width: 30%;display: inline-block;position: relative;top: 0px;font-size: 0.7em;" ng-model="pageNumber" ng-keyup="changePage($event,pageNumber);">
+                    <i class="fa fa-chevron-left asp-label" ng-click="loadPages(-1)" style="margin: 0 10px;cursor: pointer;font-size: 0.7em;"></i>
                     <span ng-click="loadPages('first')" style="cursor: pointer;">
                         <i class="fa fa-chevron-left asp-label" style="margin-left: -3px;font-size: 0.7em;"></i>
                         <i class=" fa fa-chevron-left asp-label" style="font-size: 0.7em;"></i>
@@ -243,13 +229,13 @@
                 </div>
                 <div class="col-sm-4"></div>
                 <div class="col-sm-2" style="padding-left: 30px;">
-                    <i class="fa fa-plus" title="افزودن" ng-click="createDayVacationModal()"></i>
+                    <i class="fa fa-plus" title="افزودن" ng-click="DeleteRowDayRequest(2)"></i>
                 </div>
             </div>
         </div>
     </div>
     <!------------------- create day Vacation modal ---------------------->
-    <div class="modal" id="createDayModal">
+    <div class="modal fade" id="createDayModal">
         <div class="modal-dialog modal-xl">
             <div class="modal-content">
                 <div class="modal-body">
@@ -258,90 +244,176 @@
                         <i class="fa fa-close float-left" title="انصراف" ng-click="cancelCreateDayModalBtn()"></i>
                     </p>
                     <div class="col-12 row">
-                        <div class="col-sm-8 row">
-                            <div class="col-6">
-                                <div class="mb-1">
-                                    <div class="input-group">
-                                        <div class="input-group-prepend">
-                                            <label class="input-group-text">
-                                                نوع مرخصی
-                                            </label>
-                                        </div>
-                                        <select ng-if="loadCreateModal" class="form-control" id="SelectVacationType">
-                                            <option ng-value="-1">
-                                                لطفا انتخاب نمایید...
-                                            </option>
-                                            <option ng-repeat="item in selectgroupVacationType.item1"
-                                                ng-value="item.id">
-                                                {{item.name}}
-                                            </option>
-                                        </select>
+                        <div class="col-sm-4">
+                            <div class="mb-1">
+                                <div class="input-group">
+                                    <div class="input-group-prepend">
+                                        <label class="input-group-text">
+                                            نوع مرخصی
+                                        </label>
                                     </div>
+                                    <select ng-if="loadCreateModal" class="form-control" id="SelectVacationType">
+                                        <option ng-value="-1">
+                                            لطفا انتخاب نمایید...
+                                        </option>
+                                        <option ng-repeat="item in selectgroupVacationType.item1" ng-value="item.id">
+                                            {{item.name}}
+                                        </option>
+                                    </select>
                                 </div>
-
                             </div>
                         </div>
                         <div class="col-sm-4">
-                            <div class="col-12">
-                                <div style="margin-bottom: 15px;">
-                                    <div class="input-group">
-                                        <div class="input-group-prepend">
-                                            <label class="input-group-text">
-                                                تاریخ شروع مرخصی
-                                            </label>
-                                        </div>
-                                        <input type="text" autocomplete="off" class="form-control date-picker"
-                                            placeholder="xxxx/xx/xx" id="startDayDate"
-                                            ng-model="createDayMissionModal.fromDate">
+
+                            <div style="margin-bottom: 15px;">
+                                <div class="input-group">
+                                    <div class="input-group-prepend">
+                                        <label class="input-group-text">
+                                            تاریخ شروع مرخصی
+                                        </label>
                                     </div>
-                                </div>
-                                <div>
-                                    <div class="input-group">
-                                        <div class="input-group-prepend">
-                                            <label class="input-group-text">
-                                                تاریخ پایان مرخصی
-                                            </label>
-                                        </div>
-                                        <input type="text" autocomplete="off" class="form-control date-picker"
-                                            placeholder="xxxx/xx/xx" id="endDayDate"
-                                            ng-model="createDayMissionModal.toDate">
-                                    </div>
+                                    <input type="text" autocomplete="off" class="form-control date-picker" placeholder="xxxx/xx/xx" id="startDayDate" ng-model="createDayMissionModal.fromDate">
                                 </div>
                             </div>
-
+                        </div>
+                        <div class="col-sm-4">
+                            <div class="input-group">
+                                <div class="input-group-prepend">
+                                    <label class="input-group-text">
+                                        تاریخ پایان مرخصی
+                                    </label>
+                                </div>
+                                <input type="text" autocomplete="off" class="form-control date-picker" placeholder="xxxx/xx/xx" id="endDayDate" ng-model="createDayMissionModal.toDate">
+                            </div>
                         </div>
                         <div class="col-12">
-                            <div class="mt-3">
+                            <div class="">
                                 <div class="input-group">
                                     <div class="input-group-prepend">
                                         <label class="input-group-text">
                                             توضیحات
                                         </label>
                                     </div>
-                                    <input class="form-control" type="text" multiple="true"
-                                        ng-model="createDayVacationModal.descriptions" style="min-height: 150px;">
+                                    <input class="form-control" type="text" multiple="true" ng-model="createDayVacationModal.descriptions" style="min-height: 50px;">
                                 </div>
                             </div>
 
                         </div>
                     </div>
+                </div>
 
-                    <div class="card row">
-                        <div style="text-align: left;">
-                            <button class="new-button red" ng-click="cancelDayVacationCreate()"><i
-                                    class="fa fa-close ml-1"></i>انصراف
-                            </button>
-                            <button class="new-button green" ng-click="confirmDayVacationCreate()"><i
-                                    class="fa fa-check ml-1"></i>تایید
-                            </button>
+                <div class="card row">
+                    <div style="text-align: left;">
+                        <button class="new-button red" ng-click="cancelDayVacationCreate()"><i class="fa fa-close ml-1"></i>انصراف
+                        </button>
+                        <button class="new-button green" ng-click="confirmDayVacationCreate()"><i class="fa fa-check ml-1"></i>تایید
+                        </button>
 
-                        </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
+    <!------------------- create day Vacation modal ---------------------->
+    <div class="modal fade" id="editDayModal">
+        <div class="modal-dialog modal-xl">
+            <div class="modal-content">
+                <div class="modal-body">
+                    <p class="HeaderForm">
+                        ویرایش درخواست
+                        <i class="fa fa-close float-left" title="انصراف" ng-click="cancelEditDayModalBtn()"></i>
+                    </p>
+                    <div class="col-12 row">
+                        <div class="col-sm-4">
+                            <div class="mb-1">
+                                <div class="input-group">
+                                    <div class="input-group-prepend">
+                                        <label class="input-group-text">
+                                            نوع مرخصی
+                                        </label>
+                                    </div>
+                                    <select class="form-control" id="selectedType" ng-model="selectedType" ng-options="item as item.name for item in selectgroupVacationType.item1 track by item.id">
+                                    </select>
 
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-4">
+
+                            <div style="margin-bottom: 15px;">
+                                <div class="input-group">
+                                    <div class="input-group-prepend">
+                                        <label class="input-group-text">
+                                            تاریخ شروع مرخصی
+                                        </label>
+                                    </div>
+                                    <input type="text" autocomplete="off" class="form-control date-picker" placeholder="xxxx/xx/xx" id="EditstartDayDate">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-4">
+                            <div class="input-group">
+                                <div class="input-group-prepend">
+                                    <label class="input-group-text">
+                                        تاریخ پایان مرخصی
+                                    </label>
+                                </div>
+                                <input type="text" autocomplete="off" class="form-control date-picker" placeholder="xxxx/xx/xx" id="EditendDayDate">
+                            </div>
+                        </div>
+                        <div class="col-12">
+                            <div class="">
+                                <div class="input-group">
+                                    <div class="input-group-prepend">
+                                        <label class="input-group-text">
+                                            توضیحات
+                                        </label>
+                                    </div>
+                                    <input class="form-control" type="text" multiple="true" ng-model="editDayVacationData.descriptions" style="min-height: 50px;">
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card row">
+                    <div style="text-align: left;">
+                        <button class="new-button red" ng-click="cancelDayVacationEdit()"><i class="fa fa-close ml-1"></i>انصراف
+                        </button>
+                        <button class="new-button green" ng-click="confirmDayVacationEdit()"><i class="fa fa-check ml-1"></i>تایید
+                        </button>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!------------------- delete Day Vacation modal ---------------------->
+    <div class="modal fade" id="DeleteDayModal">
+        <div class="modal-dialog modal-xl">
+            <div class="modal-content">
+                <div class="modal-body">
+                    <p class="HeaderForm">
+                        حذف
+                        <i class="fa fa-close float-left" title="حذف" ng-click="cancelDeleteDayModalBtn()"></i>
+                    </p>
+                </div>
+                <div class="card row">
+                    <p class="text-danger asp-label" style="text-align: center;">
+                        آیا از حذف این مورد اطمینان دارید؟
+                    </p>
+                    <div style="text-align: left;">
+                        <button class="new-button red" ng-click="cancelDayVacationDelete()"><i class="fa fa-close ml-1"></i>انصراف
+                        </button>
+                        <button class="new-button green" ng-click="confirmDayVacationDelete()"><i class="fa fa-check ml-1"></i>تایید
+                        </button>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
     <!--========================  IF VACATION WAS HOURLY  ==========================-->
     <div class="hidden" id="HourVacationList">
         <div class="card " ng-init="GetHourVacationList()">
@@ -372,11 +444,9 @@
                                 <div class="col-8">
                                     {{item.hourVacationStateTitle}}</div>
                                 <div class="row col-4 d-flex justify-content-end">
-                                    <p class="ml-1 h6 cursor-pointer" ng-click="DeleteRowHourRequest(item.id)"><i
-                                            class="fa fa-trash" title="حذف درخواست"></i>
+                                    <p class="ml-1 h6 cursor-pointer" ng-click="DeleteRowHourRequest(item.id)"><i class="fa fa-trash" title="حذف درخواست"></i>
                                     </p>
-                                    <p class="ml-1 h6 cursor-pointer" ng-click="EditRowHourRequest(item.id)"><i
-                                            class="fa fa-edit" title="ویرایش درخواست"></i>
+                                    <p class="ml-1 h6 cursor-pointer" ng-click="EditRowHourRequest(item.id)"><i class="fa fa-edit" title="ویرایش درخواست"></i>
                                     </p>
                                 </div>
                             </td>
@@ -393,13 +463,10 @@
                         <i class="fa fa-chevron-right" style="font-size: 0.7em;"></i>
                         <i class="fa fa-chevron-right asp-label" style="margin-right: -3px;font-size: 0.7em;"></i>
                     </span>
-                    <i class="fa fa-chevron-right asp-label" ng-click="loadPages(1)"
-                        style="margin: 0 10px;cursor: pointer;font-size: 0.7em;"></i>
+                    <i class="fa fa-chevron-right asp-label" ng-click="loadPages(1)" style="margin: 0 10px;cursor: pointer;font-size: 0.7em;"></i>
                     <input class="form-control" id="pagingD2" placeholder="{{config.item3}} از  {{config.pagetotal}}"
-                        style="width: 30%;display: inline-block;position: relative;top: 0px;font-size: 0.7em;"
-                        ng-model="pageNumber" ng-keyup="changePage($event,pageNumber);">
-                    <i class="fa fa-chevron-left asp-label" ng-click="loadPages(-1)"
-                        style="margin: 0 10px;cursor: pointer;font-size: 0.7em;"></i>
+                        style="width: 30%;display: inline-block;position: relative;top: 0px;font-size: 0.7em;" ng-model="pageNumber" ng-keyup="changePage($event,pageNumber);">
+                    <i class="fa fa-chevron-left asp-label" ng-click="loadPages(-1)" style="margin: 0 10px;cursor: pointer;font-size: 0.7em;"></i>
                     <span ng-click="loadPages('first')" style="cursor: pointer;">
                         <i class="fa fa-chevron-left asp-label" style="margin-left: -3px;font-size: 0.7em;"></i>
                         <i class=" fa fa-chevron-left asp-label" style="font-size: 0.7em;"></i>
@@ -431,8 +498,7 @@
                                                 تاریخ مرخصی
                                             </label>
                                         </div>
-                                        <input type="text" autocomplete="off" class="form-control date-picker"
-                                            placeholder="xxxx/xx/xx" id="startHDate">
+                                        <input type="text" autocomplete="off" class="form-control date-picker" placeholder="xxxx/xx/xx" id="startHDate">
 
                                     </div>
                                 </div>
@@ -467,11 +533,9 @@
                 </div>
                 <div class="card row">
                     <div style="text-align: left;">
-                        <button class="new-button red" ng-click="cancelHourVacationCreate()"><i
-                                class="fa fa-close ml-1"></i>انصراف
+                        <button class="new-button red" ng-click="cancelHourVacationCreate()"><i class="fa fa-close ml-1"></i>انصراف
                         </button>
-                        <button class="new-button green" ng-click="confirmHourVacationCreate()"><i
-                                class="fa fa-check ml-1"></i>تایید
+                        <button class="new-button green" ng-click="confirmHourVacationCreate()"><i class="fa fa-check ml-1"></i>تایید
                         </button>
 
                     </div>
@@ -498,8 +562,7 @@
                                                 تاریخ مرخصی
                                             </label>
                                         </div>
-                                        <input type="text" autocomplete="off" class="form-control date-picker"
-                                            placeholder="xxxx/xx/xx" id="EditstartHDate">
+                                        <input type="text" autocomplete="off" class="form-control date-picker" placeholder="xxxx/xx/xx" id="EditstartHDate">
 
                                     </div>
                                 </div>
@@ -512,8 +575,7 @@
                                                 ساعت خروج
                                             </label>
                                         </div>
-                                        <input class="form-control" ng-model="editHourVacationData.fromTime"
-                                            id="EditfromTime" placeholder="HH:MM" type="text">
+                                        <input class="form-control" ng-model="editHourVacationData.fromTime" id="EditfromTime" placeholder="HH:MM" type="text">
                                     </div>
                                 </div>
                             </div>
@@ -525,8 +587,7 @@
                                                 ساعت ورود
                                             </label>
                                         </div>
-                                        <input class="form-control" ng-model="editHourVacationData.toTime"
-                                            id="EdittoTime" placeholder="HH:MM" type="text">
+                                        <input class="form-control" ng-model="editHourVacationData.toTime" id="EdittoTime" placeholder="HH:MM" type="text">
                                     </div>
                                 </div>
                             </div>
@@ -536,11 +597,9 @@
                 </div>
                 <div class="card row">
                     <div style="text-align: left;">
-                        <button class="new-button red" ng-click="cancelHourVacationEdit()"><i
-                                class="fa fa-close ml-1"></i>انصراف
+                        <button class="new-button red" ng-click="cancelHourVacationEdit()"><i class="fa fa-close ml-1"></i>انصراف
                         </button>
-                        <button class="new-button green" ng-click="confirmHourVacationEdit()"><i
-                                class="fa fa-check ml-1"></i>تایید
+                        <button class="new-button green" ng-click="confirmHourVacationEdit()"><i class="fa fa-check ml-1"></i>تایید
                         </button>
 
                     </div>
@@ -563,11 +622,9 @@
                         آیا از حذف این مورد اطمینان دارید؟
                     </p>
                     <div style="text-align: left;">
-                        <button class="new-button red" ng-click="cancelHourVacationDelete()"><i
-                                class="fa fa-close ml-1"></i>انصراف
+                        <button class="new-button red" ng-click="cancelHourVacationDelete()"><i class="fa fa-close ml-1"></i>انصراف
                         </button>
-                        <button class="new-button green" ng-click="confirmHourVacationDelete()"><i
-                                class="fa fa-check ml-1"></i>تایید
+                        <button class="new-button green" ng-click="confirmHourVacationDelete()"><i class="fa fa-check ml-1"></i>تایید
                         </button>
 
                     </div>
