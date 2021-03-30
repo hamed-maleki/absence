@@ -106,7 +106,7 @@ app.controller('PersonnelVacationCtrl', ["$scope", "$timeout", 'currencyConverte
             $scope.personnelInfoExist = true;
         }
     }
-    console.log($scope.selectPersonnelFromDb);
+
     $scope.checkLocal = function () {
         if (localStorage.getItem("lastSelected") != null) {
             var data = localStorage.getItem("lastSelected");
@@ -117,6 +117,18 @@ app.controller('PersonnelVacationCtrl', ["$scope", "$timeout", 'currencyConverte
 
             $scope.getTableData('personnel');
             $scope.notLocal = true;
+        }
+    }
+
+    $scope.RemovePersonnelSelection = function (id) {
+        var personnelFromData = [];
+        personnelFromData.push(JSON.parse(localStorage.getItem('lastSelected')));
+        if (personnelFromData.length >= 1) {
+            for (let i = 0; i < personnelFromData.length; i++) {
+                if (personnelFromData[i].Id == id) {
+                    $scope.personnelInfoExist = false;
+                }
+            }
         }
     }
     //================ Initialize Vacation type ==========================
@@ -159,7 +171,7 @@ app.controller('PersonnelVacationCtrl', ["$scope", "$timeout", 'currencyConverte
     }
     //************************ Get data from server *************************
 
-    //------------- type of Vacation --------------------
+    //======================= type of Vacation =======================
     $scope.getTypeOfVacation = function () {
         $scope.item = {
             pageNumber: 1,
@@ -187,37 +199,47 @@ app.controller('PersonnelVacationCtrl', ["$scope", "$timeout", 'currencyConverte
             searchList: []
         }
         $scope.hourVacation = [];
-        if (pageItem == null) {
-            // requests.postingData("/HourLeaves/GetListById/"+$scope.selectedPersonnel.id, function (response) {
-            requests.postingData("/HourLeaves/GetList", $scope.item, function (response) {
-                $scope.hourVacation = response.data;
-                if ($scope.hourVacation != null) {
-                    $scope.hourVacation.totalPage = Math.ceil($scope.hourVacation.item2 / $scope.hourVacation.item4)
-                }
-            })
-        } else {
-            //requests.postingData("/HourLeaves/GetListById/"+$scope.selectedPersonnel.id, pageItem, function (response) {
-            requests.postingData("/HourLeaves/GetList", pageItem, function (response) {
-                $scope.hourVacation = response.data;
-                if ($scope.hourVacation != null) {
-                    $scope.hourVacation.totalPage = Math.ceil($scope.hourVacation.item2 / $scope.hourVacation.item4)
-                }
-            })
-        }
+        // if (pageItem == null) {
+        //     requests.postingData("HourLeaves/GetListById/" + $scope.selectPersonnelFromDb.id, function (response) {
+        //         //requests.postingData("HourLeaves/GetList", $scope.item, function (response) {
+        //         $scope.hourVacation = response.data;
+        //         if ($scope.hourVacation != null) {
+        //             $scope.hourVacation.totalPage = Math.ceil($scope.hourVacation.item2 / $scope.hourVacation.item4)
+        //         }
+        //     })
+        // } else {
+        //     requests.postingData("HourLeaves/GetListById/" + $scope.selectPersonnelFromDb.id, pageItem, function (response) {
+        //         //requests.postingData("HourLeaves/GetList", pageItem, function (response) {
+        //         $scope.hourVacation = response.data;
+        //         if ($scope.hourVacation != null) {
+        //             $scope.hourVacation.totalPage = Math.ceil($scope.hourVacation.item2 / $scope.hourVacation.item4)
+        //         }
+        //     })
+        // }
     }
 
     //----------------------- initial Create hour Vacation ----------------------
     $scope.createHourVacationModal = function () {
         $scope.createHourVacationData = {
-            personId: $scope.selectPersonnelFromDb.id,
+            personId: null,
             leaveDate: null,
             fromTime: {},
             toTime: {}
         };
         $('#createHourModal').modal();
     }
-
-    //----------------------- cancel hour Vacation ----------------------
+    $scope.EditRowHourRequest = function (id) {
+        requests.gettingData("HourLeaves/GetById/" + id, function (response) {
+            $scope.editHourVacationData = response.data;
+            $('#EditstartHDate').val($scope.convertToShamsi($scope.editHourVacationData.leaveDate));
+        })
+        $('#EditHourModal').modal();
+    }
+    $scope.DeleteRowHourRequest = function (id) {
+        $scope.deleteId = id;
+        $('#DeleteHourModal').modal();
+    }
+    //----------------------- cancel hour Vacation modal ----------------------
     $scope.cancelCreateModalBtn = function () {
         $scope.createHourVacationData = {};
         $('#createHourModal').modal('hide');
@@ -227,26 +249,50 @@ app.controller('PersonnelVacationCtrl', ["$scope", "$timeout", 'currencyConverte
         $('#createHourModal').modal('hide');
     }
 
+    $scope.cancelDeleteModalBtn = function () {
+        $('#DeleteHourModal').modal('hide');
+    }
+    $scope.cancelHourVacationDelete = function () {
+        $('#DeleteHourModal').modal('hide');
+    }
+
+    $scope.canceleditModalBtn = function () {
+        $('#EditHourModal').modal('hide');
+    }
+    $scope.cancelHourVacationEdit = function () {
+        $('#EditHourModal').modal('hide');
+    }
     //----------------------- Create hour Vacation ----------------------
     $scope.confirmHourVacationCreate = function () {
-        $scope.createHourVacationData.VacationDate = $scope.convertToMiladi($('#startHDate').val().toString());
-        let timeArray = $('#fromTime').val().split(':');
-        let timeArrayT = $('#toTime').val().split(':');
-        $scope.createHourVacationData.fromTime = {
-            hours: timeArray[0],
-            minutes: timeArray[1],
-        }
-        $scope.createHourVacationData.toTime = {
-            hours: timeArrayT[0],
-            minutes: timeArrayT[1],
-        }
-        requests.postingData('HourVacation/CreateRequest', $scope.createHourVacationModal, function (response) {
-            if (!response.data == undefined) {
-                $("#createHourModal").modal("hide");
-                $scope.GetHourVacationList();
-            }
+        $scope.createHourVacationData.leaveDate = $scope.convertToMiladi($('#startHDate').val());
+        $scope.createHourVacationData.personId = $scope.selectPersonnelFromDb.Id;
+        $scope.createHourVacationData.fromTime = $('#fromTime').val();
+        $scope.createHourVacationData.toTime = $('#toTime').val();
+        console.log($scope.createHourVacationData);
+        requests.postingData('HourLeaves/CreateRequest', $scope.createHourVacationData, function (response) {
+            $("#createHourModal").modal("hide");
+            $scope.GetHourVacationList();
         })
     }
+    //----------------------- Edit hour Vacation ----------------------
+    $scope.confirmHourVacationEdit = function () {
+        $scope.editHourVacationData.leaveDate = $scope.convertToMiladi($('#EditstartHDate').val());
+        $scope.editHourVacationData.personId = $scope.selectPersonnelFromDb.Id;
+        $scope.editHourVacationData.fromTime = $('#EditfromTime').val();
+        $scope.editHourVacationData.toTime = $('#EdittoTime').val();
+        requests.postingData('HourLeaves/UpdateRequest', $scope.editHourVacationData, function (response) {
+            $("#EditHourModal").modal("hide");
+            $scope.GetHourVacationList();
+        })
+    }
+    //----------------------- Delete hour Vacation ----------------------
+    $scope.confirmHourVacationDelete = function () {
+        requests.postingData("HourLeaves/Delete/" + $scope.deleteId, function (response) {
+            $("#DeleteHourModal").modal("hide");
+            $scope.GetHourVacationList();
+        })
+    }
+
 
     //======================= Create day Vacation ===========================
 
@@ -261,40 +307,35 @@ app.controller('PersonnelVacationCtrl', ["$scope", "$timeout", 'currencyConverte
             searchList: []
         }
         $scope.vacation = [];
-        if (pageItem == null) {
-            requests.postingData("PersonLeave/GetList", $scope.item, function (response) {
-                $scope.vacation = response.data;
-                if ($scope.vacation != null) {
-                    $scope.vacation.totalPage = Math.ceil($scope.vacation.item2 / $scope.vacation.item4)
-                }
-            })
-        } else {
-            requests.postingData("PersonLeave/GetList", pageItem, function (response) {
-                $scope.vacation = response.data;
-                if ($scope.vacation != null) {
-                    $scope.vacation.totalPage = Math.ceil($scope.vacation.item2 / $scope.vacation.item4)
-                }
-            })
-        }
+        // if (pageItem == null) {
+        //     requests.postingData("PersonLeave/GetListById/"+ $scope.selectPersonnelFromDb.id, function (response) {
+        //         $scope.vacation = response.data;
+        //         if ($scope.vacation != null) {
+        //             $scope.vacation.totalPage = Math.ceil($scope.vacation.item2 / $scope.vacation.item4)
+        //         }
+        //     })
+        // } else {
+        //     requests.postingData("PersonLeave/GetListById/"+ $scope.selectPersonnelFromDb.id, function (response) {
+        //         $scope.vacation = response.data;
+        //         if ($scope.vacation != null) {
+        //             $scope.vacation.totalPage = Math.ceil($scope.vacation.item2 / $scope.vacation.item4)
+        //         }
+        //     })
+        // }
     }
     //----------------------- initial Create day Vacation ----------------------
     $scope.loadCreateModal = false;
     $scope.createDayVacationModal = function () {
         $scope.createDayVacationData = {
-            zoneId: 0,
-            subject: null,
+            personId: $scope.selectPersonnelFromDb.Id,
+            personName: $scope.selectPersonnelFromDb.FirstName + " " + $scope.selectPersonnelFromDb.LastName,
             fromDate: null,
             toDate: null,
-            requesterId: 0,
-            dayVacationStateId: 1,
-            dayVacationTypeId: "تایید شده",
-            personIds: $scope.multiSelectArray,
-            descriptions: [
-                null
-            ],
-            withoutDayCount: null,
-            withDayCount: null,
-            hokmNO: null,
+            leaveStateId: 1,
+            leaveStateTitle: "تایید شده",
+            leaveTypeId: null,
+            leaveTypeTitle: null,
+            description: null,
         };
         $('#createDayModal').modal();
         $scope.loadCreateModal = true;
@@ -302,7 +343,9 @@ app.controller('PersonnelVacationCtrl', ["$scope", "$timeout", 'currencyConverte
 
     }
 
-    //----------------------- calcel day Vacation ----------------------
+
+
+    //----------------------- cancel day Vacation ----------------------
     $scope.cancelCreateDayModalBtn = function () {
         $scope.createDayVacationData = {};
         $('#createDayModal').modal('hide');
@@ -314,12 +357,17 @@ app.controller('PersonnelVacationCtrl', ["$scope", "$timeout", 'currencyConverte
 
     //----------------------- Create day Vacation ----------------------
     $scope.confirmDayVacationCreate = function () {
-        requests.postingData('PersonVacation/InsertVacationRequest', $scope.createDayVacationData, function (response) {
-            if (!response.data == undefined) {
-                $("#createHourModal").modal("hide");
-                $scope.GetHourVacationList();
-                console.log(response);
-            }
-        })
+        $scope.createDayVacationData.leaveTypeId = $('#SelectVacationType').val();
+        $scope.createDayVacationData.leaveTypeTitle = $('#SelectVacationType').find('option:selected').text();
+        $scope.createDayVacationData.fromDate = $scope.convertToMiladi($('#startDayDate').val());
+        $scope.createDayVacationData.toDate = $scope.convertToMiladi($('#endDayDate').val());
+        console.log($scope.createDayVacationData);
+        // requests.postingData('PersonVacation/InsertVacationRequest', $scope.createDayVacationData, function (response) {
+        //     if (!response.data == undefined) {
+        //         $("#createHourModal").modal("hide");
+        //         $scope.GetHourVacationList();
+        //         console.log(response);
+        //     }
+        // })
     }
 }])

@@ -94,99 +94,6 @@
         </div>
     </div>
 </div>
-
-<!------------------- filter date  ---------------------->
-<div class="card" ng-if="oneSelected">
-    <div class="row">
-        <div class="col-sm-4">
-            <div class="input-group">
-                <div class="input-group-prepend">
-                    <label class="input-group-text">
-                        تاریخ شروع
-                    </label>
-                </div>
-                <input class="form-control date-picker" placeholder="xxxx/xx/xx" id="startEnterDate">
-            </div>
-        </div>
-        <div class="col-sm-4">
-            <div class="input-group">
-                <div class="input-group-prepend">
-                    <label class="input-group-text">
-                        تاریخ پایان
-                    </label>
-                </div>
-                <input class="form-control date-picker" placeholder="xxxx/xx/xx" id="finishEnterDate">
-            </div>
-        </div>
-        <div class="col-sm-4">
-            <div class="input-group">
-                <div class="input-group-prepend">
-                    <label class="input-group-text">
-                        فیلتر موارد
-                    </label>
-                </div>
-                <p class="form-control" style="text-align: right;height: auto !important;">
-                    <span class="alert alert-success" ng-if="eValue.selected"
-                        style="margin: 0 2.5px;padding: 0 5px;display: inline-block;" ng-repeat="eValue in filterItems">
-                        {{eValue.title}}
-                        <i class="fa fa-close pointer" ng-click="removeFilter(eValue)"></i>
-                    </span>
-                </p>
-                <div class="dropdownInMission">
-                    <i class="fa fa-chevron-down" style="position: absolute;left: 5px;top: 0.3em;"
-                        data-toggle="dropdown"></i>
-                    <div class="dropdown-menu"
-                        style="top: 4px !important;left: -6px !important;height: auto;overflow-y: auto;overflow-x: hidden;width: 30.5em;">
-                        <div class="card">
-                            <input class="form-control" ng-model="search.title">
-                            <div class="table-header">
-                                <table>
-                                    <thead>
-                                        <tr>
-                                            <th style="width: 10%;">
-                                            </th>
-                                            <th style="width: 90%;">
-                                                عنوان
-                                            </th>
-                                        </tr>
-                                    </thead>
-                                </table>
-                            </div>
-                            <div class="table-body">
-                                <table class="test">
-                                    <tbody>
-                                        <tr ng-repeat="item in filterItems|filter:search">
-                                            <td style="width: 10%;">
-                                                <div class="custom-control custom-checkbox"
-                                                    style="display: inline-block;margin-top: -38px;">
-                                                    <input type="checkbox" ng-model="item.selected"
-                                                        class="custom-control-input" id="check-enter-{{item.id}}"
-                                                        name="example1">
-                                                    <label class="custom-control-label"
-                                                        for="check-enter-{{item.id}}"></label>
-                                                </div>
-                                            </td>
-                                            <td style="width: 90%;">
-                                                {{item.title}}
-                                            </td>
-                                        </tr>
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="col-sm-12" style="text-align: left;">
-            <button class="new-button" ng-click="changeCheckingDate()">
-                <i class="fa fa-eye"></i>
-                مشاهده
-            </button>
-        </div>
-    </div>
-</div>
-
 <!------------------- select personnel ---------------------->
 <div class="modal fade" id="selectPersonnel">
     <div class="modal-dialog modal-xl">
@@ -200,6 +107,14 @@
             </div>
             <div class="modal-body" style="padding-top: 0;">
                 <div ng-if="loadingPersonnel" ng-include="'modules/personnelSelect.html'"></div>
+            </div>
+            <div class="card">
+                <div class="float-left">
+                    <button class="new-button red" ng-click="CancelAddPersonnel()"><i
+                            class="fa fa-close"></i>انصراف</button>
+                    <button class="new-button green" ng-click="confirmAddingPersonnel()"><i
+                            class="fa fa-check"></i>تایید</button>
+                </div>
             </div>
         </div>
     </div>

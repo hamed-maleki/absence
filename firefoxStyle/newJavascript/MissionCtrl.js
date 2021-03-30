@@ -12,52 +12,12 @@ app.controller('MissionCtrl', ["$scope", "$timeout", 'currencyConverter', 'reque
     }, 500)
     //================== search and get personnel ===============================
     $scope.selectMulti = true;
-    $scope.setAll = false;
-    $scope.setAllPersonnel = function () {
-        $scope.$broadcast("setAllPersonnel");
-    }
-    $scope.openPersonnel = function () {
-        $(".date-picker").datepicker({
-            dateFormat: "yy/mm/dd",
-            changeMonth: true,
-            changeYear: true
-        });
-        $("#addingPersonnelModal").modal();
-        $scope.loadingPersonnel = true;
-        $timeout(function () {
-            currencyConverter.call()
-        }, 100)
-    }
-    $scope.cancelAddingPersonnel = function () {
-        $("#addingPersonnelModal").modal("hide");
+
+    $scope.CancelAddPersonnel = function () {
+        $("#selectPersonnel").modal("hide");
         $scope.loadingPersonnel = false;
     }
-    $scope.multiSelectArray = []
-    $scope.addToMultiSelect = function (personnel) {
-        if ($('#customCheck-' + personnel.Id).is(":checked")) {
-            $scope.multiSelectArray.push(personnel);
-        } else {
-            for (var i = 0; i < $scope.multiSelectArray.length; i++) {
-                if ($scope.multiSelectArray[i].Id == personnel.Id) {
-                    $scope.multiSelectArray.splice(i, 1);
-                    break;
-                }
-            }
-        }
-    }
-    $scope.addToMutliPerSetAll = function (item) {
-        $scope.multiSelectArray.push(item);
-    }
-    $scope.checkMulti = function (id) {
-        var found = false;
-        for (var i = 0; i < $scope.multiSelectArray.length; i++) {
-            if ($scope.multiSelectArray[i].Id == id) {
-                found = true;
-                break;
-            }
-        }
-        return found;
-    }
+
     $scope.searchPInMission = {
         value: null
     };
@@ -76,60 +36,6 @@ app.controller('MissionCtrl', ["$scope", "$timeout", 'currencyConverter', 'reque
         }
     });
     $scope.oneSelected = false;
-    $scope.searchingPositionChange = function () {
-        $scope.searchingPosition = false;
-        $scope.searchP.value = null;
-    }
-    $scope.filterItems = [
-        {
-            title: "عادی",
-            selected: false,
-            id: 1
-        },
-        {
-            title: "از طریق کارت ساعت",
-            selected: false,
-            id: 2
-        },
-        {
-            title: "ورود دستی",
-            selected: false,
-            id: 4
-        },
-        {
-            title: "مرخصی",
-            selected: false,
-            id: 8
-        },
-        {
-            title: "ماموریت",
-            selected: false,
-            id: 16
-        },
-        {
-            title: "نرددهای ناقص",
-            selected: false,
-            id: 32
-        },
-        {
-            title: "روزهای فاقد تردد",
-            selected: false,
-            id: 64
-        },
-    ]
-    $scope.removeFilter = function (item) {
-        item.selected = false;
-    }
-
-    $scope.serachPersonel = function (value) {
-        $scope.localPersonnel = false;
-        if (value == "") {
-            $scope.searchingPosition = false;
-        } else {
-            $scope.searchingPosition = true;
-            currencyConverter.setSearch(value);
-        }
-    }
     $scope.selectPersonnel = function () {
         $scope.localPersonnel = false;
         $("#selectPersonnel").modal();
@@ -138,15 +44,19 @@ app.controller('MissionCtrl', ["$scope", "$timeout", 'currencyConverter', 'reque
             currencyConverter.call()
         }, 500)
     }
+    $scope.checkMulti = function (id) {
+        var found = false;
+        for (var i = 0; i < $scope.multiSelectArray.length; i++) {
+            if ($scope.multiSelectArray[i].Id == id) {
+                found = true;
+                break;
+            }
+        }
+        return found;
+    }
     $scope.settingPersonnelInfo = function (data) {
         $scope.selectedPersonnel = data;
         localStorage.setItem("lastSelected", JSON.stringify(data));
-        // for (var i = 0; i < 31; i++) {
-        //     itemToAdd = {
-        //         date: moment().add(i, 'days').format('jYYYY/jM/jD')
-        //     }
-        //     $scope.customMonth.push(itemToAdd);
-        // }
         $scope.oneSelected = true;
         $scope.loading = false;
         setTimeout(function () {
@@ -160,8 +70,12 @@ app.controller('MissionCtrl', ["$scope", "$timeout", 'currencyConverter', 'reque
 
         }, 100);
     }
+    $scope.multiSelectArrayR = [];
     $scope.setPersonnel = function (data, method) {
         var dataLocal = localStorage.getItem("localPersonnelItem");
+        var currentData = localStorage.getItem("lastSelected");
+        datass = JSON.parse(currentData)
+
         if (dataLocal == null) {
             var itemToSet = [
                 data
@@ -186,6 +100,9 @@ app.controller('MissionCtrl', ["$scope", "$timeout", 'currencyConverter', 'reque
         }
         $scope.localPersonnel = false;
         $scope.selectedPersonnel = data;
+        $scope.searchP = {
+            value: null
+        }
         if (data.Name == undefined) {
             $scope.searchP.value = data.PoliteName
         } else {
@@ -194,8 +111,9 @@ app.controller('MissionCtrl', ["$scope", "$timeout", 'currencyConverter', 'reque
         }
         $scope.searchingPosition = false;
         $scope.loading = true;
-        $("#selectPersonnel").modal('hide');
+        // $("#selectPersonnel").modal('hide');
         $scope.settingPersonnelInfo($scope.selectedPersonnel);
+        $scope.multiSelectArrayR.push($scope.selectedPersonnel);
     }
     $scope.checkLocal = function () {
         if (localStorage.getItem("lastSelected") != null) {
@@ -207,6 +125,11 @@ app.controller('MissionCtrl', ["$scope", "$timeout", 'currencyConverter', 'reque
 
             $scope.getTableData('personnel');
             $scope.notLocal = true;
+        }
+    }
+    $scope.confirmAddingPersonnel = function () {
+        for (let index = 0; index < $scope.multiSelectArrayR.length; index++) {
+            console.log($scope.multiSelectArrayR[index].Id);
         }
     }
     //================ Initialize mission type ==========================
@@ -266,7 +189,7 @@ app.controller('MissionCtrl', ["$scope", "$timeout", 'currencyConverter', 'reque
         }
         requests.postingData('DayMissionType/GetList', $scope.item, function (response) {
             $scope.selectgroupMissionType = response.data;
-            console.log(response.data);
+            // console.log(response.data);
         })
     }
     //-------------- get zone types -----------------------
@@ -404,7 +327,7 @@ app.controller('MissionCtrl', ["$scope", "$timeout", 'currencyConverter', 'reque
             requesterId: 0,
             dayMissionStateId: 1,
             dayMissionTypeId: "تایید شده",
-            personIds: $scope.multiSelectArray,
+            personIds: $scope.multiSelectArrayR,
             descriptions: [
                 null
             ],
@@ -434,7 +357,7 @@ app.controller('MissionCtrl', ["$scope", "$timeout", 'currencyConverter', 'reque
             if (!response.data == undefined) {
                 $("#createHourModal").modal("hide");
                 $scope.GetHourMissionList();
-                console.log(response);
+                // console.log(response);
             }
         })
     }
