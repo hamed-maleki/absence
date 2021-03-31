@@ -340,8 +340,9 @@ app.controller('PersonnelVacationCtrl', ["$scope", "$timeout", 'currencyConverte
         $scope.getTypeOfVacation();
 
     }
+    $scope.loadEditModal = false;
     $scope.EditRowDayRequest = function (id) {
-        $scope.loadCreateModal = true;
+        $scope.loadEditModal = true;
         $scope.getTypeOfVacation();
         requests.gettingData("PersonLeave/GetById/" + id, function (response) {
             $scope.editDayVacationData = response.data;
@@ -370,20 +371,18 @@ app.controller('PersonnelVacationCtrl', ["$scope", "$timeout", 'currencyConverte
     }
 
     $scope.cancelEditDayModalBtn = function () {
-        $scope.createDayVacationData = {};
+        $scope.editDayVacationData = {};
         $('#editDayModal').modal('hide');
     }
     $scope.cancelDayVacationEdit = function () {
-        $scope.createDayVacationData = {};
+        $scope.editDayVacationData = {};
         $('#editDayModal').modal('hide');
     }
 
     $scope.cancelDeleteDayModalBtn = function () {
-        $scope.createDayVacationData = {};
         $('#DeleteDayModal').modal('hide');
     }
     $scope.cancelDayVacationDelete = function () {
-        $scope.createDayVacationData = {};
         $('#DeleteDayModal').modal('hide');
     }
 

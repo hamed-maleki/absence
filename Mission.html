@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html style="overflow-y: scroll;">
 
 <head>
     <meta content="text/html;charset=utf-8" http-equiv="Content-Type">
@@ -71,15 +71,22 @@
                         نام فرد
                     </label>
                 </div>
-                <input class="form-control" ng-model="searchPInMission.value" id="personnel-input" ng-value="searchPInMission.value" ng-focus="selectFormLocal()"
-                    ng-keyup="serachPersonel(searchPInMission.value)" placeholder="نام/ نام خانوادگی/ کد ملی/ شماره کارمند">
-                <i class="fa fa-download text-success pointer" ng-show="!localPersonnel && !searchingPosition" ng-click="localPersonnel = true"
+                <input class="form-control" ng-model="searchPInMission.value" id="personnel-input"
+                    ng-value="searchPInMission.value" ng-focus="selectFormLocal()"
+                    ng-keyup="serachPersonel(searchPInMission.value)"
+                    placeholder="نام/ نام خانوادگی/ کد ملی/ شماره کارمند">
+                <i class="fa fa-download text-success pointer" ng-show="!localPersonnel && !searchingPosition"
+                    ng-click="localPersonnel = true" style="position: absolute;top: 0.3em;left: 5%;z-index: 3;"></i>
+                <i class="fa fa-bars pointer" ng-click="selectPersonnel()"
+                    style="position: relative;top:5px;right:3px"></i>
+                <i class="fa fa-close text-danger pointer" ng-if="searchingPosition"
+                    ng-click="searchingPositionChange()" style="position: absolute;top: 0.3em;left: 5%;z-index: 3;"></i>
+                <i class="fa fa-close text-danger pointer" ng-show="localPersonnel" ng-click="localPersonnel = false"
                     style="position: absolute;top: 0.3em;left: 5%;z-index: 3;"></i>
-                <i class="fa fa-bars pointer" ng-click="selectPersonnel()" style="position: relative;top:5px;right:3px"></i>
-                <i class="fa fa-close text-danger pointer" ng-if="searchingPosition" ng-click="searchingPositionChange()" style="position: absolute;top: 0.3em;left: 5%;z-index: 3;"></i>
-                <i class="fa fa-close text-danger pointer" ng-show="localPersonnel" ng-click="localPersonnel = false" style="position: absolute;top: 0.3em;left: 5%;z-index: 3;"></i>
-                <div ng-if="searchingPosition" style="position: absolute;top:1.6em;width: 100%;z-index: 2;" ng-include="'modules/personnelSelectDropdown.html'"></div>
-                <div ng-if="localPersonnel" style="position: absolute;top:1.6em;width: 100%;z-index: 2;" ng-include="'modules/personnelSelectLocal.html'"></div>
+                <div ng-if="searchingPosition" style="position: absolute;top:1.6em;width: 100%;z-index: 2;"
+                    ng-include="'modules/personnelSelectDropdown.html'"></div>
+                <div ng-if="localPersonnel" style="position: absolute;top:1.6em;width: 100%;z-index: 2;"
+                    ng-include="'modules/personnelSelectLocal.html'"></div>
             </div>
         </div>
         <div class="col-sm-6" style="text-align: center;">
@@ -94,7 +101,8 @@
             <div class="modal-head">
                 <p class="HeaderForm">
                     انتخاب پرسنل
-                    <i class="fa  fa-close text-danger pointer" style="float: left;margin: 0 5px;" data-dismiss="modal"></i>
+                    <i class="fa  fa-close text-danger pointer" style="float: left;margin: 0 5px;"
+                        data-dismiss="modal"></i>
                 </p>
             </div>
             <div class="modal-body" style="padding-top: 0;">
@@ -102,8 +110,10 @@
             </div>
             <div class="card">
                 <div class="float-left">
-                    <button class="new-button red" ng-click="CancelAddPersonnel()"><i class="fa fa-close"></i>انصراف</button>
-                    <button class="new-button green" ng-click="confirmAddingPersonnel()"><i class="fa fa-check"></i>تایید</button>
+                    <button class="new-button red" ng-click="CancelAddPersonnel()"><i
+                            class="fa fa-close"></i>انصراف</button>
+                    <button class="new-button green" id="confirmBtn" ng-click="confirmAddingPersonnel()"><i
+                            class="fa fa-check"></i>تایید</button>
                 </div>
             </div>
         </div>
@@ -136,19 +146,14 @@
     </div>
     <div class="table-body">
         <table class="test">
-            <tr class="row col-12" ng-repeat="item in selectPersonnelFromDbArray">
-                <td class="col-3 text-center">
-                    {{item.FirstName}}
-                </td>
-                <td class="col-3 text-center">
-                    {{item.LastName}}
-                </td>
-                <td class="col-3 text-center">
-                    {{item.PersonnelNo}}
-                </td>
-                <td class="col-3 text-center">
-                    {{item.DossierNo}}
-                    <i class="fa  fa-trash text-danger pointer" title="حذف فرد انتخاب شده" ng-click="RemovePersonnelSelection(item.Id)" style="float: left;margin: 0 5px;" data-dismiss="modal"></i>
+            <tr class="row col-12" id="test" ng-repeat="item in selectPersonnelFromDbArray track by item.Id">
+                <td class="hidden">{{$index}}</td>
+                <td class="col-3 text-center">{{item.FirstName}}</td>
+                <td class="col-3 text-center">{{item.LastName}}</td>
+                <td class="col-3 text-center">{{item.PersonnelNo}}</td>
+                <td class="col-3 text-center">{{item.DossierNo}}<i class="fa fa-trash text-danger pointer"
+                        title="حذف فرد انتخاب شده" ng-click="RemovePersonnelSelection($index)"
+                        style="float: left;margin: 0 5px;" data-dismiss="modal"></i>
                 </td>
             </tr>
         </table>
@@ -167,7 +172,7 @@
                 <option ng-value="0">
                     لطفا انتخاب نمایید...
                 </option>
-                <option ng-value="1">
+                <option ng-if="!moreThanOnePersonnel" ng-value="1">
                     ساعتی
                 </option>
                 <option ng-value="2">
@@ -178,7 +183,7 @@
     </div>
 </div>
 
-<!----------------  if mission was daily  ---------------------->
+<!-- =========================  IF MISSION WAS DAILY  ========================-->
 <div class="hidden" id="DayMissionList">
     <div class="card" ng-init="GetDayMissionList()">
         <div class="table-header">
@@ -209,8 +214,10 @@
                             <div class="col-8">
                                 {{item.missionStateTitle}}</div>
                             <div class="row col-4 d-flex justify-content-end">
-                                <p class="ml-1 h6 cursor-pointer"><i class="fa fa-trash" title="حذف درخواست"></i></p>
-                                <p class="ml-1 h6 cursor-pointer"><i class="fa fa-edit" title="ویرایش درخواست"></i></p>
+                                <p class="ml-1 h6 cursor-pointer" ng-click="DeleteRowDayRequest(item.id)"><i
+                                        class="fa fa-trash" title="حذف درخواست"></i></p>
+                                <p class="ml-1 h6 cursor-pointer" ng-click="EditRowDayRequest(item.id)"><i
+                                        class="fa fa-edit" title="ویرایش درخواست"></i></p>
                             </div>
                         </td>
                     </tr>
@@ -226,10 +233,13 @@
                     <i class="fa fa-chevron-right" style="font-size: 0.7em;"></i>
                     <i class="fa fa-chevron-right asp-label" style="margin-right: -3px;font-size: 0.7em;"></i>
                 </span>
-                <i class="fa fa-chevron-right asp-label" ng-click="loadPages(1)" style="margin: 0 10px;cursor: pointer;font-size: 0.7em;"></i>
-                <input class="form-control" id="pagingD1" placeholder="{{config.item3}} از  {{config.pagetotal}}" style="width: 30%;display: inline-block;position: relative;top: 0px;font-size: 0.7em;"
+                <i class="fa fa-chevron-right asp-label" ng-click="loadPages(1)"
+                    style="margin: 0 10px;cursor: pointer;font-size: 0.7em;"></i>
+                <input class="form-control" id="pagingD1" placeholder="{{config.item3}} از  {{config.pagetotal}}"
+                    style="width: 30%;display: inline-block;position: relative;top: 0px;font-size: 0.7em;"
                     ng-model="pageNumber" ng-keyup="changePage($event,pageNumber);">
-                <i class="fa fa-chevron-left asp-label" ng-click="loadPages(-1)" style="margin: 0 10px;cursor: pointer;font-size: 0.7em;"></i>
+                <i class="fa fa-chevron-left asp-label" ng-click="loadPages(-1)"
+                    style="margin: 0 10px;cursor: pointer;font-size: 0.7em;"></i>
                 <span ng-click="loadPages('first')" style="cursor: pointer;">
                     <i class="fa fa-chevron-left asp-label" style="margin-left: -3px;font-size: 0.7em;"></i>
                     <i class=" fa fa-chevron-left asp-label" style="font-size: 0.7em;"></i>
@@ -242,7 +252,438 @@
         </div>
     </div>
 </div>
-<!----------------  if mission was hourly  ---------------------->
+
+<!------------------- create day mission modal ---------------------->
+<div class="modal" id="createDayModal">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+            <div class="modal-body">
+                <p class="HeaderForm">
+                    ایجاد مأموریت روزانه جدید
+                    <i class="fa fa-close float-left" title="انصراف" ng-click="cancelCreateDayModalBtn()"></i>
+                </p>
+                <div class="col-12 row">
+                    <div class="col-sm-8 row">
+                        <div class="col-6">
+                            <div class="mb-1">
+                                <div class="input-group">
+                                    <div class="input-group-prepend">
+                                        <label class="input-group-text">
+                                            نوع مأموریت
+                                        </label>
+                                    </div>
+                                    <select ng-if="loadCreateModal" class="form-control" id="groupMissionType"
+                                        ng-model="createDayMissionModal.dayMissionTypeId">
+                                        <option ng-value="-1">
+                                            لطفا انتخاب نمایید...
+                                        </option>
+                                        <option ng-repeat="item in selectgroupMissionType.item1" ng-value="item.id">
+                                            {{item.name}}
+                                        </option>
+                                    </select>
+                                </div>
+                            </div>
+
+                        </div>
+                        <div class="col-6">
+                            <div class="mb-1">
+                                <div class="input-group">
+                                    <div class="input-group-prepend">
+                                        <label class="input-group-text">
+                                            عنوان مأموریت
+                                        </label>
+                                    </div>
+                                    <input class="form-control" type="text" ng-model="createDayMissionModal.subject">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="mb-1">
+                                <div class="input-group">
+                                    <div class="input-group-prepend">
+                                        <label class="input-group-text">
+                                            محل مأموریت
+                                        </label>
+                                    </div>
+                                    <select class="form-control" id="selectZoneType"
+                                        ng-model="createDayMissionModal.zoneId">
+                                        <option ng-value="0">
+                                            لطفا انتخاب نمایید...
+                                        </option>
+                                        <option ng-repeat="item in selectZoneType" ng-value="item.id"
+                                            ng-bind="item.name">
+                                        </option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-6">
+                            <div class="mb-1">
+                                <div class="input-group">
+                                    <div class="input-group-prepend">
+                                        <label class="input-group-text">
+                                            شماره حکم
+                                        </label>
+                                    </div>
+                                    <input class="form-control" type="number" ng-model="createDayMissionModal.hokmNO">
+                                </div>
+                            </div>
+
+                        </div>
+                        <div class="col-6">
+                            <div class="mb-1">
+                                <div class="input-group">
+                                    <div class="input-group-prepend">
+                                        <label class="input-group-text">
+                                            مبلغ بلیط
+                                        </label>
+                                    </div>
+                                    <input class="form-control" type="number"
+                                        ng-model="createDayMissionModal.ticketPrice">
+                                </div>
+                            </div>
+
+                        </div>
+                        <div class="col-6">
+                            <div class="mb-1">
+                                <div class="input-group">
+                                    <div class="input-group-prepend">
+                                        <label class="input-group-text">
+                                            مسافت (کیلومتر)
+                                        </label>
+                                    </div>
+                                    <input class="form-control" type="number"
+                                        ng-model="createDayMissionModal.kilometer">
+                                </div>
+                            </div>
+
+                        </div>
+                        <div class="col-sm-6">
+                            <div class="mb-1">
+                                <div class="input-group">
+                                    <div class="input-group-prepend">
+                                        <label class="input-group-text">
+                                            تعداد روزهای فاقد بیتوته
+                                        </label>
+                                    </div>
+                                    <input class="form-control" type="number"
+                                        ng-model="createDayMissionModal.withoutDayCount">
+                                </div>
+                            </div>
+
+                        </div>
+                        <div class="col-sm-6">
+                            <div class="mb-1">
+                                <div class="input-group">
+                                    <div class="input-group-prepend">
+                                        <label class="input-group-text">
+                                            تعداد روزهای دارای بیتوته
+                                        </label>
+                                    </div>
+                                    <input class="form-control" type="number"
+                                        ng-model="createDayMissionModal.withDayCount">
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                    <div class="col-sm-4">
+                        <div class="col-12">
+                            <div style="margin-bottom: 15px;">
+                                <div class="input-group">
+                                    <div class="input-group-prepend">
+                                        <label class="input-group-text">
+                                            تاریخ شروع مأموریت
+                                        </label>
+                                    </div>
+                                    <input type="text" autocomplete="off" class="form-control date-picker"
+                                        placeholder="xxxx/xx/xx" id="startDate"
+                                        ng-model="createDayMissionModal.fromDate">
+                                </div>
+                            </div>
+                            <div>
+                                <div class="input-group">
+                                    <div class="input-group-prepend">
+                                        <label class="input-group-text">
+                                            تاریخ پایان مأموریت
+                                        </label>
+                                    </div>
+                                    <input type="text" autocomplete="off" class="form-control date-picker"
+                                        placeholder="xxxx/xx/xx" id="endDate" ng-model="createDayMissionModal.toDate">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-12">
+                            <div class="mt-3">
+                                <div class="input-group">
+                                    <div class="input-group-prepend">
+                                        <label class="input-group-text">
+                                            هزینه های متفرقه
+                                        </label>
+                                    </div>
+                                    <input class="form-control" type="number"
+                                        ng-model="createDayMissionModal.otherExpense">
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                    <div class="col-12">
+                        <div class="mt-3">
+                            <div class="input-group">
+                                <div class="input-group-prepend">
+                                    <label class="input-group-text">
+                                        توضیحات
+                                    </label>
+                                </div>
+                                <input class="form-control" type="text" multiple="true"
+                                    ng-model="createDayMissionModal.descriptions" style="min-height: 150px;">
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+                <div class="card row">
+                    <div style="text-align: left;">
+                        <button class="new-button red" ng-click="cancelDayMissionCreate()"><i
+                                class="fa fa-close ml-1"></i>انصراف
+                        </button>
+                        <button class="new-button green" ng-click="confirmDayMissionCreate()"><i
+                                class="fa fa-check ml-1"></i>تایید
+                        </button>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!------------------- edit day mission modal ---------------------->
+<div class="modal" id="editDayModal">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+            <div class="modal-body">
+                <p class="HeaderForm">
+                    ویرایش مأموریت روزانه
+                    <i class="fa fa-close float-left" title="انصراف" ng-click="cancelEditDayModalBtn()"></i>
+                </p>
+                <div class="col-12 row">
+                    <div class="col-sm-8 row">
+                        <div class="col-6">
+                            <div class="mb-1">
+                                <div class="input-group">
+                                    <div class="input-group-prepend">
+                                        <label class="input-group-text">
+                                            نوع مأموریت
+                                        </label>
+                                    </div>
+                                    <select ng-if="loadEditModal" class="form-control" id="selectedType"
+                                        ng-model="selectedType"
+                                        ng-options="item as item.name for item in selectgroupMissionType.item1 track by item.id">
+                                    </select>
+                                </div>
+                            </div>
+
+                        </div>
+                        <div class="col-6">
+                            <div class="mb-1">
+                                <div class="input-group">
+                                    <div class="input-group-prepend">
+                                        <label class="input-group-text">
+                                            عنوان مأموریت
+                                        </label>
+                                    </div>
+                                    <input class="form-control" type="text" ng-model="editDayMissionData.subject">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="mb-1">
+                                <div class="input-group">
+                                    <div class="input-group-prepend">
+                                        <label class="input-group-text">
+                                            محل مأموریت
+                                        </label>
+                                    </div>
+                                    <select ng-if="loadEditModal" class="form-control" id="selectZoneType"
+                                        ng-model="selectedZoneType"
+                                        ng-options="item as item.name for item in selectZoneType.item1 track by item.id">
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-6">
+                            <div class="mb-1">
+                                <div class="input-group">
+                                    <div class="input-group-prepend">
+                                        <label class="input-group-text">
+                                            شماره حکم
+                                        </label>
+                                    </div>
+                                    <input class="form-control" type="number" ng-model="editDayMissionData.hokmNO">
+                                </div>
+                            </div>
+
+                        </div>
+                        <div class="col-6">
+                            <div class="mb-1">
+                                <div class="input-group">
+                                    <div class="input-group-prepend">
+                                        <label class="input-group-text">
+                                            مبلغ بلیط
+                                        </label>
+                                    </div>
+                                    <input class="form-control" type="number" ng-model="editDayMissionData.ticketPrice">
+                                </div>
+                            </div>
+
+                        </div>
+                        <div class="col-6">
+                            <div class="mb-1">
+                                <div class="input-group">
+                                    <div class="input-group-prepend">
+                                        <label class="input-group-text">
+                                            مسافت (کیلومتر)
+                                        </label>
+                                    </div>
+                                    <input class="form-control" type="number" ng-model="editDayMissionData.kilometer">
+                                </div>
+                            </div>
+
+                        </div>
+                        <div class="col-sm-6">
+                            <div class="mb-1">
+                                <div class="input-group">
+                                    <div class="input-group-prepend">
+                                        <label class="input-group-text">
+                                            تعداد روزهای فاقد بیتوته
+                                        </label>
+                                    </div>
+                                    <input class="form-control" type="number"
+                                        ng-model="editDayMissionData.withoutDayCount">
+                                </div>
+                            </div>
+
+                        </div>
+                        <div class="col-sm-6">
+                            <div class="mb-1">
+                                <div class="input-group">
+                                    <div class="input-group-prepend">
+                                        <label class="input-group-text">
+                                            تعداد روزهای دارای بیتوته
+                                        </label>
+                                    </div>
+                                    <input class="form-control" type="number"
+                                        ng-model="editDayMissionData.withDayCount">
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                    <div class="col-sm-4">
+                        <div class="col-12">
+                            <div style="margin-bottom: 15px;">
+                                <div class="input-group">
+                                    <div class="input-group-prepend">
+                                        <label class="input-group-text">
+                                            تاریخ شروع مأموریت
+                                        </label>
+                                    </div>
+                                    <input type="text" autocomplete="off" class="form-control date-picker"
+                                        placeholder="xxxx/xx/xx" id="EditstartDate"
+                                        ng-model="editDayMissionData.fromDate">
+                                </div>
+                            </div>
+                            <div>
+                                <div class="input-group">
+                                    <div class="input-group-prepend">
+                                        <label class="input-group-text">
+                                            تاریخ پایان مأموریت
+                                        </label>
+                                    </div>
+                                    <input type="text" autocomplete="off" class="form-control date-picker"
+                                        placeholder="xxxx/xx/xx" id="EditendDate" ng-model="editDayMissionData.toDate">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-12">
+                            <div class="mt-3">
+                                <div class="input-group">
+                                    <div class="input-group-prepend">
+                                        <label class="input-group-text">
+                                            هزینه های متفرقه
+                                        </label>
+                                    </div>
+                                    <input class="form-control" type="number"
+                                        ng-model="editDayMissionData.otherExpense">
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                    <div class="col-12">
+                        <div class="mt-3">
+                            <div class="input-group">
+                                <div class="input-group-prepend">
+                                    <label class="input-group-text">
+                                        توضیحات
+                                    </label>
+                                </div>
+                                <input class="form-control" type="text" multiple="true"
+                                    ng-model="editDayMissionData.descriptions" style="min-height: 150px;">
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+                <div class="card row">
+                    <div style="text-align: left;">
+                        <button class="new-button red" ng-click="cancelDayMissionEdit()"><i
+                                class="fa fa-close ml-1"></i>انصراف
+                        </button>
+                        <button class="new-button green" ng-click="confirmDayMissionEdit()"><i
+                                class="fa fa-check ml-1"></i>تایید
+                        </button>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!------------------- delete Day mission modal ---------------------->
+<div class="modal fade" id="DeleteDayModal">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+            <div class="modal-body">
+                <p class="HeaderForm">
+                    حذف
+                    <i class="fa fa-close float-left" title="حذف" ng-click="cancelDeleteDayModalBtn()"></i>
+                </p>
+            </div>
+            <div class="card row">
+                <p class="text-danger asp-label" style="text-align: center;">
+                    آیا از حذف این مورد اطمینان دارید؟
+                </p>
+                <div style="text-align: left;">
+                    <button class="new-button red" ng-click="cancelDayMissionDelete()"><i
+                            class="fa fa-close ml-1"></i>انصراف
+                    </button>
+                    <button class="new-button green" ng-click="confirmDaymissionDelete()"><i
+                            class="fa fa-check ml-1"></i>تایید
+                    </button>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!--========================  IF MISSION WAS HOURLY  ==========================-->
 <div class="hidden" id="HourMissionList">
     <div class="card " ng-init="GetHourMissionList()">
         <div class="table-header">
@@ -252,7 +693,7 @@
                         <th class="col-2">نام شخص</th>
                         <th class="col-2">از</th>
                         <th class="col-2">تا</th>
-                        <th class="col-2">تاریخ</th>
+                        <th class="col-2">تاریخ مأموریت</th>
                         <th class="col-4">وضعیت
 
                         </th>
@@ -272,8 +713,10 @@
                             <div class="col-8">
                                 {{item.hourMissionStateTitle}}</div>
                             <div class="row col-4 d-flex justify-content-end">
-                                <p class="ml-1 h6 cursor-pointer"><i class="fa fa-trash" title="حذف درخواست"></i></p>
-                                <p class="ml-1 h6 cursor-pointer"><i class="fa fa-edit" title="ویرایش درخواست"></i></p>
+                                <p class="ml-1 h6 cursor-pointer" ng-click="DeleteRowHourRequest()"><i
+                                        class="fa fa-trash" title="حذف درخواست"></i></p>
+                                <p class="ml-1 h6 cursor-pointer" ng-click="EditRowHourRequest(item.id)"><i
+                                        class="fa fa-edit" title="ویرایش درخواست"></i></p>
                             </div>
                         </td>
                     </tr>
@@ -289,10 +732,13 @@
                     <i class="fa fa-chevron-right" style="font-size: 0.7em;"></i>
                     <i class="fa fa-chevron-right asp-label" style="margin-right: -3px;font-size: 0.7em;"></i>
                 </span>
-                <i class="fa fa-chevron-right asp-label" ng-click="loadPages(1)" style="margin: 0 10px;cursor: pointer;font-size: 0.7em;"></i>
-                <input class="form-control" id="pagingD2" placeholder="{{config.item3}} از  {{config.pagetotal}}" style="width: 30%;display: inline-block;position: relative;top: 0px;font-size: 0.7em;"
+                <i class="fa fa-chevron-right asp-label" ng-click="loadPages(1)"
+                    style="margin: 0 10px;cursor: pointer;font-size: 0.7em;"></i>
+                <input class="form-control" id="pagingD2" placeholder="{{config.item3}} از  {{config.pagetotal}}"
+                    style="width: 30%;display: inline-block;position: relative;top: 0px;font-size: 0.7em;"
                     ng-model="pageNumber" ng-keyup="changePage($event,pageNumber);">
-                <i class="fa fa-chevron-left asp-label" ng-click="loadPages(-1)" style="margin: 0 10px;cursor: pointer;font-size: 0.7em;"></i>
+                <i class="fa fa-chevron-left asp-label" ng-click="loadPages(-1)"
+                    style="margin: 0 10px;cursor: pointer;font-size: 0.7em;"></i>
                 <span ng-click="loadPages('first')" style="cursor: pointer;">
                     <i class="fa fa-chevron-left asp-label" style="margin-left: -3px;font-size: 0.7em;"></i>
                     <i class=" fa fa-chevron-left asp-label" style="font-size: 0.7em;"></i>
@@ -307,7 +753,7 @@
 </div>
 
 <!------------------- create hour mission modal ---------------------->
-<div class="modal" id="createHourModal">
+<div class="modal fade" id="createHourModal">
     <div class="modal-dialog modal-xl">
         <div class="modal-content">
             <div class="modal-body">
@@ -325,7 +771,8 @@
                                             تاریخ مأموریت
                                         </label>
                                     </div>
-                                    <input type="text" autocomplete="off" class="form-control date-picker" placeholder="xxxx/xx/xx" id="startHDate">
+                                    <input type="text" autocomplete="off" class="form-control date-picker"
+                                        placeholder="xxxx/xx/xx" id="startHDate">
 
                                 </div>
                             </div>
@@ -360,9 +807,11 @@
             </div>
             <div class="card row">
                 <div style="text-align: left;">
-                    <button class="new-button red" ng-click="cancelHourMissionCreate()"><i class="fa fa-close ml-1"></i>انصراف
+                    <button class="new-button red" ng-click="cancelHourMissionCreate()"><i
+                            class="fa fa-close ml-1"></i>انصراف
                     </button>
-                    <button class="new-button green" ng-click="confirmHourMissionCreate()"><i class="fa fa-check ml-1"></i>تایید
+                    <button class="new-button green" ng-click="confirmHourMissionCreate()"><i
+                            class="fa fa-check ml-1"></i>تایید
                     </button>
 
                 </div>
@@ -370,196 +819,95 @@
         </div>
     </div>
 </div>
-</div>
-
-<!------------------- create day mission modal ---------------------->
-<div class="modal" id="createDayModal">
+<!------------------- edit hour mission modal ---------------------->
+<div class="modal fade" id="EditHourModal">
     <div class="modal-dialog modal-xl">
         <div class="modal-content">
             <div class="modal-body">
                 <p class="HeaderForm">
-                    ایجاد مأموریت روزانه جدید
-                    <i class="fa fa-close float-left" title="انصراف" ng-click="cancelCreateDayModalBtn()"></i>
+                    ویرایش مأموریت ساعتی
+                    <i class="fa fa-close float-left" title="انصراف" ng-click="canceleditModalBtn()"></i>
                 </p>
-                <div class="col-12 row">
-                    <div class="col-sm-8 row">
-                        <div class="col-6">
+                <div class="col-12">
+                    <div class="row">
+                        <div class="col-4">
                             <div class="mb-1">
                                 <div class="input-group">
                                     <div class="input-group-prepend">
                                         <label class="input-group-text">
-                                            نوع مأموریت
+                                            تاریخ مأموریت
                                         </label>
                                     </div>
-                                    <select ng-if="loadCreateModal" class="form-control" id="groupMissionType" ng-model="createDayMissionModal.dayMissionTypeId">
-                                        <option ng-value="-1">
-                                            لطفا انتخاب نمایید...
-                                        </option>
-                                        <option ng-repeat="item in selectgroupMissionType.item1" ng-value="item.id">
-                                            {{item.name}}
-                                        </option>
-                                    </select>
-                                </div>
-                            </div>
+                                    <input type="text" autocomplete="off" class="form-control date-picker"
+                                        placeholder="xxxx/xx/xx" id="EditstartHDate">
 
-                        </div>
-                        <div class="col-6">
-                            <div class="mb-1">
-                                <div class="input-group">
-                                    <div class="input-group-prepend">
-                                        <label class="input-group-text">
-                                            عنوان مأموریت
-                                        </label>
-                                    </div>
-                                    <input class="form-control" type="text" ng-model="createDayMissionModal.subject">
                                 </div>
                             </div>
                         </div>
-                        <div class="col-6">
-                            <div class="mb-1">
-                                <div class="input-group">
-                                    <div class="input-group-prepend">
-                                        <label class="input-group-text">
-                                            محل مأموریت
-                                        </label>
-                                    </div>
-                                    <select class="form-control" id="selectZoneType" ng-model="createDayMissionModal.zoneId">
-                                        <option ng-value="0">
-                                            لطفا انتخاب نمایید...
-                                        </option>
-                                        <option ng-repeat="item in selectZoneType" ng-value="item.id" ng-bind="item.name">
-                                        </option>
-                                    </select>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="col-6">
-                            <div class="mb-1">
-                                <div class="input-group">
-                                    <div class="input-group-prepend">
-                                        <label class="input-group-text">
-                                            شماره حکم
-                                        </label>
-                                    </div>
-                                    <input class="form-control" type="number" ng-model="createDayMissionModal.hokmNO">
-                                </div>
-                            </div>
-
-                        </div>
-                        <div class="col-6">
-                            <div class="mb-1">
-                                <div class="input-group">
-                                    <div class="input-group-prepend">
-                                        <label class="input-group-text">
-                                            مبلغ بلیط
-                                        </label>
-                                    </div>
-                                    <input class="form-control" type="number" ng-model="createDayMissionModal.ticketPrice">
-                                </div>
-                            </div>
-
-                        </div>
-                        <div class="col-6">
-                            <div class="mb-1">
-                                <div class="input-group">
-                                    <div class="input-group-prepend">
-                                        <label class="input-group-text">
-                                            مسافت (کیلومتر)
-                                        </label>
-                                    </div>
-                                    <input class="form-control" type="number" ng-model="createDayMissionModal.kilometer">
-                                </div>
-                            </div>
-
-                        </div>
-                        <div class="col-sm-6">
-                            <div class="mb-1">
-                                <div class="input-group">
-                                    <div class="input-group-prepend">
-                                        <label class="input-group-text">
-                                            تعداد روزهای فاقد بیتوته
-                                        </label>
-                                    </div>
-                                    <input class="form-control" type="number" ng-model="createDayMissionModal.withoutDayCount">
-                                </div>
-                            </div>
-
-                        </div>
-                        <div class="col-sm-6">
-                            <div class="mb-1">
-                                <div class="input-group">
-                                    <div class="input-group-prepend">
-                                        <label class="input-group-text">
-                                            تعداد روزهای دارای بیتوته
-                                        </label>
-                                    </div>
-                                    <input class="form-control" type="number" ng-model="createDayMissionModal.withDayCount">
-                                </div>
-                            </div>
-
-                        </div>
-                    </div>
-                    <div class="col-sm-4">
-                        <div class="col-12">
-                            <div style="margin-bottom: 15px;">
-                                <div class="input-group">
-                                    <div class="input-group-prepend">
-                                        <label class="input-group-text">
-                                            تاریخ شروع مأموریت
-                                        </label>
-                                    </div>
-                                    <input type="text" autocomplete="off" class="form-control date-picker" placeholder="xxxx/xx/xx" id="startDate" ng-model="createDayMissionModal.fromDate">
-                                </div>
-                            </div>
+                        <div class="col-4">
                             <div>
                                 <div class="input-group">
                                     <div class="input-group-prepend">
                                         <label class="input-group-text">
-                                            تاریخ پایان مأموریت
+                                            ساعت خروج
                                         </label>
                                     </div>
-                                    <input type="text" autocomplete="off" class="form-control date-picker" placeholder="xxxx/xx/xx" id="endDate" ng-model="createDayMissionModal.toDate">
+                                    <input class="form-control" id="EditfromTime" placeholder="HH:MM" type="text">
                                 </div>
                             </div>
                         </div>
-                        <div class="col-12">
-                            <div class="mt-3">
+                        <div class="col-4">
+                            <div class="mb-1">
                                 <div class="input-group">
                                     <div class="input-group-prepend">
                                         <label class="input-group-text">
-                                            هزینه های متفرقه
+                                            ساعت ورود
                                         </label>
                                     </div>
-                                    <input class="form-control" type="number" ng-model="createDayMissionModal.otherExpense">
+                                    <input class="form-control" id="EdittoTime" placeholder="HH:MM" type="text">
                                 </div>
                             </div>
-
                         </div>
-                    </div>
-                    <div class="col-12">
-                        <div class="mt-3">
-                            <div class="input-group">
-                                <div class="input-group-prepend">
-                                    <label class="input-group-text">
-                                        توضیحات
-                                    </label>
-                                </div>
-                                <input class="form-control" type="text" multiple="true" ng-model="createDayMissionModal.descriptions" style="min-height: 150px;">
-                            </div>
-                        </div>
-
                     </div>
                 </div>
 
-                <div class="card row">
-                    <div style="text-align: left;">
-                        <button class="new-button red" ng-click="cancelDayMissionCreate()"><i class="fa fa-close ml-1"></i>انصراف
-                        </button>
-                        <button class="new-button green" ng-click="confirmDayMissionCreate()"><i class="fa fa-check ml-1"></i>تایید
-                        </button>
+            </div>
+            <div class="card row">
+                <div style="text-align: left;">
+                    <button class="new-button red" ng-click="cancelHourMissionEdit()"><i
+                            class="fa fa-close ml-1"></i>انصراف
+                    </button>
+                    <button class="new-button green" ng-click="confirmHourMissionEdit()"><i
+                            class="fa fa-check ml-1"></i>تایید
+                    </button>
 
-                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!------------------- delete hour mission modal ---------------------->
+<div class="modal fade" id="DeleteHourModal">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+            <div class="modal-body">
+                <p class="HeaderForm">
+                    حذف
+                    <i class="fa fa-close float-left" title="حذف" ng-click="cancelDeleteModalBtn()"></i>
+                </p>
+            </div>
+            <div class="card row">
+                <p class="text-danger asp-label" style="text-align: center;">
+                    آیا از حذف این مورد اطمینان دارید؟
+                </p>
+                <div style="text-align: left;">
+                    <button class="new-button red" ng-click="cancelHourMissionDelete()"><i
+                            class="fa fa-close ml-1"></i>انصراف
+                    </button>
+                    <button class="new-button green" ng-click="confirmHourMissionDelete()"><i
+                            class="fa fa-check ml-1"></i>تایید
+                    </button>
+
                 </div>
             </div>
         </div>
