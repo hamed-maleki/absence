@@ -9,12 +9,32 @@
 
     <link rel="stylesheet" href="firefoxStyle/bootstrap.min.css">
     <link rel="stylesheet" href="firefoxStyle/font-awesome2.min.css">
+    <link rel="stylesheet" href="firefoxStyle/font-awesome.min.css">
+    <link href="firefoxStyle/datepicker/bootstrap-datepicker.min.css" rel="stylesheet">
     <link rel="stylesheet" href="firefoxStyle/main.css">
     <link rel="stylesheet" href="firefoxStyle/newElementsStyle.css">
+    <link href="firefoxStyle/time.min.css" rel="stylesheet">
     <style>
-        input:focus {
-            border: none;
-            outline: none;
+        .default-bg {
+            background-image: url("Images/polygon.png");
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            height: 100vh;
+        }
+
+        body {
+            overflow-y: scroll;
+            overflow-x: hidden;
+
+        }
+
+        body>div {
+            direction: rtl;
+        }
+
+        .cursor-pointer {
+            cursor: pointer;
         }
     </style>
     <!------------------ scripts ----------------------->
@@ -23,16 +43,175 @@
     <script src="firefoxStyle/newJavascript/jquery.min.js"></script>
     <script src="firefoxStyle/newJavascript/propper.js"></script>
     <script src="firefoxStyle/newJavascript/bootstrap.min.js"></script>
+    <script src="firefoxStyle/newJavascript/moment.js"></script>
+    <script src="firefoxStyle/newJavascript/moment-jalaali.js"></script>
     <script src="firefoxStyle/datepicker/bootstrap-datepicker.js"></script>
     <script src="firefoxStyle/datepicker/bootstrap-datepicker.fa.min.js"></script>
     <script src="firefoxStyle/newJavascript/time.min.js"></script>
+    <script src="firefoxStyle/newJavascript/functinalityCalCtrl.js"></script>
+    <script src="firefoxStyle/newJavascript/requests.js"></script>
+    <script src="firefoxStyle/newJavascript/modules/sharing.js"></script>
+    <script src="firefoxStyle/newJavascript/modules/selectingChart.js"></script>
+    <script src="firefoxStyle/newJavascript/modules/personnel.js"></script>
+
 
     <title>محاسبه کارکرد</title>
 </head>
 
 <body dir="rtl" ng-app="myApp" ng-controller="functinalityCalCtrl">
     <p class="HeaderForm">محاسبه کارکرد</p>
+    <!------------------- filter for search and select personnel ---------------------->
+    <div class="card">
+        <div class="row">
+            <div class="col-sm-6">
+                <div class="input-group">
+                    <div class="input-group-prepend">
+                        <label class="input-group-text">
+                            نام فرد
+                        </label>
+                    </div>
+                    <input class="form-control" ng-model="searchPInMission.value" id="personnel-input" ng-value="searchPInMission.value" ng-focus="selectFormLocal()"
+                        ng-keyup="serachPersonel(searchPInMission.value)" placeholder="نام/ نام خانوادگی/ کد ملی/ شماره کارمند">
+                    <i class="fa fa-download text-success pointer" ng-show="!localPersonnel && !searchingPosition" ng-click="localPersonnel = true"
+                        style="position: absolute;top: 0.3em;left: 5%;z-index: 3;"></i>
+                    <i class="fa fa-bars pointer" ng-click="selectPersonnel()" style="position: relative;top:5px;right:3px"></i>
+                    <i class="fa fa-close text-danger pointer" ng-if="searchingPosition" ng-click="searchingPositionChange()" style="position: absolute;top: 0.3em;left: 5%;z-index: 3;"></i>
+                    <i class="fa fa-close text-danger pointer" ng-show="localPersonnel" ng-click="localPersonnel = false" style="position: absolute;top: 0.3em;left: 5%;z-index: 3;"></i>
+                    <div ng-if="searchingPosition" style="position: absolute;top:1.6em;width: 100%;z-index: 2;" ng-include="'modules/personnelSelectDropdown.html'"></div>
+                    <div ng-if="localPersonnel" style="position: absolute;top:1.6em;width: 100%;z-index: 2;" ng-include="'modules/personnelSelectLocal.html'"></div>
+                </div>
+            </div>
+            <div class="col-sm-6" style="text-align: center;">
+                <div class="spinner-border text-primary" ng-if="loading"></div>
+            </div>
+        </div>
+    </div>
+    <!------------------- select personnel ---------------------->
+    <div class="modal fade" id="selectPersonnel">
+        <div class="modal-dialog modal-xl">
+            <div class="modal-content">
+                <div class="modal-head">
+                    <p class="HeaderForm">
+                        انتخاب پرسنل
+                        <i class="fa  fa-close text-danger pointer" style="float: left;margin: 0 5px;" data-dismiss="modal"></i>
+                    </p>
+                </div>
+                <div class="modal-body" style="padding-top: 0;">
+                    <div ng-if="loadingPersonnel" ng-include="'modules/personnelSelect.html'"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="card" ng-if="personnelInfoExist">
+        <p class="HeaderForm">
+            فرد انتخاب شده
+        </p>
+        <div class="table-header">
+            <table>
+                <thead>
+                    <tr class="row col-12">
+                        <th class="col-3 text-center">
+                            نام
+                        </th>
+                        <th class="col-3 text-center">
+                            نام خانوادگی
+                        </th>
+                        <th class="col-3 text-center">
+                            شماره پرسنلی
+                        </th>
+                        <th class="col-3 text-center">
+                            کد مستخدمی
+                        </th>
+                    </tr>
 
+                </thead>
+            </table>
+        </div>
+        <div class="table-body">
+            <table class="test">
+                <tr class="row col-12">
+                    <td class="col-3 text-center">{{selectedPersonnel.FirstName}}</td>
+                    <td class="col-3 text-center">{{selectedPersonnel.LastName}}</td>
+                    <td class="col-3 text-center">{{selectedPersonnel.PersonnelNo}}</td>
+                    <td class="col-3 text-center">{{selectedPersonnel.DossierNo}}</td>
+                </tr>
+            </table>
+        </div>
+        <!--------------- inputs data for getting info -------------- -->
+        <div class="card" ng-if="personnelInfoInputs">
+            <p class="HeaderForm">اطلاعات ورودی </p>
+            <div class="col-12 row">
+                <div style="margin-bottom: 15px;" class="col-sm-3">
+                    <div class="input-group">
+                        <div class="input-group-prepend">
+                            <label class="input-group-text">
+                                تاریخ شروع
+                            </label>
+                        </div>
+                        <input type="text" autocomplete="off" class="form-control date-picker" placeholder="xxxx/xx/xx" id="startDate">
+                    </div>
+                </div>
+                <div class="col-sm-3">
+                    <div class="input-group">
+                        <div class="input-group-prepend">
+                            <label class="input-group-text">
+                                تاریخ پایان
+                            </label>
+                        </div>
+                        <input type="text" autocomplete="off" class="form-control date-picker" placeholder="xxxx/xx/xx" id="endDate">
+                    </div>
+                </div>
+                <div class="float-left col-sm-3">
+                    <button class="new-button" ng-click="GetDataForFunctionalCal()"><i class="fa fa-search ml-1"></i>مشاهده
+                    </button>
+                </div>
+            </div>
+
+        </div>
+
+        <!------------------ table of info ------------------------->
+        <div class="table-header" ng-if="showInfo">
+            <table>
+                <thead>
+                    <tr class="row col-12">
+                        <th style="width: 8%;">تاریخ شروع </th>
+                        <th style="width: 8%;">تاریخ پایان</th>
+                        <th style="width: 8%;">زمان شروع شروع</th>
+                        <th style="width: 8%;">زمان پایان</th>
+                        <th style="width: 8%;">روز هفته</th>
+                        <th style="width: 8%;">روز ورود </th>
+                        <th style="width: 8%;">زمان ورود</th>
+                        <th style="width: 8%;">روز خروج</th>
+                        <th style="width: 8%;">زمان خروج</th>
+                        <th style="width: 8%;">مدت شیفت</th>
+                        <th style="width: 6%;">ساعت کارکرد</th>
+                        <th style="width: 6%;">مدت غیبت</th>
+                        <th style="width: 8%;">ضریب محاسبه کارکرد</th>
+                    </tr>
+
+                </thead>
+            </table>
+        </div>
+        <div class="table-body">
+            <table class="test">
+                <tr class="row col-12" id="test" ng-repeat="item in getListInfoData track by item.Id">
+                    <th style="width: 8%;">{{item.startDate}}</td>
+                    <th style="width: 8%;">{{item.endDate}}</td>
+                    <th style="width: 8%;">{{item.startTime}}</td>
+                    <th style="width: 8%;">{{item.endTime}}</td>
+                    <th style="width: 8%;">{{item.dayName}}</td>
+                    <th style="width: 8%;">{{item.inDate}}</td>
+                    <th style="width: 8%;">{{item.inTime}}</td>
+                    <th style="width: 8%;">{{item.outDate}}</td>
+                    <th style="width: 8%;">{{item.outTime}}</td>
+                    <th style="width: 8%;">{{item.shiftTime}}</td>
+                    <th style="width: 6%;">{{item.workTime}}</td>
+                    <th style="width: 6%;">{{item.absents}}</td>
+                    <th style="width: 8%;">{{item.extraHourRate}}</td>
+                </tr>
+            </table>
+        </div>
+    </div>
 </body>
 
 </html>

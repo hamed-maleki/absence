@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html style="overflow-y: scroll;">
+<html>
 
 <head>
     <meta content="text/html;charset=utf-8" http-equiv="Content-Type">
@@ -24,7 +24,8 @@
         }
 
         body {
-            overflow: hidden;
+            overflow-y: scroll;
+            overflow-x: hidden;
 
         }
 
@@ -58,7 +59,7 @@
 </head>
 
 <body dir="rtl" ng-app="myApp" ng-controller="MissionCtrl">
-    <p class="HeaderForm">ثبت مأموریت</p>
+    <p class="HeaderForm">ثبت و ویرایش مأموریت</p>
 </body>
 
 <!------------------- filter for search and select personnel ---------------------->
@@ -161,24 +162,36 @@
 </div>
 <!------------------- select mission type ---------------------->
 <div class="card" ng-show="personnelInfoExist">
-    <div class="col-sm-6">
-        <div class="input-group">
-            <div class="input-group-prepend">
-                <label class="input-group-text">
-                    نوع مأموریت کاری
-                </label>
+    <div class="row">
+        <div class="col-sm-6">
+            <div class="input-group">
+                <div class="input-group-prepend">
+                    <label class="input-group-text">
+                        نوع مأموریت کاری
+                    </label>
+                </div>
+                <select class="form-control" id="selectMissionType">
+                    <option ng-value="0">
+                        لطفا انتخاب نمایید...
+                    </option>
+                    <option ng-if="!moreThanOnePersonnel" ng-value="1">
+                        ساعتی
+                    </option>
+                    <option ng-value="2">
+                        روزانه
+                    </option>
+                </select>
             </div>
-            <select class="form-control" id="selectMissionType">
-                <option ng-value="0">
-                    لطفا انتخاب نمایید...
-                </option>
-                <option ng-if="!moreThanOnePersonnel" ng-value="1">
-                    ساعتی
-                </option>
-                <option ng-value="2">
-                    روزانه
-                </option>
-            </select>
+        </div>
+        <div class="col-sm-6">
+            <div class="float-left">
+                <button class="new-button green" id="MissionList" ng-click="ShowMissionList()"><i
+                        class="fa fa-list ml-2"></i>مشاهده لیست مأموریت ها
+                </button>
+                <button class="new-button" id="AddMission" ng-click="AddNewMission()"><i
+                        class="fa fa-plus ml-2"></i>افزودن مأموریت جدید
+                </button>
+            </div>
         </div>
     </div>
 </div>
@@ -186,6 +199,9 @@
 <!-- =========================  IF MISSION WAS DAILY  ========================-->
 <div class="hidden" id="DayMissionList">
     <div class="card" ng-init="GetDayMissionList()">
+        <p class="HeaderForm">
+            لیست مأموریت های روزانه
+        </p>
         <div class="table-header">
             <table class="text-center">
                 <thead>
@@ -204,7 +220,7 @@
         <div class="table-body">
             <table>
                 <tbody>
-                    <tr class="col-12 row" ng-repeat="item in dayMission.item1">
+                    <tr class="col-12 row" ng-repeat="item in dayMission.item1 track by item.id">
                         <td class="col-2 text-center" ng-bind="item.personName"></td>
                         <td class="col-2 text-center" ng-bind="item.missionTypeTitle"></td>
                         <td class="col-2 text-center" ng-bind="convertToShamsi(item.fromDate)"></td>
@@ -214,9 +230,9 @@
                             <div class="col-8">
                                 {{item.missionStateTitle}}</div>
                             <div class="row col-4 d-flex justify-content-end">
-                                <p class="ml-1 h6 cursor-pointer" ng-click="DeleteRowDayRequest(item.id)"><i
+                                <p class="ml-1 h6 cursor-pointer" ng-click="DeleteRowDayRequest(item)"><i
                                         class="fa fa-trash" title="حذف درخواست"></i></p>
-                                <p class="ml-1 h6 cursor-pointer" ng-click="EditRowDayRequest(item.id)"><i
+                                <p class="ml-1 h6 cursor-pointer" ng-click="EditRowDayRequest(item)"><i
                                         class="fa fa-edit" title="ویرایش درخواست"></i></p>
                             </div>
                         </td>
@@ -245,14 +261,10 @@
                     <i class=" fa fa-chevron-left asp-label" style="font-size: 0.7em;"></i>
                 </span>
             </div>
-            <div class="col-sm-4"></div>
-            <div class="col-sm-2" style="padding-left: 30px;">
-                <i class="fa fa-plus" title="افزودن" ng-click="createDayMissionModal()"></i>
-            </div>
+            <div class="col-sm-6"></div>
         </div>
     </div>
 </div>
-
 <!------------------- create day mission modal ---------------------->
 <div class="modal" id="createDayModal">
     <div class="modal-dialog modal-xl">
@@ -467,7 +479,7 @@
         <div class="modal-content">
             <div class="modal-body">
                 <p class="HeaderForm">
-                    ویرایش مأموریت روزانه
+                    ویرایش مأموریت روزانه: {{editDayMissionData.personName}}
                     <i class="fa fa-close float-left" title="انصراف" ng-click="cancelEditDayModalBtn()"></i>
                 </p>
                 <div class="col-12 row">
@@ -594,8 +606,7 @@
                                         </label>
                                     </div>
                                     <input type="text" autocomplete="off" class="form-control date-picker"
-                                        placeholder="xxxx/xx/xx" id="EditstartDate"
-                                        ng-model="editDayMissionData.fromDate">
+                                        placeholder="xxxx/xx/xx" id="EditstartDate">
                                 </div>
                             </div>
                             <div>
@@ -606,7 +617,7 @@
                                         </label>
                                     </div>
                                     <input type="text" autocomplete="off" class="form-control date-picker"
-                                        placeholder="xxxx/xx/xx" id="EditendDate" ng-model="editDayMissionData.toDate">
+                                        placeholder="xxxx/xx/xx" id="EditendDate">
                                 </div>
                             </div>
                         </div>
@@ -686,6 +697,9 @@
 <!--========================  IF MISSION WAS HOURLY  ==========================-->
 <div class="hidden" id="HourMissionList">
     <div class="card " ng-init="GetHourMissionList()">
+        <p class="HeaderForm">
+            لیست مأموریت های ساعتی
+        </p>
         <div class="table-header">
             <table class="text-center">
                 <thead>
@@ -704,7 +718,7 @@
         <div class="table-body">
             <table>
                 <tbody>
-                    <tr class="col-12 row" ng-repeat="item in hourMission.item1">
+                    <tr class="col-12 row" ng-repeat="item in hourMission.item1 track by item.id">
                         <td class="col-2" ng-bind="item.personId"></td>
                         <td class="col-2" ng-bind="item.fromTime"></td>
                         <td class="col-2" ng-bind="item.toTime"></td>
@@ -713,9 +727,9 @@
                             <div class="col-8">
                                 {{item.hourMissionStateTitle}}</div>
                             <div class="row col-4 d-flex justify-content-end">
-                                <p class="ml-1 h6 cursor-pointer" ng-click="DeleteRowHourRequest()"><i
+                                <p class="ml-1 h6 cursor-pointer" ng-click="DeleteRowHourRequest(item)"><i
                                         class="fa fa-trash" title="حذف درخواست"></i></p>
-                                <p class="ml-1 h6 cursor-pointer" ng-click="EditRowHourRequest(item.id)"><i
+                                <p class="ml-1 h6 cursor-pointer" ng-click="EditRowHourRequest(item)"><i
                                         class="fa fa-edit" title="ویرایش درخواست"></i></p>
                             </div>
                         </td>
@@ -744,14 +758,11 @@
                     <i class=" fa fa-chevron-left asp-label" style="font-size: 0.7em;"></i>
                 </span>
             </div>
-            <div class="col-sm-4"></div>
-            <div class="col-sm-2" style="padding-left: 30px;">
-                <i class="fa fa-plus" title="افزودن" ng-click="createHourMissionModal()"></i>
-            </div>
+            <div class="col-sm-6"></div>
+
         </div>
     </div>
 </div>
-
 <!------------------- create hour mission modal ---------------------->
 <div class="modal fade" id="createHourModal">
     <div class="modal-dialog modal-xl">
@@ -852,7 +863,8 @@
                                             ساعت خروج
                                         </label>
                                     </div>
-                                    <input class="form-control" id="EditfromTime" placeholder="HH:MM" type="text">
+                                    <input class="form-control" id="EditfromTime" placeholder="HH:MM" type="text"
+                                        ng-model="editHourMissionData.fromTime">
                                 </div>
                             </div>
                         </div>
@@ -864,7 +876,8 @@
                                             ساعت ورود
                                         </label>
                                     </div>
-                                    <input class="form-control" id="EdittoTime" placeholder="HH:MM" type="text">
+                                    <input class="form-control" id="EdittoTime" placeholder="HH:MM" type="text"
+                                        ng-model="editHourMissionData.toTime">
                                 </div>
                             </div>
                         </div>

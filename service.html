@@ -13,13 +13,14 @@
     <script src="firefoxStyle/newJavascript/angular.min.js"></script>
     <script src="firefoxStyle/newJavascript/jquery.min.js"></script>
     <script src="firefoxStyle/newJavascript/service.js"></script>
+    <script src="firefoxStyle/newJavascript/moment.js"></script>
+    <script src="firefoxStyle/newJavascript/moment-jalaali.js"></script>
     <script src="firefoxStyle/newJavascript/modules/selectingChart.js"></script>
     <script src="firefoxStyle/newJavascript/modules/personnel.js"></script>
     <script src="firefoxStyle/newJavascript/requests.js"></script>
     <script src="firefoxStyle/newJavascript/modules/sharing.js"></script>
     <script src="firefoxStyle/newJavascript/propper.js"></script>
     <script src="firefoxStyle/newJavascript/bootstrap.min.js"></script>
-    <script src="firefoxStyle/newJavascript/requests.js"></script>
     <script src="firefoxStyle/datepicker/bootstrap-datepicker.js"></script>
     <script src="firefoxStyle/datepicker/bootstrap-datepicker.fa.min.js"></script>
     <style>
@@ -31,15 +32,42 @@
             overflow-y: auto;
             height: 25vh;
         }
+
+        .default-bg {
+            background-image: url("Images/polygon.png");
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            height: 100vh;
+        }
+
+        body {
+            overflow-y: scroll;
+            overflow-x: hidden;
+
+        }
+
+        body>div {
+            direction: rtl;
+        }
+
+        .cursor-pointer {
+            cursor: pointer;
+        }
     </style>
 </head>
 
-<body ng-app="myApp" ng-controller="serviceCtrl">
+<body class="default-bg" ng-app="myApp" ng-controller="serviceCtrl">
     <p class="HeaderForm">
         سرویس رفت و آمد
     </p>
-    <div class="card">
+
+    <!--=========================== table ==================================  -->
+    <div class="card" ng-init="GetServiceList()">
         <div class="table-header">
+            <p class="HeaderForm">
+                لیست سرویس های موجود
+            </p>
             <table>
                 <thead>
                     <tr>
@@ -47,9 +75,12 @@
                             نام سرویس
                         </th>
                         <th style="width: 10%;">
+                            کد سرویس
+                        </th>
+                        <th style="width: 10%;">
                             نام راننده
                         </th>
-                        <th style="width: 80%;">
+                        <th style="width: 70%;">
                             مسیر تردد
                         </th>
                     </tr>
@@ -59,12 +90,14 @@
         <div class="table-body">
             <table class="test">
                 <tbody>
-                    <tr>
-                        <td style="width: 10%;"></td>
-                        <td style="width: 10%;"></td>
-                        <td style="width: 80%;">
-                            <i class="fa fa-edit float-left pointer" ng-click="editData()"></i>
-                            <i class="fa fa-trash float-left pointer" ng-click="deleteData()" style="margin: 0 5px;"></i>
+                    <tr ng-repeat="item in services.item1 track by $index">
+                        <td style="width: 10%;">{{item.name}}</td>
+                        <td style="width: 10%;">{{item.serviceCode}}</td>
+                        <td style="width: 10%;">{{item.driver}}</td>
+                        <td style="width: 70%;">{{item.description}}
+                            <i class="fa fa-edit float-left pointer" ng-click="editData(item)" title="ویرایش"></i>
+                            <i class="fa fa-trash float-left pointer" ng-click="deleteData(item)" style="margin: 0 5px;"
+                                title="حذف"></i>
                         </td>
                     </tr>
                 </tbody>
@@ -74,18 +107,18 @@
     <div class="card">
         <div class="row">
             <div class="col-sm-4" style="text-align: right;padding-right: 25px;">
-                <span ng-click="loadPages('last')" style="cursor: pointer;">
+                <span ng-click="loadingPage('last')" style="cursor: pointer;">
                     <i class="fa fa-chevron-right" style="font-size: 0.7em;"></i>
                     <i class="fa fa-chevron-right asp-label" style="margin-right: -3px;font-size: 0.7em;"></i>
                 </span>
-                <i class="fa fa-chevron-right asp-label" ng-click="loadPages(1)"
+                <i class="fa fa-chevron-right asp-label" ng-click="loadingPage(1)"
                     style="margin: 0 10px;cursor: pointer;font-size: 0.7em;"></i>
-                <input class="form-control" id="pagingD" placeholder="{{shifArray.item3}} از  {{shifArray.pagetotal}}"
+                <input class="form-control" id="pagingC" placeholder="{{services.item3}} از  {{services.pagetotal}}"
                     style="width: 30%;display: inline-block;position: relative;top: 0px;font-size: 0.7em;"
                     ng-model="pageNumber" ng-keyup="changePage($event,pageNumber);">
-                <i class="fa fa-chevron-left asp-label" ng-click="loadPages(-1)"
+                <i class="fa fa-chevron-left asp-label" ng-click="loadingPage(-1)"
                     style="margin: 0 10px;cursor: pointer;font-size: 0.7em;"></i>
-                <span ng-click="loadPages('first')" style="cursor: pointer;">
+                <span ng-click="loadingPage('first')" style="cursor: pointer;">
                     <i class="fa fa-chevron-left asp-label" style="margin-left: -3px;font-size: 0.7em;"></i>
                     <i class=" fa fa-chevron-left asp-label" style="font-size: 0.7em;"></i>
                 </span>
@@ -96,12 +129,13 @@
             </div>
         </div>
     </div>
+    <!-- ===================== create modal ================================= -->
     <div class="modal fade" id="createModal">
         <div class="modal-dialog modal-xl">
             <div class="modal-content">
                 <div class="modal-body">
                     <p class="HeaderForm">
-                        ایجاد دستگاه کارت ساعت
+                        ایجاد سرویس
                         <i class="fa fa-close text-danger float-left pointer" style="margin: 0 5px;"
                             ng-click="cancelCreate()"></i>
                     </p>
@@ -114,7 +148,7 @@
                                             نام سرویس
                                         </label>
                                     </div>
-                                    <input type="text" class="form-control">
+                                    <input type="text" class="form-control" ng-model="createServiceData.name">
                                 </div>
                             </div>
                             <div class="col-sm-4">
@@ -124,21 +158,29 @@
                                             راننده سرویس
                                         </label>
                                     </div>
-                                    <input type="text" class="form-control">
+                                    <input type="text" class="form-control" ng-model="createServiceData.driver">
                                 </div>
                             </div>
-                            <div class="col-sm-8">
+                            <div class="col-sm-4">
+                                <div class="input-group">
+                                    <div class="input-group-append">
+                                        <label class="input-group-text">
+                                            کد سرویس
+                                        </label>
+                                    </div>
+                                    <input type="text" class="form-control" ng-model="createServiceData.serviceCode">
+                                </div>
+                            </div>
+                            <div class="col-12">
                                 <div class="input-group">
                                     <div class="input-group-append">
                                         <label class="input-group-text">
                                             مسیر تردد
                                         </label>
                                     </div>
-                                    <textarea name="route" class="form-control" style="height: 3em;" cols="30" rows="10"></textarea>
+                                    <textarea name="route" class="form-control" style="height: 3em;" cols="30" rows="10"
+                                        ng-model="createServiceData.description"></textarea>
                                 </div>
-                            </div>
-                            <div class="col-sm-12">
-                                <div ng-if="loadingPersonnel" ng-include="'modules/personnelSelect.html'"></div>
                             </div>
                         </div>
                     </div>
@@ -158,14 +200,16 @@
             </div>
         </div>
     </div>
-    <div class="modal fade" id="editModal">
+    <!-- ===================== edit modal ================================= -->
+    <div class="modal fade" style="overflow-y: scroll;" id="editModal">
         <div class="modal-dialog modal-xl">
             <div class="modal-content">
                 <div class="modal-body">
                     <p class="HeaderForm">
-                        ایجاد دستگاه کارت ساعت
+                        ویرایش
                         <i class="fa fa-close text-danger float-left pointer" style="margin: 0 5px;"
-                            ng-click="cancelCreate()"></i>
+                            ng-click="cancelEdit()"></i>
+
                     </p>
                     <div class="card">
                         <div class="row">
@@ -176,7 +220,7 @@
                                             نام سرویس
                                         </label>
                                     </div>
-                                    <input type="text" class="form-control">
+                                    <input type="text" class="form-control" ng-model="editServiceData.name">
                                 </div>
                             </div>
                             <div class="col-sm-4">
@@ -186,7 +230,17 @@
                                             راننده سرویس
                                         </label>
                                     </div>
-                                    <input type="text" class="form-control">
+                                    <input type="text" class="form-control" ng-model="editServiceData.driver">
+                                </div>
+                            </div>
+                            <div class="col-sm-8">
+                                <div class="input-group">
+                                    <div class="input-group-append">
+                                        <label class="input-group-text">
+                                            کد سرویس
+                                        </label>
+                                    </div>
+                                    <input type="text" class="form-control" ng-model="editServiceData.serviceCode">
                                 </div>
                             </div>
                             <div class="col-sm-8">
@@ -196,21 +250,149 @@
                                             مسیر تردد
                                         </label>
                                     </div>
-                                    <textarea name="route" class="form-control" style="height: 3em;" cols="30" rows="10"></textarea>
+                                    <textarea name="route" class="form-control" style="height: 3em;" cols="30" rows="10"
+                                        ng-model="editServiceData.description"></textarea>
                                 </div>
                             </div>
-                            <div class="col-sm-12">
-                                <div ng-if="loadingPersonnel" ng-include="'modules/personnelSelect.html'"></div>
+                        </div>
+                        <div class="card" ng-init="GetServiceInEditList()">
+                            <p class="HeaderForm">
+                                افراد عضو لیست
+                            </p>
+                            <div class="table-header">
+                                <table>
+                                    <thead>
+                                        <tr class="row col-12">
+                                            <th class="col-5 text-center">
+                                                نام
+                                            </th>
+                                            <th class="col-7 text-center">
+                                                شماره پرسنلی
+                                            </th>
+                                        </tr>
+
+                                    </thead>
+                                </table>
+                            </div>
+                            <div class="table-body">
+                                <table class="test">
+                                    <tr class="row col-12"
+                                        ng-repeat="itemEdit in editServices.item1 track by itemEdit.id">
+                                        <td class="col-5 text-center">{{itemEdit.name}}</td>
+                                        <td class="col-7 text-center">{{itemEdit.personnelNo}}<i
+                                                class="fa fa-trash text-danger pointer" title="حذف از لیست"
+                                                ng-click="RemovePersonnelFromList(itemEdit.id)"
+                                                style="float: left;margin: 0 5px;" data-dismiss="modal"></i>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </div>
+                        </div>
+                        <div class="card">
+                            <div class="row">
+                                <div class="col-sm-6" style="text-align: right;">
+                                    <span ng-click="EditloadingPage('last')" style="cursor: pointer;">
+                                        <i class="fa fa-chevron-right" style="font-size: 0.7em;"></i>
+                                        <i class="fa fa-chevron-right asp-label"
+                                            style="margin-right: -3px;font-size: 0.7em;"></i>
+                                    </span>
+                                    <i class="fa fa-chevron-right asp-label" ng-click="EditloadingPage(1)"
+                                        style="margin: 0 10px;cursor: pointer;font-size: 0.7em;"></i>
+                                    <input class="form-control" id="pagingE"
+                                        placeholder="{{editServices.item3}} از  {{editServices.pagetotal}}"
+                                        style="width: 30%;display: inline-block;position: relative;top: 0px;font-size: 0.7em;"
+                                        ng-model="pageNumber" ng-keyup="changePage($event,pageNumber);">
+                                    <i class="fa fa-chevron-left asp-label" ng-click="EditloadingPage(-1)"
+                                        style="margin: 0 10px;cursor: pointer;font-size: 0.7em;"></i>
+                                    <span ng-click="EditloadingPage('first')" style="cursor: pointer;">
+                                        <i class="fa fa-chevron-left asp-label"
+                                            style="margin-left: -3px;font-size: 0.7em;"></i>
+                                        <i class=" fa fa-chevron-left asp-label" style="font-size: 0.7em;"></i>
+                                    </span>
+                                </div>
+                                <div class="col-sm-6"></div>
+                            </div>
+                        </div>
+                        <div class="card" ng-if="personnelInfoExist">
+                            <p class="HeaderForm">
+                                افراد انتخاب شده
+                            </p>
+                            <div class="table-header">
+                                <table>
+                                    <thead>
+                                        <tr class="row col-12">
+                                            <th class="col-3 text-center">
+                                                نام
+                                            </th>
+                                            <th class="col-3 text-center">
+                                                نام خانوادگی
+                                            </th>
+                                            <th class="col-3 text-center">
+                                                شماره پرسنلی
+                                            </th>
+                                            <th class="col-3 text-center">
+                                                کد مستخدمی
+                                            </th>
+                                        </tr>
+
+                                    </thead>
+                                </table>
+                            </div>
+                            <div class="table-body">
+                                <table class="test">
+                                    <tr class="row col-12" id="test"
+                                        ng-repeat="item in selectPersonnelFromDbArray track by item.Id">
+                                        <td class="hidden">{{$index}}</td>
+                                        <td class="col-3 text-center">{{item.FirstName}}</td>
+                                        <td class="col-3 text-center">{{item.LastName}}</td>
+                                        <td class="col-3 text-center">{{item.PersonnelNo}}</td>
+                                        <td class="col-3 text-center">{{item.DossierNo}}<i
+                                                class="fa fa-trash text-danger pointer" title="حذف فرد انتخاب شده"
+                                                ng-click="RemovePersonnelSelection($index)"
+                                                style="float: left;margin: 0 5px;" data-dismiss="modal"></i>
+                                        </td>
+                                    </tr>
+                                </table>
                             </div>
                         </div>
                     </div>
+                    <div class="modal fade" id="selectPersonnel">
+                        <div class="modal-dialog modal-xl">
+                            <div class="modal-content">
+                                <div class="modal-head">
+                                    <p class="HeaderForm">
+                                        انتخاب پرسنل
+                                        <i class="fa  fa-close text-danger pointer" style="float: left;margin: 0 5px;"
+                                            data-dismiss="modal"></i>
+                                    </p>
+                                </div>
+                                <div class="modal-body" style="padding-top: 0;">
+                                    <div ng-if="loadingPersonnel" ng-include="'modules/personnelSelect.html'"></div>
+                                </div>
+                                <div class="card">
+                                    <div class="float-left">
+                                        <button class="new-button red" ng-click="CancelAddPersonnel()"><i
+                                                class="fa fa-close"></i>انصراف</button>
+                                        <button class="new-button green" id="confirmBtn"
+                                            ng-click="confirmAddingPersonnelEdit()"><i
+                                                class="fa fa-check"></i>تایید</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
                     <div class="card">
                         <div style="text-align: left;">
+                            <button class="new-button green" ng-click="selectPersonnel()">
+                                <i class="fa fa-plus"></i>
+                                افزودن پرسنل
+                            </button>
                             <button class="new-button red" ng-click="cancelEdit()">
                                 <i class="fa fa-close"></i>
                                 انصراف
                             </button>
-                            <button class="new-button green" ng-click="confirmEdit()">
+                            <button class="new-button" ng-click="confirmEdit()">
                                 <i class="fa fa-check"></i>
                                 تایید
                             </button>
@@ -220,13 +402,40 @@
             </div>
         </div>
     </div>
+    <!------------------- select personnel ---------------------->
+    <div class="modal fade" id="selectPersonnel">
+        <div class="modal-dialog modal-xl">
+            <div class="modal-content">
+                <div class="modal-head">
+                    <p class="HeaderForm">
+                        انتخاب پرسنل
+                        <i class="fa  fa-close text-danger pointer" style="float: left;margin: 0 5px;"
+                            data-dismiss="modal"></i>
+                    </p>
+                </div>
+                <div class="modal-body" style="padding-top: 0;">
+                    <div ng-if="loadingPersonnel" ng-include="'modules/personnelSelect.html'"></div>
+                </div>
+                <div class="card">
+                    <div class="float-left">
+                        <button class="new-button red" ng-click="CancelAddPersonnel()"><i
+                                class="fa fa-close"></i>انصراف</button>
+                        <button class="new-button green" id="confirmBtn" ng-click="confirmAddingPersonnel()"><i
+                                class="fa fa-check"></i>تایید</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- ===================== delete modal ================================= -->
     <div class="modal fade" id="deleteModal">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-body">
                     <p class="HeaderForm">
-                        تایید حذف
-                        <i class="fa fa-close text-danger pointer float-left" style="margin: 0 5px;" ng-click="cancelDelete()"></i>
+                        حذف
+                        <i class="fa fa-close text-danger pointer float-left" style="margin: 0 5px;"
+                            ng-click="cancelDelete()"></i>
                     </p>
                     <div class="card">
                         <p class="asp-label text-danger center">
@@ -249,7 +458,37 @@
             </div>
         </div>
     </div>
-
+    <!-- ===================== delete modal personnel ================================= -->
+    <div class="modal fade" id="deleteModalList">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-body">
+                    <p class="HeaderForm">
+                        حذف
+                        <i class="fa fa-close text-danger pointer float-left" style="margin: 0 5px;"
+                            ng-click="cancelDelete()"></i>
+                    </p>
+                    <div class="card">
+                        <p class="asp-label text-danger center">
+                            آیا از حذف این مورد اطمینان دارید؟
+                        </p>
+                    </div>
+                    <div class="card">
+                        <div style="text-align: left;">
+                            <button class="new-button red" ng-click="cancelDelete()">
+                                <i class="fa fa-close"></i>
+                                انصراف
+                            </button>
+                            <button class="new-button green" ng-click="confirmDeleteList()">
+                                <i class="fa fa-check"></i>
+                                تایید
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 </body>
 
 </html>
