@@ -70,15 +70,24 @@
                             نام فرد
                         </label>
                     </div>
-                    <input class="form-control" ng-model="searchPInMission.value" id="personnel-input" ng-value="searchPInMission.value" ng-focus="selectFormLocal()"
-                        ng-keyup="serachPersonel(searchPInMission.value)" placeholder="نام/ نام خانوادگی/ کد ملی/ شماره کارمند">
-                    <i class="fa fa-download text-success pointer" ng-show="!localPersonnel && !searchingPosition" ng-click="localPersonnel = true"
+                    <input class="form-control" ng-model="searchPInMission.value" id="personnel-input"
+                        ng-value="searchPInMission.value" ng-focus="selectFormLocal()"
+                        ng-keyup="serachPersonel(searchPInMission.value)"
+                        placeholder="نام/ نام خانوادگی/ کد ملی/ شماره کارمند">
+                    <i class="fa fa-download text-success pointer" ng-show="!localPersonnel && !searchingPosition"
+                        ng-click="localPersonnel = true" style="position: absolute;top: 0.3em;left: 5%;z-index: 3;"></i>
+                    <i class="fa fa-bars pointer" ng-click="selectPersonnel()"
+                        style="position: relative;top:5px;right:3px"></i>
+                    <i class="fa fa-close text-danger pointer" ng-if="searchingPosition"
+                        ng-click="searchingPositionChange()"
                         style="position: absolute;top: 0.3em;left: 5%;z-index: 3;"></i>
-                    <i class="fa fa-bars pointer" ng-click="selectPersonnel()" style="position: relative;top:5px;right:3px"></i>
-                    <i class="fa fa-close text-danger pointer" ng-if="searchingPosition" ng-click="searchingPositionChange()" style="position: absolute;top: 0.3em;left: 5%;z-index: 3;"></i>
-                    <i class="fa fa-close text-danger pointer" ng-show="localPersonnel" ng-click="localPersonnel = false" style="position: absolute;top: 0.3em;left: 5%;z-index: 3;"></i>
-                    <div ng-if="searchingPosition" style="position: absolute;top:1.6em;width: 100%;z-index: 2;" ng-include="'modules/personnelSelectDropdown.html'"></div>
-                    <div ng-if="localPersonnel" style="position: absolute;top:1.6em;width: 100%;z-index: 2;" ng-include="'modules/personnelSelectLocal.html'"></div>
+                    <i class="fa fa-close text-danger pointer" ng-show="localPersonnel"
+                        ng-click="localPersonnel = false"
+                        style="position: absolute;top: 0.3em;left: 5%;z-index: 3;"></i>
+                    <div ng-if="searchingPosition" style="position: absolute;top:1.6em;width: 100%;z-index: 2;"
+                        ng-include="'modules/personnelSelectDropdown.html'"></div>
+                    <div ng-if="localPersonnel" style="position: absolute;top:1.6em;width: 100%;z-index: 2;"
+                        ng-include="'modules/personnelSelectLocal.html'"></div>
                 </div>
             </div>
             <div class="col-sm-6" style="text-align: center;">
@@ -93,7 +102,8 @@
                 <div class="modal-head">
                     <p class="HeaderForm">
                         انتخاب پرسنل
-                        <i class="fa  fa-close text-danger pointer" style="float: left;margin: 0 5px;" data-dismiss="modal"></i>
+                        <i class="fa  fa-close text-danger pointer" style="float: left;margin: 0 5px;"
+                            data-dismiss="modal"></i>
                     </p>
                 </div>
                 <div class="modal-body" style="padding-top: 0;">
@@ -148,7 +158,8 @@
                                 تاریخ شروع
                             </label>
                         </div>
-                        <input type="text" autocomplete="off" class="form-control date-picker" placeholder="xxxx/xx/xx" id="startDate">
+                        <input type="text" autocomplete="off" class="form-control date-picker" placeholder="xxxx/xx/xx"
+                            id="startDate">
                     </div>
                 </div>
                 <div class="col-sm-3">
@@ -158,11 +169,13 @@
                                 تاریخ پایان
                             </label>
                         </div>
-                        <input type="text" autocomplete="off" class="form-control date-picker" placeholder="xxxx/xx/xx" id="endDate">
+                        <input type="text" autocomplete="off" class="form-control date-picker" placeholder="xxxx/xx/xx"
+                            id="endDate">
                     </div>
                 </div>
                 <div class="float-left col-sm-3">
-                    <button class="new-button" ng-click="GetDataForFunctionalCal()"><i class="fa fa-search ml-1"></i>مشاهده
+                    <button class="new-button" ng-click="GetDataForFunctionalCal()"><i
+                            class="fa fa-search ml-1"></i>مشاهده
                     </button>
                 </div>
             </div>

@@ -9,12 +9,32 @@
 
     <link rel="stylesheet" href="firefoxStyle/bootstrap.min.css">
     <link rel="stylesheet" href="firefoxStyle/font-awesome2.min.css">
+    <link rel="stylesheet" href="firefoxStyle/font-awesome.min.css">
+    <link href="firefoxStyle/datepicker/bootstrap-datepicker.min.css" rel="stylesheet">
     <link rel="stylesheet" href="firefoxStyle/main.css">
     <link rel="stylesheet" href="firefoxStyle/newElementsStyle.css">
+    <link href="firefoxStyle/time.min.css" rel="stylesheet">
     <style>
-        input:focus {
-            border: none;
-            outline: none;
+        .default-bg {
+            background-image: url("Images/polygon.png");
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            height: 100vh;
+        }
+
+        body {
+            overflow-y: scroll;
+            overflow-x: hidden;
+
+        }
+
+        body>div {
+            direction: rtl;
+        }
+
+        .cursor-pointer {
+            cursor: pointer;
         }
     </style>
     <!------------------ scripts ----------------------->
@@ -23,14 +43,117 @@
     <script src="firefoxStyle/newJavascript/jquery.min.js"></script>
     <script src="firefoxStyle/newJavascript/propper.js"></script>
     <script src="firefoxStyle/newJavascript/bootstrap.min.js"></script>
+    <script src="firefoxStyle/newJavascript/moment.js"></script>
+    <script src="firefoxStyle/newJavascript/moment-jalaali.js"></script>
     <script src="firefoxStyle/datepicker/bootstrap-datepicker.js"></script>
     <script src="firefoxStyle/datepicker/bootstrap-datepicker.fa.min.js"></script>
     <script src="firefoxStyle/newJavascript/time.min.js"></script>
+    <script src="firefoxStyle/newJavascript/requests.js"></script>
+    <script src="firefoxStyle/newJavascript/personnelTrafficMonthlyReportCtrl.js"></script>
     <title>گزارش تردد ماهانه پرسنل</title>
 </head>
 
 <body dir="rtl" ng-app="myApp" ng-controller="personnelTrafficMonthlyReportCtrl">
     <p class="HeaderForm">گزارش تردد ماهانه پرسنل</p>
+
+    <!-------------------- search btn ---------------------->
+    <div class="card">
+        <div class="col-12 row">
+            <div class="col-4">
+                <div style="margin-bottom: 15px;">
+                    <div class="input-group">
+                        <div class="input-group-prepend">
+                            <label class="input-group-text">
+                                تاریخ از
+                            </label>
+                        </div>
+                        <input type="text" autocomplete="off" class="form-control date-picker" placeholder="xxxx/xx/xx"
+                            id="fromDate">
+                    </div>
+                </div>
+            </div>
+            <div class="col-4">
+                <div>
+                    <div class="input-group">
+                        <div class="input-group-prepend">
+                            <label class="input-group-text">
+                                تاریخ تا
+                            </label>
+                        </div>
+                        <input type="text" autocomplete="off" class="form-control date-picker" placeholder="xxxx/xx/xx"
+                            id="toDate">
+                    </div>
+                </div>
+            </div>
+            <div class="col-4 float-left">
+                <div style="text-align: left;">
+                    <button class="new-button" ng-click="searching()"><i class="fa fa-search
+                             ml-1"></i>جستجو
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!------------ table ------------------->
+    <div ng-if="searchBtn">
+        <div class="card">
+            <div class="table-header">
+                <table class="text-center">
+                    <thead>
+                        <tr class="col-12 row">
+                            <th class="col-2">نام</th>
+                            <th class="col-2">نام خانوادگی</th>
+                            <th class="col-2">تاریخ</th>
+                            <th class="col-2">زمان ورود</th>
+                            <th class="col-2">زمان خروج</th>
+                            <th class="col-2">مدت کارکرد</th>
+                        </tr>
+                    </thead>
+                </table>
+            </div>
+            <div class="table-body">
+                <table class="test" id="inputFields">
+                    <tbody>
+                        <tr class="col-12 row" ng-repeat="report in reports.item1">
+                            <td class="col-2">{{report.name}}</td>
+                            <td class="col-2">{{report.displayName}}</td>
+                            <td class="col-2">{{report.inDay}}</td>
+                            <td class="col-2">{{report.inTime}}</td>
+                            <td class="col-2">{{report.outTime}}</td>
+                            <td class="col-2">{{report.workTime}}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+        </div>
+        <div class="card" ng-if="err">
+            <div class="text-danger text-center"><strong>داده ای برای نمایش وجود ندارد😢</strong></div>
+        </div>
+        <!----------------- create buttons ---------------->
+        <div class="card">
+            <div class="row">
+                <div class="col-sm-6" style="text-align: right;">
+                    <span ng-click="reportPages('last')" style="cursor: pointer;">
+                        <i class="fa fa-chevron-right" style="font-size: 0.7em;"></i>
+                        <i class="fa fa-chevron-right asp-label" style="margin-right: -3px;font-size: 0.7em;"></i>
+                    </span>
+                    <i class="fa fa-chevron-right asp-label" ng-click="reportPages(1)"
+                        style="margin: 0 10px;cursor: pointer;font-size: 0.7em;"></i>
+                    <input class="form-control" id="pagingD" placeholder="{{reports.item3}} از  {{reports.pagetotal}}"
+                        style="width: 30%;display: inline-block;position: relative;top: 0px;font-size: 0.7em;"
+                        ng-model="pageNumber" ng-keyup="changePage($event,pageNumber);">
+                    <i class="fa fa-chevron-left asp-label" ng-click="reportPages(-1)"
+                        style="margin: 0 10px;cursor: pointer;font-size: 0.7em;"></i>
+                    <span ng-click="reportPages('first')" style="cursor: pointer;">
+                        <i class="fa fa-chevron-left asp-label" style="margin-left: -3px;font-size: 0.7em;"></i>
+                        <i class=" fa fa-chevron-left asp-label" style="font-size: 0.7em;"></i>
+                    </span>
+                </div>
+                <div class="col-sm-6"></div>
+            </div>
+        </div>
+    </div>
 </body>
 
 </html>

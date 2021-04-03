@@ -24,8 +24,8 @@
         }
 
         body {
-            overflow: hidden;
-
+            overflow-y: scroll;
+            overflow-x: hidden;
         }
 
         body>div {
@@ -190,8 +190,8 @@
                             <th class="col-2">نوع مرخصی</th>
                             <th class="col-2">از</th>
                             <th class="col-2">تا</th>
-                            <th class="col-2">مدت مرخصی(روز)</th>
-                            <th class="col-2">وضعیت
+                            <th class="col-1">مدت مرخصی(روز)</th>
+                            <th class="col-3">وضعیت
                             </th>
                         </tr>
                     </thead>
@@ -205,15 +205,15 @@
                             <td class="col-2 text-center" ng-bind="item.leaveTypeTitle"></td>
                             <td class="col-2 text-center" ng-bind="convertToShamsi(item.fromDate)"></td>
                             <td class="col-2 text-center" ng-bind="convertToShamsi(item.toDate)"></td>
-                            <td class="col-2 text-center" ng-bind="getVacationDays(item.fromDate,item.toDate)"></td>
-                            <td class="col-2 row">
+                            <td class="col-1 text-center" ng-bind="getVacationDays(item.fromDate,item.toDate)"></td>
+                            <td class="col-3 row">
                                 <div class="col-8">
                                     {{item.VacationStateTitle}}</div>
                                 <div class="row col-4 d-flex justify-content-end">
-                                    <p class="ml-1 h6 cursor-pointer" ng-click="DeleteRowDayRequest(item.id)"><i
+                                    <p class="ml-1 h6 cursor-pointer" ng-click="DeleteRowDayRequest(item)"><i
                                             class="fa fa-trash" title="حذف درخواست"></i>
                                     </p>
-                                    <p class="ml-1 h6 cursor-pointer" ng-click="EditRowDayRequest(item.id)"><i
+                                    <p class="ml-1 h6 cursor-pointer" ng-click="EditRowDayRequest(item)"><i
                                             class="fa fa-edit" title="ویرایش درخواست"></i>
                                     </p>
                                 </div>
@@ -227,25 +227,26 @@
         <div class="card">
             <div class="row">
                 <div class="col-sm-6" style="text-align: right;">
-                    <span ng-click="loadPages('last')" style="cursor: pointer;">
+                    <span ng-click="loadingDayPage('last')" style="cursor: pointer;">
                         <i class="fa fa-chevron-right" style="font-size: 0.7em;"></i>
                         <i class="fa fa-chevron-right asp-label" style="margin-right: -3px;font-size: 0.7em;"></i>
                     </span>
-                    <i class="fa fa-chevron-right asp-label" ng-click="loadPages(1)"
+                    <i class="fa fa-chevron-right asp-label" ng-click="loadingDayPage(1)"
                         style="margin: 0 10px;cursor: pointer;font-size: 0.7em;"></i>
-                    <input class="form-control" id="pagingD1" placeholder="{{config.item3}} از  {{config.pagetotal}}"
+                    <input class="form-control" id="pagingD"
+                        placeholder="{{dayVacation.item3}} از  {{dayVacation.pagetotal}}"
                         style="width: 30%;display: inline-block;position: relative;top: 0px;font-size: 0.7em;"
                         ng-model="pageNumber" ng-keyup="changePage($event,pageNumber);">
-                    <i class="fa fa-chevron-left asp-label" ng-click="loadPages(-1)"
+                    <i class="fa fa-chevron-left asp-label" ng-click="loadingDayPage(-1)"
                         style="margin: 0 10px;cursor: pointer;font-size: 0.7em;"></i>
-                    <span ng-click="loadPages('first')" style="cursor: pointer;">
+                    <span ng-click="loadingDayPage('first')" style="cursor: pointer;">
                         <i class="fa fa-chevron-left asp-label" style="margin-left: -3px;font-size: 0.7em;"></i>
                         <i class=" fa fa-chevron-left asp-label" style="font-size: 0.7em;"></i>
                     </span>
                 </div>
                 <div class="col-sm-4"></div>
                 <div class="col-sm-2" style="padding-left: 30px;">
-                    <i class="fa fa-plus" title="افزودن" ng-click="DeleteRowDayRequest(2)"></i>
+                    <i class="fa fa-plus" title="افزودن" ng-click="CreateRowDayRequest()"></i>
                 </div>
             </div>
         </div>
@@ -290,7 +291,7 @@
                                     </div>
                                     <input type="text" autocomplete="off" class="form-control date-picker"
                                         placeholder="xxxx/xx/xx" id="startDayDate"
-                                        ng-model="createDayMissionModal.fromDate">
+                                        ng-model="createDayVacationData.fromDate">
                                 </div>
                             </div>
                         </div>
@@ -302,7 +303,7 @@
                                     </label>
                                 </div>
                                 <input type="text" autocomplete="off" class="form-control date-picker"
-                                    placeholder="xxxx/xx/xx" id="endDayDate" ng-model="createDayMissionModal.toDate">
+                                    placeholder="xxxx/xx/xx" id="endDayDate" ng-model="createDayVacationData.toDate">
                             </div>
                         </div>
                         <div class="col-12">
@@ -314,7 +315,7 @@
                                         </label>
                                     </div>
                                     <input class="form-control" type="text" multiple="true"
-                                        ng-model="createDayVacationModal.descriptions" style="min-height: 50px;">
+                                        ng-model="createDayVacationData.description" style="min-height: 50px;">
                                 </div>
                             </div>
 
@@ -396,7 +397,7 @@
                                         </label>
                                     </div>
                                     <input class="form-control" type="text" multiple="true"
-                                        ng-model="editDayVacationData.descriptions" style="min-height: 50px;">
+                                        ng-model="editDayVacationData.description" style="min-height: 50px;">
                                 </div>
                             </div>
 
@@ -452,11 +453,10 @@
                 <table class="text-center">
                     <thead>
                         <tr class="col-12 row">
-                            <th class="col-2">نام شخص</th>
                             <th class="col-2">از</th>
                             <th class="col-2">تا</th>
                             <th class="col-2"> تاریخ مرخصی</th>
-                            <th class="col-4">وضعیت
+                            <th class="col-6">وضعیت
 
                             </th>
                         </tr>
@@ -467,18 +467,17 @@
                 <table>
                     <tbody>
                         <tr class="col-12 row" ng-repeat="item in hourVacation.item1">
-                            <td class="col-2" ng-bind="item.personId"></td>
-                            <td class="col-2" ng-bind="item.fromTime"></td>
-                            <td class="col-2" ng-bind="item.toTime"></td>
-                            <td class="col-2" ng-bind="convertToShamsi(item.leaveDate)"></td>
-                            <td class="col-4 row">
-                                <div class="col-8">
+                            <td class="col-2 text-center" ng-bind="item.fromTime"></td>
+                            <td class="col-2 text-center" ng-bind="item.toTime"></td>
+                            <td class="col-2 text-center" ng-bind="convertToShamsi(item.leaveDate)"></td>
+                            <td class="col-6 row">
+                                <div class="col-8 text-center">
                                     {{item.hourVacationStateTitle}}</div>
                                 <div class="row col-4 d-flex justify-content-end">
-                                    <p class="ml-1 h6 cursor-pointer" ng-click="DeleteRowHourRequest(item.id)"><i
+                                    <p class="ml-1 h6 cursor-pointer" ng-click="DeleteRowHourRequest(item)"><i
                                             class="fa fa-trash" title="حذف درخواست"></i>
                                     </p>
-                                    <p class="ml-1 h6 cursor-pointer" ng-click="EditRowHourRequest(item.id)"><i
+                                    <p class="ml-1 h6 cursor-pointer" ng-click="EditRowHourRequest(item)"><i
                                             class="fa fa-edit" title="ویرایش درخواست"></i>
                                     </p>
                                 </div>
@@ -492,18 +491,19 @@
         <div class="card">
             <div class="row">
                 <div class="col-sm-6" style="text-align: right;">
-                    <span ng-click="loadPages('last')" style="cursor: pointer;">
+                    <span ng-click="loadinghourPage('last')" style="cursor: pointer;">
                         <i class="fa fa-chevron-right" style="font-size: 0.7em;"></i>
                         <i class="fa fa-chevron-right asp-label" style="margin-right: -3px;font-size: 0.7em;"></i>
                     </span>
-                    <i class="fa fa-chevron-right asp-label" ng-click="loadPages(1)"
+                    <i class="fa fa-chevron-right asp-label" ng-click="loadinghourPage(1)"
                         style="margin: 0 10px;cursor: pointer;font-size: 0.7em;"></i>
-                    <input class="form-control" id="pagingD2" placeholder="{{config.item3}} از  {{config.pagetotal}}"
+                    <input class="form-control" id="pagingD1"
+                        placeholder="{{hourVacation.item3}} از  {{hourVacation.pagetotal}}"
                         style="width: 30%;display: inline-block;position: relative;top: 0px;font-size: 0.7em;"
                         ng-model="pageNumber" ng-keyup="changePage($event,pageNumber);">
-                    <i class="fa fa-chevron-left asp-label" ng-click="loadPages(-1)"
+                    <i class="fa fa-chevron-left asp-label" ng-click="loadinghourPage(-1)"
                         style="margin: 0 10px;cursor: pointer;font-size: 0.7em;"></i>
-                    <span ng-click="loadPages('first')" style="cursor: pointer;">
+                    <span ng-click="loadinghourPage('first')" style="cursor: pointer;">
                         <i class="fa fa-chevron-left asp-label" style="margin-left: -3px;font-size: 0.7em;"></i>
                         <i class=" fa fa-chevron-left asp-label" style="font-size: 0.7em;"></i>
                     </span>

@@ -80,10 +80,12 @@
                             <div class="row float-left">
 
                                 <div class="col-3 float-right">
-                                    <p class="h6" ng-click="removeRow(conf)"><i class="fa fa-trash" title="حذف" style="cursor: pointer"></i></p>
+                                    <p class="h6" ng-click="removeRow(conf)"><i class="fa fa-trash" title="حذف"
+                                            style="cursor: pointer"></i></p>
                                 </div>
                                 <div class="col-3 float-left">
-                                    <p class="h6" ng-click="editRow(conf)"><i class="fa fa-edit" title="ویرایش" style="cursor: pointer"></i></p>
+                                    <p class="h6" ng-click="editRow(conf)"><i class="fa fa-edit" title="ویرایش"
+                                            style="cursor: pointer"></i></p>
                                 </div>
                             </div>
                         </td>
@@ -99,15 +101,19 @@
     <div class="card">
         <div class="row">
             <div class="col-sm-6" style="text-align: right;">
-                <span ng-click="loadPages('last')" style="cursor: pointer;">
+                <span ng-click="loadingPage('last')" style="cursor: pointer;">
                     <i class="fa fa-chevron-right" style="font-size: 0.7em;"></i>
                     <i class="fa fa-chevron-right asp-label" style="margin-right: -3px;font-size: 0.7em;"></i>
                 </span>
-                <i class="fa fa-chevron-right asp-label" ng-click="loadPages(1)" style="margin: 0 10px;cursor: pointer;font-size: 0.7em;"></i>
-                <input class="form-control" id="pagingD" placeholder="{{config.item3}} از  {{config.pagetotal}}" style="width: 30%;display: inline-block;position: relative;top: 0px;font-size: 0.7em;"
+                <i class="fa fa-chevron-right asp-label" ng-click="loadingPage(1)"
+                    style="margin: 0 10px;cursor: pointer;font-size: 0.7em;"></i>
+                <input class="form-control" id="pagingD"
+                    placeholder="{{personnelConfig.item3}} از  {{personnelConfig.pagetotal}}"
+                    style="width: 30%;display: inline-block;position: relative;top: 0px;font-size: 0.7em;"
                     ng-model="pageNumber" ng-keyup="changePage($event,pageNumber);">
-                <i class="fa fa-chevron-left asp-label" ng-click="loadPages(-1)" style="margin: 0 10px;cursor: pointer;font-size: 0.7em;"></i>
-                <span ng-click="loadPages('first')" style="cursor: pointer;">
+                <i class="fa fa-chevron-left asp-label" ng-click="loadingPage(-1)"
+                    style="margin: 0 10px;cursor: pointer;font-size: 0.7em;"></i>
+                <span ng-click="loadingPage('first')" style="cursor: pointer;">
                     <i class="fa fa-chevron-left asp-label" style="margin-left: -3px;font-size: 0.7em;"></i>
                     <i class=" fa fa-chevron-left asp-label" style="font-size: 0.7em;"></i>
                 </span>
@@ -129,7 +135,8 @@
                 <div class="modal-body">
                     <p class="HeaderForm">
                         ایجاد تنطیمات جدید
-                        <i class="fa fa-close text-danger pointer" style="float: left;margin: 0 5px;" ng-click="cancelCreate()"></i>
+                        <i class="fa fa-close text-danger pointer" style="float: left;margin: 0 5px;"
+                            ng-click="cancelCreate()"></i>
                     </p>
 
                     <!------------------   create new config modal ------------------>
@@ -181,7 +188,8 @@
                                         تاریخ فعال سازی
                                     </label>
                                 </div>
-                                <input type="text" autocomplete="off" class="form-control date-picker" placeholder="xxxx/xx/xx" id="startDate" ng-model="createConfig.activeDate">
+                                <input type="text" autocomplete="off" class="form-control date-picker"
+                                    placeholder="xxxx/xx/xx" id="startDate" ng-model="createConfig.activeDate">
                             </div>
                         </div>
                         <div class="col-sm-12">
@@ -191,7 +199,8 @@
                                         توضیحات
                                     </label>
                                 </div>
-                                <textarea class="form-control" ng-model="createConfig.description" style="height: 5em !important;"></textarea>
+                                <textarea class="form-control" ng-model="createConfig.description"
+                                    style="height: 5em !important;"></textarea>
                             </div>
                         </div>
                     </div>
@@ -199,9 +208,11 @@
                     <!------------------   create new config btns ------------------>
                     <div class="card row">
                         <div style="text-align: left;">
-                            <button class="new-button red" ng-click="cancelConfig()"><i class="fa fa-close ml-1"></i>انصراف
+                            <button class="new-button red" ng-click="cancelConfig()"><i
+                                    class="fa fa-close ml-1"></i>انصراف
                             </button>
-                            <button class="new-button green" ng-click="CreateConfig()"><i class="fa fa-check ml-1"></i>تایید
+                            <button class="new-button green" ng-click="CreateConfig()"><i
+                                    class="fa fa-check ml-1"></i>تایید
                             </button>
 
                         </div>
@@ -218,10 +229,11 @@
                 <div class="modal-body">
                     <p class="HeaderForm">
                         ویرایش
-                        <i class="fa fa-close text-danger pointer" style="float: left;margin: 0 5px;" ng-click="cancelEdit()"></i>
+                        <i class="fa fa-close text-danger pointer" style="float: left;margin: 0 5px;"
+                            ng-click="cancelEdit()"></i>
                     </p>
 
-                    <!------------------   create new config modal ------------------>
+                    <!------------------   edit new config modal ------------------>
                     <div class="row col-12">
                         <div class="col-sm-4">
                             <div class="input-group">
@@ -267,10 +279,11 @@
                             <div class="input-group">
                                 <div class="input-group-prepend">
                                     <label class="input-group-text">
-                                        تاریخ ویرایش
+                                        تاریخ ایجاد
                                     </label>
                                 </div>
-                                <input type="text" autocomplete="off" class="form-control date-picker" placeholder="xxxx/xx/xx" id="eStartDate">
+                                <input type="text" autocomplete="off" class="form-control date-picker"
+                                    placeholder="xxxx/xx/xx" id="eStartDate">
                             </div>
                         </div>
                         <div class="col-sm-12">
@@ -280,7 +293,8 @@
                                         توضیحات
                                     </label>
                                 </div>
-                                <textarea class="form-control" ng-model="editConfigInfo.description" style="height: 5em !important;"></textarea>
+                                <textarea class="form-control" ng-model="editConfigInfo.description"
+                                    style="height: 5em !important;"></textarea>
                             </div>
                         </div>
                     </div>
@@ -288,9 +302,11 @@
                     <!------------------   create new config btns ------------------>
                     <div class="card row">
                         <div style="text-align: left;">
-                            <button class="new-button red" ng-click="cancelEditOnModal()"><i class="fa fa-close ml-1"></i>انصراف
+                            <button class="new-button red" ng-click="cancelEditOnModal()"><i
+                                    class="fa fa-close ml-1"></i>انصراف
                             </button>
-                            <button class="new-button green" ng-click="confirmEditConfig()"><i class="fa fa-check ml-1"></i>تایید
+                            <button class="new-button green" ng-click="confirmEditConfig()"><i
+                                    class="fa fa-check ml-1"></i>تایید
                             </button>
                         </div>
                     </div>
@@ -306,7 +322,8 @@
                 <div class="modal-body">
                     <p class="HeaderForm">
                         حذف
-                        <i class="fa fa-close text-danger pointer" style="float: left;margin: 0 5px;" ng-click="cancelRemove()"></i>
+                        <i class="fa fa-close text-danger pointer" style="float: left;margin: 0 5px;"
+                            ng-click="cancelRemove()"></i>
                     </p>
 
                     <div class="card row">
@@ -314,9 +331,11 @@
                             آیا از حذف این مورد اطمینان دارید؟
                         </p>
                         <div style="text-align: left;">
-                            <button class="new-button red" ng-click="cancelDelete()"><i class="fa fa-close ml-1"></i>انصراف
+                            <button class="new-button red" ng-click="cancelDelete()"><i
+                                    class="fa fa-close ml-1"></i>انصراف
                             </button>
-                            <button class="new-button green" ng-click="deleteConfig()"><i class="fa fa-check ml-1"></i>تایید
+                            <button class="new-button green" ng-click="deleteConfig()"><i
+                                    class="fa fa-check ml-1"></i>تایید
                             </button>
 
                         </div>

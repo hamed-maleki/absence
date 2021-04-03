@@ -83,6 +83,22 @@ app.controller('serviceCtrl', ["$scope", "$timeout", 'currencyConverter', 'reque
         $("#selectPersonnel").modal();
         $scope.loadingPersonnel = true;
     }
+    //=============== convert date to shamsi =============================
+    $scope.convertToShamsi = function (date) {
+        if (date != null) {
+            return moment(date, 'YYYY/M/D').format('jYYYY/jMM/jDD');
+        } else {
+            return "-"
+        }
+    }
+    //=============== convert date to miladi =============================
+    $scope.convertToMiladi = function (date) {
+        if (date != null) {
+            return moment(date, 'jYYYY/jM/jD').format('YYYY-MM-DD');
+        } else {
+            return "-"
+        }
+    }
     //================== search and get personnel ===============================
     $scope.personnelInfoExist = false;
     $scope.moreThanOnePersonnel = false;
@@ -363,7 +379,7 @@ app.controller('serviceCtrl', ["$scope", "$timeout", 'currencyConverter', 'reque
         $("#editModal").modal("hide");
     }
     $scope.confirmEdit = function () {
-        requests.postingData('TransportServices/Update', $scope.editServiceData, function (response) {
+        requests.updating('TransportServices/Update', $scope.editServiceData, function (response) {
             $("#editModal").modal("hide");
             $scope.GetServiceList();
         })
@@ -374,7 +390,9 @@ app.controller('serviceCtrl', ["$scope", "$timeout", 'currencyConverter', 'reque
                 personId: $scope.selectPersonnelFromDbArray[i].Id,
                 personName: $scope.selectPersonnelFromDbArray[i].PoliteName,
                 transportServiceId: itemId.id,
-                transportServiceName: itemId.name
+                transportServiceName: itemId.name,
+                fromDate: $scope.convertToMiladi($('#EditstartDayDate').val()),
+                toDate: $scope.convertToMiladi($('#EditendDayDate').val())
             }
             requests.postingData('PersonTransportService/Create', $scope.addingPersonnel, function (response) {
             })

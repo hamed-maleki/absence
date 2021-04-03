@@ -16,13 +16,13 @@ app.controller("generalSettingsCtrl", ["$scope", "$timeout", 'requests', functio
             ]
         }
         if (page == 1) {
-            if ($scope.config.item3 + 1 <= $scope.config.totalPage) {
-                item.pageNumber = $scope.config.item3 + 1;
+            if ($scope.WorkRules.item3 + 1 <= $scope.WorkRules.totalPage) {
+                item.pageNumber = $scope.WorkRules.item3 + 1;
                 $scope.getWorkSettingLists(item);
             }
         } else if (page == -1) {
-            if ($scope.config.item3 - 1 > 0) {
-                item.pageNumber = $scope.config.item3 - 1;
+            if ($scope.WorkRules.item3 - 1 > 0) {
+                item.pageNumber = $scope.WorkRules.item3 - 1;
                 $scope.getWorkSettingLists(item);
             }
 
@@ -31,7 +31,7 @@ app.controller("generalSettingsCtrl", ["$scope", "$timeout", 'requests', functio
             $scope.getWorkSettingLists(item);
 
         } else {
-            item.pageNumber = $scope.config.totalPage;
+            item.pageNumber = $scope.WorkRules.totalPage;
             $scope.getWorkSettingLists(item);
         }
     }
@@ -65,21 +65,21 @@ app.controller("generalSettingsCtrl", ["$scope", "$timeout", 'requests', functio
 
     //------------- create new setting -----------------------
     $scope.CreateWorkSetting = function () {
-        $scope.createWorkSetting = {
+        $scope.createWork = {
             isExtraWork: false,
             hasExtraBefore: false,
             hasExtraAfter: false,
-            minTimeBefore: 0,
-            maxTimeBefore: 0,
-            minTimeAfter: 0,
-            maxTimeAfter: 0,
-            allowedDelayMin: 0,
-            allowedHurryMin: 0,
-            allowedLeaveDelayMin: 0,
-            allowedLeaveHurryMin: 0,
+            minTimeBefore: null,
+            maxTimeBefore: null,
+            minTimeAfter: null,
+            maxTimeAfter: null,
+            allowedDelayMin: null,
+            allowedHurryMin: null,
+            allowedLeaveDelayMin: null,
+            allowedLeaveHurryMin: null,
             allowedDelayAddToShortageHour: false,
             allowedHurryAddToShortageHour: false,
-            extraHourRate: 0
+            extraHourRate: null
         };
         $('#createModal').modal();
     }
@@ -92,7 +92,7 @@ app.controller("generalSettingsCtrl", ["$scope", "$timeout", 'requests', functio
         $('#createModal').modal('hide');
     }
     $scope.confirmCreate = function () {
-        requests.postingData("WorkSettings/Create", $scope.createWorkSetting, function (response) {
+        requests.postingData("WorkSettings/Create", $scope.createWork, function (response) {
             if (response.data != null) {
                 $('#createModal').modal('hide');
                 $scope.getWorkSettingLists();
@@ -104,13 +104,7 @@ app.controller("generalSettingsCtrl", ["$scope", "$timeout", 'requests', functio
 
     //------------- edit row setting in list -----------------------
     $scope.editBtn = function (data) {
-        requests.gettingData('WorkSettings/GetById/' + data.id, function (response) {
-            if (response != null) {
-                $scope.editWorkSetting = response.data;
-            } else {
-                alert("خطا رخ داده است");
-            }
-        })
+        $scope.editWorkSetting = data;
         $('#editModal').modal();
     }
     $scope.cancleEditBtn = function () {
@@ -123,13 +117,8 @@ app.controller("generalSettingsCtrl", ["$scope", "$timeout", 'requests', functio
     }
     $scope.confirmEdit = function () {
         requests.postingData('WorkSettings/Update', $scope.editWorkSetting, function (response) {
-            if (response.data != null) {
-                $('#createModal').modal('hide');
-                $scope.getWorkSettingLists();
-                $('#editModal').modal('hide');
-            } else {
-                alert("خطا رخ داده است");
-            }
+            $scope.getWorkSettingLists();
+            $('#editModal').modal('hide');
         })
 
     }
@@ -146,12 +135,8 @@ app.controller("generalSettingsCtrl", ["$scope", "$timeout", 'requests', functio
     }
     $scope.confirmDelete = function () {
         requests.deleteing("WorkSettings/Delete/" + $scope.removeWorkSettingId, {}, function (response) {
-            if (response != null) {
-                $("#removeModal").modal('hide');
-                $scope.getWorkSettingLists();
-            } else {
-                alert("خطا رخ داده است");
-            }
+            $("#removeModal").modal('hide');
+            $scope.getWorkSettingLists();
         })
     }
 

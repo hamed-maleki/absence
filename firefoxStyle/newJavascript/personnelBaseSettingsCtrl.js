@@ -68,13 +68,13 @@ app.controller("personnelBaseSettingsCtrl", ["$scope", "$timeout", 'requests', f
             ]
         }
         if (page == 1) {
-            if ($scope.config.item3 + 1 <= $scope.config.totalPage) {
-                item.pageNumber = $scope.config.item3 + 1;
+            if ($scope.personnelConfig.item3 + 1 <= $scope.personnelConfig.totalPage) {
+                item.pageNumber = $scope.personnelConfig.item3 + 1;
                 $scope.getPersonnnelConfigList(item);
             }
         } else if (page == -1) {
-            if ($scope.config.item3 - 1 > 0) {
-                item.pageNumber = $scope.config.item3 - 1;
+            if ($scope.personnelConfig.item3 - 1 > 0) {
+                item.pageNumber = $scope.personnelConfig.item3 - 1;
                 $scope.getPersonnnelConfigList(item);
             }
 
@@ -83,7 +83,7 @@ app.controller("personnelBaseSettingsCtrl", ["$scope", "$timeout", 'requests', f
             $scope.getPersonnnelConfigList(item);
 
         } else {
-            item.pageNumber = $scope.config.totalPage;
+            item.pageNumber = $scope.personnelConfig.totalPage;
             $scope.getPersonnnelConfigList(item);
         }
     }
@@ -92,11 +92,21 @@ app.controller("personnelBaseSettingsCtrl", ["$scope", "$timeout", 'requests', f
     //------------- btns in row at table ------------------------
     $scope.editConfigInfo = [];
     $scope.editRow = function (data) {
-        $scope.editConfigInfo = data;
+        $scope.editConfigInfo = {
+            name: data.name,
+            displayName: data.displayName,
+            value: data.value,
+            type: data.type,
+            activeDate: data.activeDate,
+            description: data.description,
+            id: data.id,
+        };
         $('#configEditModal').modal();
+        $('#eStartDate').val($scope.convertToShamsi($scope.editConfigInfo.activeDate));
     }
+    $scope.removeConfigInfo = [];
     $scope.removeRow = function (data) {
-        $scope.removeConfigInfo = data.id;
+        $scope.removeConfigInfo.push(data.id);
         $('#configRemoveModal').modal();
     }
 
@@ -143,10 +153,12 @@ app.controller("personnelBaseSettingsCtrl", ["$scope", "$timeout", 'requests', f
         $('#configEditModal').modal('hide');
     }
     $scope.confirmEditConfig = function () {
+        $scope.editConfigInfo.activeDate = $scope.convertToMiladi($('#eStartDate').val());
         requests.postingData("RollCallConfigs/UpsertRollCallConfigsBatch", $scope.editConfigInfo, function (response) {
             $("#configEditModal").modal("hide");
             $scope.getPersonnnelConfigList();
         })
+        console.log($scope.editConfigInfo);
     }
     //------------- remove btn modal ------------------------
     $scope.cancelDelete = function (data) {
@@ -156,8 +168,8 @@ app.controller("personnelBaseSettingsCtrl", ["$scope", "$timeout", 'requests', f
         $('#configRemoveModal').modal('hide');
     }
     $scope.deleteConfig = function () {
-
-        requests.deleteing("RollCallConfigs/DeleteRollCallConfigsBatch/" + $scope.removeConfigInfo, {}, function (response) {
+        console.log($scope.removeConfigInfo);
+        requests.deleteing("RollCallConfigs/DeleteRollCallConfigsBatch", $scope.removeConfigInfo, function (response) {
             $("#deleteConfirm").modal('hide');
             $scope.getPersonnnelConfigList();
         })

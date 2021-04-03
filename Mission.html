@@ -245,21 +245,27 @@
     <div class="card">
         <div class="row">
             <div class="col-sm-6" style="text-align: right;">
-                <span ng-click="loadPages('last')" style="cursor: pointer;">
-                    <i class="fa fa-chevron-right" style="font-size: 0.7em;"></i>
-                    <i class="fa fa-chevron-right asp-label" style="margin-right: -3px;font-size: 0.7em;"></i>
-                </span>
-                <i class="fa fa-chevron-right asp-label" ng-click="loadPages(1)"
-                    style="margin: 0 10px;cursor: pointer;font-size: 0.7em;"></i>
-                <input class="form-control" id="pagingD1" placeholder="{{config.item3}} از  {{config.pagetotal}}"
-                    style="width: 30%;display: inline-block;position: relative;top: 0px;font-size: 0.7em;"
-                    ng-model="pageNumber" ng-keyup="changePage($event,pageNumber);">
-                <i class="fa fa-chevron-left asp-label" ng-click="loadPages(-1)"
-                    style="margin: 0 10px;cursor: pointer;font-size: 0.7em;"></i>
-                <span ng-click="loadPages('first')" style="cursor: pointer;">
-                    <i class="fa fa-chevron-left asp-label" style="margin-left: -3px;font-size: 0.7em;"></i>
-                    <i class=" fa fa-chevron-left asp-label" style="font-size: 0.7em;"></i>
-                </span>
+                <div class="row">
+                    <div class="col-sm-6" style="text-align: right;">
+                        <span ng-click="MissionDayPage('last')" style="cursor: pointer;">
+                            <i class="fa fa-chevron-right" style="font-size: 0.7em;"></i>
+                            <i class="fa fa-chevron-right asp-label" style="margin-right: -3px;font-size: 0.7em;"></i>
+                        </span>
+                        <i class="fa fa-chevron-right asp-label" ng-click="MissionDayPage(1)"
+                            style="margin: 0 10px;cursor: pointer;font-size: 0.7em;"></i>
+                        <input class="form-control" id="pagingD"
+                            placeholder="{{dayMission.item3}} از  {{dayMission.pagetotal}}"
+                            style="width: 30%;display: inline-block;position: relative;top: 0px;font-size: 0.7em;"
+                            ng-model="pageNumber" ng-keyup="changePage($event,pageNumber);">
+                        <i class="fa fa-chevron-left asp-label" ng-click="MissionDayPage(-1)"
+                            style="margin: 0 10px;cursor: pointer;font-size: 0.7em;"></i>
+                        <span ng-click="MissionDayPage('first')" style="cursor: pointer;">
+                            <i class="fa fa-chevron-left asp-label" style="margin-left: -3px;font-size: 0.7em;"></i>
+                            <i class=" fa fa-chevron-left asp-label" style="font-size: 0.7em;"></i>
+                        </span>
+                    </div>
+                    <div class="col-sm-6"></div>
+                </div>
             </div>
             <div class="col-sm-6"></div>
         </div>
@@ -742,18 +748,19 @@
     <div class="card">
         <div class="row">
             <div class="col-sm-6" style="text-align: right;">
-                <span ng-click="loadPages('last')" style="cursor: pointer;">
+                <span ng-click="MissionHourPage('last')" style="cursor: pointer;">
                     <i class="fa fa-chevron-right" style="font-size: 0.7em;"></i>
                     <i class="fa fa-chevron-right asp-label" style="margin-right: -3px;font-size: 0.7em;"></i>
                 </span>
-                <i class="fa fa-chevron-right asp-label" ng-click="loadPages(1)"
+                <i class="fa fa-chevron-right asp-label" ng-click="MissionHourPage(1)"
                     style="margin: 0 10px;cursor: pointer;font-size: 0.7em;"></i>
-                <input class="form-control" id="pagingD2" placeholder="{{config.item3}} از  {{config.pagetotal}}"
+                <input class="form-control" id="pagingD1"
+                    placeholder="{{hourMission.item3}} از  {{hourMission.pagetotal}}"
                     style="width: 30%;display: inline-block;position: relative;top: 0px;font-size: 0.7em;"
                     ng-model="pageNumber" ng-keyup="changePage($event,pageNumber);">
-                <i class="fa fa-chevron-left asp-label" ng-click="loadPages(-1)"
+                <i class="fa fa-chevron-left asp-label" ng-click="MissionHourPage(-1)"
                     style="margin: 0 10px;cursor: pointer;font-size: 0.7em;"></i>
-                <span ng-click="loadPages('first')" style="cursor: pointer;">
+                <span ng-click="MissionHourPage('first')" style="cursor: pointer;">
                     <i class="fa fa-chevron-left asp-label" style="margin-left: -3px;font-size: 0.7em;"></i>
                     <i class=" fa fa-chevron-left asp-label" style="font-size: 0.7em;"></i>
                 </span>

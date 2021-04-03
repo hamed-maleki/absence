@@ -11,7 +11,7 @@ app.controller('MissionCtrl', ["$scope", "$timeout", 'currencyConverter', 'reque
         });
     }, 500)
     //------------- load page -----------------------
-    $scope.loadingPage = function (page) {
+    $scope.MissionDayPage = function (page) {
         $scope.searchParameter = {
             firstName: null,
             lastName: null
@@ -26,23 +26,58 @@ app.controller('MissionCtrl', ["$scope", "$timeout", 'currencyConverter', 'reque
             ]
         }
         if (page == 1) {
-            if ($scope.config.item3 + 1 <= $scope.config.totalPage) {
-                item.pageNumber = $scope.config.item3 + 1;
-                $scope.getWorkSettingLists(item);
+            if ($scope.dayMission.item3 + 1 <= $scope.dayMission.totalPage) {
+                item.pageNumber = $scope.dayMission.item3 + 1;
+                $scope.GetDayMissionList(item);
             }
         } else if (page == -1) {
-            if ($scope.config.item3 - 1 > 0) {
-                item.pageNumber = $scope.config.item3 - 1;
-                $scope.getWorkSettingLists(item);
+            if ($scope.dayMission.item3 - 1 > 0) {
+                item.pageNumber = $scope.dayMission.item3 - 1;
+                $scope.GetDayMissionList(item);
             }
 
         } else if (page == "first") {
             item.pageNumber = 1;
-            $scope.getWorkSettingLists(item);
+            $scope.GetDayMissionList(item);
 
         } else {
             item.pageNumber = $scope.config.totalPage;
-            $scope.getWorkSettingLists(item);
+            $scope.GetDayMissionList(item);
+        }
+    }
+
+    $scope.MissionHourPage = function (page) {
+        $scope.searchParameter = {
+            firstName: null,
+            lastName: null
+        }
+        var item = {
+            pageNumber: 1,
+            pageSize: 10,
+            sortField: null,
+            sortAsc: true,
+            fillNestedClass: true,
+            searchList: [
+            ]
+        }
+        if (page == 1) {
+            if ($scope.hourMission.item3 + 1 <= $scope.hourMission.totalPage) {
+                item.pageNumber = $scope.hourMission.item3 + 1;
+                $scope.GetHourMissionList(item);
+            }
+        } else if (page == -1) {
+            if ($scope.hourMission.item3 - 1 > 0) {
+                item.pageNumber = $scope.hourMission.item3 - 1;
+                $scope.GetHourMissionList(item);
+            }
+
+        } else if (page == "first") {
+            item.pageNumber = 1;
+            $scope.GetHourMissionList(item);
+
+        } else {
+            item.pageNumber = $scope.hourMission.totalPage;
+            $scope.GetHourMissionList(item);
         }
     }
     //================== search and get personnel ===============================
@@ -485,13 +520,10 @@ app.controller('MissionCtrl', ["$scope", "$timeout", 'currencyConverter', 'reque
             subject: null,
             fromDate: null,
             toDate: null,
-            requesterId: 0,
             dayMissionStateId: 1,
             dayMissionTypeId: "تایید شده",
             personIds: $scope.selectPersonnelFromDbArray,
-            descriptions: [
-                null
-            ],
+            descriptions: [],
             withoutDayCount: null,
             withDayCount: null,
             hokmNO: null,
@@ -499,7 +531,7 @@ app.controller('MissionCtrl', ["$scope", "$timeout", 'currencyConverter', 'reque
         $('#createDayModal').modal();
         $scope.loadCreateModal = true;
         $scope.getTypeOfMission();
-
+        console.log($scope.selectPersonnelFromDbArray);
     }
     $scope.loadEditModal = false;
     $scope.EditRowDayRequest = function (item) {
@@ -569,7 +601,7 @@ app.controller('MissionCtrl', ["$scope", "$timeout", 'currencyConverter', 'reque
     }
     //----------------------- Delete hour mission ----------------------
     $scope.confirmDaymissionDelete = function () {
-        requests.postingData("PersonMission/DeleteMissionRequestBatch/" + $scope.deleteDayId, function (response) {
+        requests.postingData("/PersonMission/DeletePersonMissionBatch/" + $scope.deleteDayId, function (response) {
             $("#DeleteDayModal").modal("hide");
             $scope.GetDayMissionList();
         })

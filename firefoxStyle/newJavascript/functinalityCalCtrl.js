@@ -165,6 +165,7 @@ app.controller('functinalityCalCtrl', ["$scope", "$timeout", 'currencyConverter'
         personId: null,
         insertCalcForNext: true
     }
+    $scope.getListInfoData = [];
     $scope.GetDataForFunctionalCal = function () {
         $scope.items.personId = $scope.selectedPersonnel.Id;
         $scope.items.fromDate = $scope.convertToMiladi($('#startDate').val());
