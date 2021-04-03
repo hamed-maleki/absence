@@ -118,9 +118,7 @@ app.controller("personnelBaseSettingsCtrl", ["$scope", "$timeout", 'requests', f
             name: null,
             displayName: null,
             value: null,
-            type: null,
-            activeDate: null,
-            description: null
+            type: null
         }
     }
 
@@ -168,8 +166,7 @@ app.controller("personnelBaseSettingsCtrl", ["$scope", "$timeout", 'requests', f
         $('#configRemoveModal').modal('hide');
     }
     $scope.deleteConfig = function () {
-        console.log($scope.removeConfigInfo);
-        requests.deleteing("RollCallConfigs/DeleteRollCallConfigsBatch", $scope.removeConfigInfo, function (response) {
+        requests.deleteingJson("RollCallConfigs/DeleteRollCallConfigsBatch", $scope.removeConfigInfo, function (response) {
             $("#deleteConfirm").modal('hide');
             $scope.getPersonnnelConfigList();
         })

@@ -197,8 +197,8 @@
 </div>
 
 <!-- =========================  IF MISSION WAS DAILY  ========================-->
-<div class="hidden" id="DayMissionList">
-    <div class="card" ng-init="GetDayMissionList()">
+<div ng-if="dayMistionListTrue">
+    <div class="card">
         <p class="HeaderForm">
             لیست مأموریت های روزانه
         </p>
@@ -220,19 +220,19 @@
         <div class="table-body">
             <table>
                 <tbody>
-                    <tr class="col-12 row" ng-repeat="item in dayMission.item1 track by item.id">
-                        <td class="col-2 text-center" ng-bind="item.personName"></td>
-                        <td class="col-2 text-center" ng-bind="item.missionTypeTitle"></td>
-                        <td class="col-2 text-center" ng-bind="convertToShamsi(item.fromDate)"></td>
-                        <td class="col-2 text-center" ng-bind="convertToShamsi(item.toDate)"></td>
-                        <td class="col-1 text-center" ng-bind="getMissionDays(item.fromDate,item.toDate)"></td>
+                    <tr class="col-12 row" ng-repeat="item in dayMission track by item[0].id">
+                        <td class="col-2 text-center" ng-bind="item[0].personName"></td>
+                        <td class="col-2 text-center" ng-bind="item[0].missionTypeTitle"></td>
+                        <td class="col-2 text-center" ng-bind="convertToShamsi(item[0].fromDate)"></td>
+                        <td class="col-2 text-center" ng-bind="convertToShamsi(item[0].toDate)"></td>
+                        <td class="col-1 text-center" ng-bind="getMissionDays(item[0].fromDate,item[0].toDate)"></td>
                         <td class="col-3 row">
                             <div class="col-8">
                                 {{item.missionStateTitle}}</div>
                             <div class="row col-4 d-flex justify-content-end">
-                                <p class="ml-1 h6 cursor-pointer" ng-click="DeleteRowDayRequest(item)"><i
+                                <p class="ml-1 h6 cursor-pointer" ng-click="DeleteRowDayRequest(item[0])"><i
                                         class="fa fa-trash" title="حذف درخواست"></i></p>
-                                <p class="ml-1 h6 cursor-pointer" ng-click="EditRowDayRequest(item)"><i
+                                <p class="ml-1 h6 cursor-pointer" ng-click="EditRowDayRequest(item[0])"><i
                                         class="fa fa-edit" title="ویرایش درخواست"></i></p>
                             </div>
                         </td>
@@ -270,6 +270,7 @@
             <div class="col-sm-6"></div>
         </div>
     </div>
+
 </div>
 <!------------------- create day mission modal ---------------------->
 <div class="modal" id="createDayModal">
@@ -701,8 +702,8 @@
     </div>
 </div>
 <!--========================  IF MISSION WAS HOURLY  ==========================-->
-<div class="hidden" id="HourMissionList">
-    <div class="card " ng-init="GetHourMissionList()">
+<div ng-if="hourMistionListTrue">
+    <div class="card ">
         <p class="HeaderForm">
             لیست مأموریت های ساعتی
         </p>

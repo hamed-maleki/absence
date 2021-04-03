@@ -211,7 +211,7 @@ app.controller('MissionCtrl', ["$scope", "$timeout", 'currencyConverter', 'reque
         if ($scope.selectPersonnelFromDbArray.length > 1) {
             $scope.moreThanOnePersonnel = true;
         }
-        $scope.PersonnelIds = $scope.PersonnelIds.substring(00, $scope.PersonnelIds.length - 1);
+        $scope.PersonnelIds = $scope.PersonnelIds.substring(0, $scope.PersonnelIds.length - 1);
         $("#selectPersonnel").modal('hide');
     }
 
@@ -268,17 +268,16 @@ app.controller('MissionCtrl', ["$scope", "$timeout", 'currencyConverter', 'reque
             $('#DayMissionList').addClass('hidden');
         }
     }
+
     $scope.ShowMissionList = function () {
         if ($('#selectMissionType').val() == 1) {
             $scope.GetHourMissionList();
-            $('#HourMissionList').removeClass('hidden');
-            $('#DayMissionList').addClass('hidden');
         } else if ($('#selectMissionType').val() == 2) {
             $scope.GetDayMissionList();
-            $('#DayMissionList').removeClass('hidden');
-            $('#HourMissionList').addClass('hidden');
         }
     }
+
+
     //=============== convert date to shamsi =============================
     $scope.convertToShamsi = function (date) {
         if (date != null) {
@@ -339,7 +338,9 @@ app.controller('MissionCtrl', ["$scope", "$timeout", 'currencyConverter', 'reque
     //======================= Create hour mission ===========================
 
     //------------ Get hour missions List by personnel id ----------------
+    $scope.hourMistionListTrue = false;
     $scope.GetHourMissionList = function (pageItem = null) {
+        $scope.hourMistionListTrue = true;
         $scope.item = {
             pageNumber: 1,
             pageSize: 10,
@@ -449,89 +450,80 @@ app.controller('MissionCtrl', ["$scope", "$timeout", 'currencyConverter', 'reque
         })
     }
     //======================= Create day mission ===========================
-
-    //------------ Get day missions List by personnel id ----------------
-    // $scope.GetDayMissionList = function (pageItem = null) {
-    //     $scope.item = {
-    //         pageNumber: 1,
-    //         pageSize: 10,
-    //         sortField: null,
-    //         sortAsc: true,
-    //         languageId: 0,
-    //         searchList: []
-    //     }
-    //     $scope.dayMission = [];
-    //     let ids = [];
-    //     if ($scope.PersonnelIds != undefined) {
-    //         let ids = $scope.PersonnelIds.split(',');
-    //         for (let i = 0; i < ids.length; i++) {
-    //             if (pageItem == null) {
-    //                 requests.postingData("PersonMission/GetListByPersonnelId/" + ids[i], $scope.item, function (response) {
-    //                     $scope.dayMission += response.data;
-    //                     if ($scope.dayMission != null) {
-    //                         $scope.dayMission.totalPage = Math.ceil($scope.dayMission.item2 / $scope.dayMission.item4)
-    //                     }
-    //                 })
-    //             } else {
-    //                 requests.postingData("PersonMission/GetListByPersonnelId/" + ids[i], pageItem, function (response) {
-    //                     $scope.dayMission += response.data;
-    //                     if ($scope.dayMission != null) {
-    //                         $scope.dayMission.totalPage = Math.ceil($scope.dayMission.item2 / $scope.dayMission.item4)
-    //                     }
-    //                 })
-    //             }
-
-    //         }
-    //     }
-    // }
     //------------ Get day missions List gloabaly----------------
+    $scope.dayMistionListTrue = false;
+    $scope.selectId = "";
+    $scope.dayMission = [];
     $scope.GetDayMissionList = function (pageItem = null) {
-        $scope.item = {
-            pageNumber: 1,
-            pageSize: 10,
-            sortField: null,
-            sortAsc: true,
-            languageId: 0,
-            searchList: []
+        $scope.dayMistionListTrue = true;
+        $scope.result = JSON.parse(localStorage.getItem('MultiSelectionPersonnel'));
+        for (var i = 0; i < $scope.result.length; i++) {
+            $scope.selectId += $scope.result[i].Id.toString().trim() + ",";
         }
-        $scope.dayMission = [];
-        if (pageItem == null) {
-            requests.postingData("PersonMission/GetList", $scope.item, function (response) {
-                $scope.dayMission = response.data;
-                if ($scope.dayMission != null) {
-                    $scope.dayMission.totalPage = Math.ceil($scope.dayMission.item2 / $scope.dayMission.item4)
-                }
-            })
-        } else {
-            requests.postingData("PersonMission/GetList", pageItem, function (response) {
-                $scope.dayMission = response.data;
-                if ($scope.dayMission != null) {
-                    $scope.dayMission.totalPage = Math.ceil($scope.dayMission.item2 / $scope.dayMission.item4)
-                }
-            })
+        $scope.selectId = $scope.selectId.substring(0, $scope.selectId.length - 1).split(',');
+        for (let i = 0; i < $scope.selectId.length; i++) {
+            $scope.item = {
+                pageNumber: 1,
+                pageSize: 10,
+                sortField: null,
+                sortAsc: true,
+                languageId: 0,
+                searchList: [
+                    {
+                        "searchValue": $scope.selectId[i],
+                        "searchField": "PM.PersonId",
+                        "operatorType": 0,
+                        "operandType": 0
+                    }
+                ]
+            }
+
+            if (pageItem == null) {
+                requests.postingData("PersonMission/GetList", $scope.item, function (response) {
+                    $scope.dayMission.push(response.data.item1);
+
+                    if ($scope.dayMission != null) {
+                        $scope.dayMission.totalPage = Math.ceil($scope.dayMission.item2 / $scope.dayMission.item4)
+                    }
+                })
+            } else {
+                requests.postingData("PersonMission/GetList", pageItem, function (response) {
+                    $scope.dayMission.push(response.data.item1);
+                    if ($scope.dayMission != null) {
+                        $scope.dayMission.totalPage = Math.ceil($scope.dayMission.item2 / $scope.dayMission.item4)
+                    }
+                })
+            }
         }
+        console.log($scope.result);
+        console.log($scope.result.length);
+        console.log($scope.dayMission);
     }
 
     //----------------------- initial Create day mission ----------------------
     $scope.loadCreateModal = false;
     $scope.createDayMissionModal = function () {
+        $scope.getTypeOfMission();
+        $scope.result = JSON.parse(localStorage.getItem('MultiSelectionPersonnel'));
+        for (var i = 0; i < $scope.result.length; i++) {
+            $scope.selectId.push($scope.result[i].Id);
+        }
         $scope.createDayMissionData = {
             zoneId: 0,
             subject: null,
             fromDate: null,
             toDate: null,
             dayMissionStateId: 1,
-            dayMissionTypeId: "تایید شده",
-            personIds: $scope.selectPersonnelFromDbArray,
-            descriptions: [],
+            dayMissionTypeId: null,
+            personIds: $scope.selectId,
             withoutDayCount: null,
+            descriptions: [
+            ],
             withDayCount: null,
             hokmNO: null,
         };
         $('#createDayModal').modal();
         $scope.loadCreateModal = true;
-        $scope.getTypeOfMission();
-        console.log($scope.selectPersonnelFromDbArray);
     }
     $scope.loadEditModal = false;
     $scope.EditRowDayRequest = function (item) {

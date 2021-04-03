@@ -405,7 +405,7 @@ app.controller('serviceCtrl', ["$scope", "$timeout", 'currencyConverter', 'reque
     }
     $scope.RemovePersonnelFromList = function (item) {
         $scope.deletePersonnelId = item.id;
-        $("#deleteModalList").modal()
+        $("#deleteModalList").modal();
     }
     $scope.cancelDelete = function () {
         $("#deleteModal").modal("hide")
@@ -418,9 +418,11 @@ app.controller('serviceCtrl', ["$scope", "$timeout", 'currencyConverter', 'reque
     }
     //=========================== delete personnel from list ==============================
     $scope.confirmDeleteList = function () {
-        requests.deleteing('PersonTransportService/Delete/' + $scope.deletePersonnelId, {}, function (response) {
+        requests.deleteing("PersonTransportService/Delete/" + $scope.deletePersonnelId, {}, function (response) {
+            console.log(response)
             $("#deleteModalList").modal("hide");
             $scope.GetServiceInEditList();
         })
+        console.log($scope.deletePersonnelId);
     }
 }])
