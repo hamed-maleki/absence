@@ -6,6 +6,12 @@
     font-style: normal;
 }
 
+.pl-0{
+    padding-left: 0 !important;
+}
+.ml-0{
+    margin-left: 0 !important;
+}
 body {
     font-family: 'vazir' !important;
     background-color: rgba(0, 0, 0, .0);

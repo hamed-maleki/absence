@@ -93,13 +93,13 @@ app.controller("personnelBaseSettingsCtrl", ["$scope", "$timeout", 'requests', f
     $scope.editConfigInfo = [];
     $scope.editRow = function (data) {
         $scope.editConfigInfo = {
-            name: data.name,
-            displayName: data.displayName,
-            value: data.value,
-            type: data.type,
-            activeDate: data.activeDate,
-            description: data.description,
-            id: data.id,
+            "name": data.name,
+            "displayName": data.displayName,
+            "value": data.value,
+            "type": data.type,
+            "activeDate": data.activeDate,
+            "description": data.description,
+            "id": data.id,
         };
         $('#configEditModal').modal();
         $('#eStartDate').val($scope.convertToShamsi($scope.editConfigInfo.activeDate));
@@ -118,7 +118,9 @@ app.controller("personnelBaseSettingsCtrl", ["$scope", "$timeout", 'requests', f
             name: null,
             displayName: null,
             value: null,
-            type: null
+            type: null,
+            activeDate: null,
+            description: null
         }
     }
 
@@ -135,11 +137,12 @@ app.controller("personnelBaseSettingsCtrl", ["$scope", "$timeout", 'requests', f
     }
 
     $scope.CreateConfig = function () {
-        $scope.createConfig.activeDate = $scope.convertToMiladi($("#startDate").val());
+        $scope.createConfig.activeDate = ($scope.convertToMiladi($("#startDate").val())).toString();
         requests.postingData("RollCallConfigs/UpsertRollCallConfigsBatch", $scope.createConfig, function (response) {
             $("#configCreateModal").modal("hide");
             $scope.getPersonnnelConfigList();
         })
+        console.log($scope.createConfig);
     }
 
 
@@ -152,9 +155,11 @@ app.controller("personnelBaseSettingsCtrl", ["$scope", "$timeout", 'requests', f
     }
     $scope.confirmEditConfig = function () {
         $scope.editConfigInfo.activeDate = $scope.convertToMiladi($('#eStartDate').val());
-        requests.postingData("RollCallConfigs/UpsertRollCallConfigsBatch", $scope.editConfigInfo, function (response) {
+
+        requests.update("RollCallConfigs/UpsertRollCallConfigsBatch", $scope.editConfigInfo, function (response) {
             $("#configEditModal").modal("hide");
             $scope.getPersonnnelConfigList();
+            console.log(response.data)
         })
         console.log($scope.editConfigInfo);
     }
@@ -166,10 +171,11 @@ app.controller("personnelBaseSettingsCtrl", ["$scope", "$timeout", 'requests', f
         $('#configRemoveModal').modal('hide');
     }
     $scope.deleteConfig = function () {
-        requests.deleteingJson("RollCallConfigs/DeleteRollCallConfigsBatch", $scope.removeConfigInfo, function (response) {
+        requests.delete("RollCallConfigs/DeleteRollCallConfigsBatch", $scope.removeConfigInfo, function (response) {
             $("#deleteConfirm").modal('hide');
             $scope.getPersonnnelConfigList();
         })
+        console.log($scope.removeConfigInfo);
     }
 
 }])

@@ -7,8 +7,8 @@ app.controller('PersonnelCtrl', ['$scope', '$http', '$compile', '$timeout', 'cur
             changeYear: true
         });
     }, 100)
-    $scope.path = "http://192.168.43.106/api/"
-    //$scope.path = "http://192.168.200.101/api/"
+    // $scope.path = "http://192.168.43.106/api/"
+    $scope.path = "http://192.168.200.101/api/"
     // console.log(window.location.toString().split("/")[3])
     // if (window.location.toString().split("/")[3] == "Organization" || window.location.toString().split("/")[3] == "Kargozini" || window.location.toString().split("/")[3] == "EvaluatinForm" || window.location.toString().split("/")[3] == "Personnels" || window.location.toString().split("/")[3] == "PersonnelActionForm"|| window.location.toString().split("/")[3] =="GlobalValue") {
     //     $scope.path = "http://localhost:2232"
@@ -167,7 +167,7 @@ app.controller('PersonnelCtrl', ['$scope', '$http', '$compile', '$timeout', 'cur
         }
         $scope.searchParam = searchParameter;
         $scope.getData("personnel/nopg" + searchParameter, function (response) {
-            // console.log(response);
+            //console.log(response);
             $scope.confirmAllPersonnel(response)
         })
     })

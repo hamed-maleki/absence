@@ -46,16 +46,16 @@
     <script src="firefoxStyle/datepicker/bootstrap-datepicker.js"></script>
     <script src="firefoxStyle/datepicker/bootstrap-datepicker.fa.min.js"></script>
     <script src="firefoxStyle/newJavascript/time.min.js"></script>
-    <script src="firefoxStyle/newJavascript/personnelTrafficMonthlyReportCtrl.js"></script>
+    <script src="firefoxStyle/newJavascript/personnelTrafficDailyReportCtrl.js"></script>
     <script src="firefoxStyle/newJavascript/requests.js"></script>
     <script src="firefoxStyle/newJavascript/modules/sharing.js"></script>
     <script src="firefoxStyle/newJavascript/modules/selectingChart.js"></script>
     <script src="firefoxStyle/newJavascript/modules/personnel.js"></script>
-    <title>گزارش تردد ماهانه پرسنل</title>
+    <title>گزارش تردد روزانه پرسنل</title>
 </head>
 
-<body dir="rtl" ng-app="myApp" ng-controller="personnelTrafficMonthlyReportCtrl">
-    <p class="HeaderForm">گزارش تردد ماهانه پرسنل</p>
+<body dir="rtl" ng-app="myApp" ng-controller="personnelTrafficDailyReportCtrl">
+    <p class="HeaderForm">گزارش تردد روزانه پرسنل</p>
 
 
     <!------------------- filter for search and select personnel ---------------------->
@@ -118,6 +118,78 @@
             </div>
         </div>
     </div>
+    <!-------------------- search btn ---------------------->
+    <div class="card" ng-show="showSearch">
+        <div class="col-12 row">
+            <div class="col-4">
+                <div style="margin-bottom: 15px;">
+                    <div class="input-group">
+                        <div class="input-group-prepend">
+                            <label class="input-group-text">
+                                تاریخ از
+                            </label>
+                        </div>
+                        <input type="text" autocomplete="off" class="form-control date-picker" placeholder="xxxx/xx/xx"
+                            ng-model="report.fromDate">
+                    </div>
+                </div>
+            </div>
+            <div class="col-4">
+                <div>
+                    <div class="input-group">
+                        <div class="input-group-prepend">
+                            <label class="input-group-text">
+                                تاریخ تا
+                            </label>
+                        </div>
+                        <input type="text" autocomplete="off" class="form-control date-picker" placeholder="xxxx/xx/xx"
+                            ng-model="report.toDate">
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-4">
+                <div class="mb-1">
+                    <div class="input-group">
+                        <div class="input-group-prepend">
+                            <label class="input-group-text">
+                                نحوه نمایش
+                            </label>
+                        </div>
+                        <select class="form-control">
+                            <option ng-value="1">عدد دقیقه</option>
+                            <option ng-value="2" selected>ساعت:دقیقه</option>
+                            <option ng-value="3">عدد ساعت</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-4">
+                <div class="mb-1">
+                    <div class="input-group">
+                        <div class="input-group-prepend">
+                            <label class="input-group-text">
+                                وضعیت روز
+                            </label>
+                        </div>
+                        <select class="form-control">
+                            <option ng-value="0" selected></option>
+                            <option ng-value="1">کاری</option>
+                            <option ng-value="2">تعطیل</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-4 float-left">
+                <div style="text-align: left;">
+                    <button class="new-button" ng-click="searching()"><i class="fa fa-search
+                             ml-1"></i>مشاهده
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- selected personnel table -->
     <div class="card" ng-if="personnelInfoExist">
         <p class="HeaderForm">
             افراد انتخاب شده
@@ -145,59 +217,22 @@
         </div>
         <div class="table-body">
             <table class="test">
-                <tr class="row col-12" id="test" ng-repeat="item in selectPersonnelFromDbArray track by item.Id">
-                    <td class="hidden">{{$index}}</td>
-                    <td class="col-3 text-center">{{item.FirstName}}</td>
-                    <td class="col-3 text-center">{{item.LastName}}</td>
-                    <td class="col-3 text-center">{{item.PersonnelNo}}</td>
-                    <td class="col-3 text-center">{{item.DossierNo}}<i class="fa fa-trash text-danger pointer"
-                            title="حذف فرد انتخاب شده" ng-click="RemovePersonnelSelection($index)"
-                            style="float: left;margin: 0 5px;" data-dismiss="modal"></i>
-                    </td>
-                </tr>
+                <tbody>
+                    <tr class="row col-12" id="test" ng-repeat="item in selectPersonnelFromDbArray track by item.Id">
+                        <td class="hidden">{{$index}}</td>
+                        <td class="col-3 text-center">{{item.FirstName}}</td>
+                        <td class="col-3 text-center">{{item.LastName}}</td>
+                        <td class="col-3 text-center">{{item.PersonnelNo}}</td>
+                        <td class="col-3 text-center">{{item.DossierNo}}<i class="fa fa-trash text-danger pointer"
+                                title="حذف فرد انتخاب شده" ng-click="RemovePersonnelSelection($index)"
+                                style="float: left;margin: 0 5px;" data-dismiss="modal"></i>
+                        </td>
+                    </tr>
+                </tbody>
             </table>
         </div>
     </div>
-
-    <!-------------------- search btn ---------------------->
-    <div class="card" ng-show="showSearch">
-        <div class="col-12 row">
-            <div class="col-4">
-                <div style="margin-bottom: 15px;">
-                    <div class="input-group">
-                        <div class="input-group-prepend">
-                            <label class="input-group-text">
-                                تاریخ از
-                            </label>
-                        </div>
-                        <input type="text" autocomplete="off" class="form-control date-picker" placeholder="xxxx/xx/xx"
-                            id="fromDate">
-                    </div>
-                </div>
-            </div>
-            <div class="col-4">
-                <div>
-                    <div class="input-group">
-                        <div class="input-group-prepend">
-                            <label class="input-group-text">
-                                تاریخ تا
-                            </label>
-                        </div>
-                        <input type="text" autocomplete="off" class="form-control date-picker" placeholder="xxxx/xx/xx"
-                            id="toDate">
-                    </div>
-                </div>
-            </div>
-            <div class="col-4 float-left">
-                <div style="text-align: left;">
-                    <button class="new-button" ng-click="searching()"><i class="fa fa-search
-                             ml-1"></i>جستجو
-                    </button>
-                </div>
-            </div>
-        </div>
-    </div>
-    <!------------ table ------------------->
+    <!------------ report table ------------------->
     <div ng-if="searchBtn">
         <div class="card">
             <div class="table-header">
@@ -233,7 +268,7 @@
         <div class="card" ng-if="err">
             <div class="text-danger text-center"><strong>داده ای برای نمایش وجود ندارد😢</strong></div>
         </div>
-        <!----------------- create buttons ---------------->
+        <!----------------- pagination ---------------->
         <div class="card">
             <div class="row">
                 <div class="col-sm-6" style="text-align: right;">

@@ -116,7 +116,7 @@ app.controller("generalSettingsCtrl", ["$scope", "$timeout", 'requests', functio
         $('#editModal').modal('hide');
     }
     $scope.confirmEdit = function () {
-        requests.postingData('WorkSettings/Update', $scope.editWorkSetting, function (response) {
+        requests.puttingData('WorkSettings/Update', $scope.editWorkSetting, function (response) {
             $scope.getWorkSettingLists();
             $('#editModal').modal('hide');
         })

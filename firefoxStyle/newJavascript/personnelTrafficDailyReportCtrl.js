@@ -1,5 +1,5 @@
 var app = angular.module('myApp', ['customService', 'finance3']);
-app.controller('personnelTrafficMonthlyReportCtrl', ["$scope", "$timeout", 'currencyConverter', 'requests', function ($scope, $timeout, currencyConverter, requests) {
+app.controller('personnelTrafficDailyReportCtrl', ["$scope", "$timeout", 'currencyConverter', 'requests', function ($scope, $timeout, currencyConverter, requests) {
     $scope.searchBtn = false;
     $scope.err = false;
     $scope.showSearch = false;
@@ -241,6 +241,7 @@ app.controller('personnelTrafficMonthlyReportCtrl', ["$scope", "$timeout", 'curr
     $scope.searching = function () {
         $scope.fromDate = $scope.convertToMiladi($('#fromDate').val())
         $scope.toDate = $scope.convertToMiladi($('#toDate').val());
+
         $scope.getReportList();
     }
     //------------- get list of work settings -----------------------

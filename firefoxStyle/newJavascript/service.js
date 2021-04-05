@@ -1,11 +1,18 @@
 var app = angular.module('myApp', ['customService', 'finance3']);
 app.controller('serviceCtrl', ["$scope", "$timeout", 'currencyConverter', 'requests', function ($scope, $timeout, currencyConverter, requests) {
+
+    //--------------- initial constants ------------------
     $scope.selectMulti = true;
     $scope.personnelInfoExist = false;
     $scope.moreThanOnePersonnel = false;
     $scope.IsPersonelRemoved = false;
     $scope.loadingPersonnel = false;
     $scope.personnelInService = false;
+    $scope.PersonnelIds = "";
+    $scope.setAll = false;
+    $scope.showPersonnel = false;
+    $scope.multiSelectArray = [];
+    $scope.multiSelectArrays = [];
     //------------- load page -----------------------
 
     //----------------- search in main list -----------------------
@@ -100,74 +107,90 @@ app.controller('serviceCtrl', ["$scope", "$timeout", 'currencyConverter', 'reque
         }
     }
     //================== search and get personnel ===============================
-    $scope.personnelInfoExist = false;
-    $scope.moreThanOnePersonnel = false;
-    $scope.IsPersonelRemoved = false;
+    $scope.confirmAddingPersonnel = function () {
+        if ($scope.setAll) {
+            $scope.$broadcast("getAllPersonnel");
+        } else {
+            $scope.setPersonnel(data, method);
+        }
+        $scope.showPersonnel = false;
+        $scope.GetServiceList();
+    }
 
+    $scope.confirmAllPersonnel = function (item) {
+        // console.log(item.length)
+        for (let i = 0; i < item.length; i++) {
+            $scope.PersonnelIds += item[i].Id.toString() + ",";
+        }
+        $scope.multiSelectArray = item;
+        $scope.multiSelectArrays = item;
+        $scope.PersonnelIds = $scope.PersonnelIds.substring(0, $scope.PersonnelIds.length - 1);
+
+    }
     $scope.searchP = {
         value: null
     }
 
-    $scope.selectMulti = true;
-    $scope.openPersonnel = function () {
-        $(".date-picker").datepicker({
-            dateFormat: "yy/mm/dd",
-            changeMonth: true,
-            changeYear: true
-        });
-        $("#addingPersonnelModal").modal();
-        $scope.loadingPersonnel = true;
-        $timeout(function () {
-            currencyConverter.call()
-        }, 100)
-    }
 
-    $scope.cancelAddingPersonnel = function () {
-        $("#addingPersonnelModal").modal("hide");
-        $scope.loadingPersonnel = false;
+    // $scope.addToMultiSelect = function (personnel) {
+    //     if ($('#customCheck-' + personnel.Id).is(":checked")) {
+    //         $scope.multiSelectArray.push(personnel);
+    //     } else {
+    //         for (var i = 0; i < $scope.multiSelectArray.length; i++) {
+    //             if ($scope.multiSelectArray[i].Id == personnel.Id) {
+    //                 $scope.multiSelectArray.splice(i, 1);
+    //                 break;
+    //             }
+    //         }
+    //     }
+    // }
+    $scope.addToMutliPerSetAll = function (item) {
+        $scope.multiSelectArray.push(item);
     }
-
-    $('.dropdownInMission').on({
-        "click": function (event) {
-            if ($(event.target).closest('.dropdown-toggle').length) {
-                $(this).data('closable', true);
-            } else {
-                $(this).data('closable', false);
+    $scope.checkMulti = function (id) {
+        var found = false;
+        for (var i = 0; i < $scope.multiSelectArray.length; i++) {
+            if ($scope.multiSelectArray[i].Id == id) {
+                found = true;
+                break;
             }
-        },
-        "hide.bs.dropdownInMission": function (event) {
-            hide = $(this).data('closable');
-            $(this).data('closable', true);
-            return hide;
         }
-    });
-
+        return found;
+    }
+    $scope.setAllPersonnel = function () {
+        $scope.multiSelectArray = [];
+        if ($scope.setAll) {
+            $scope.setAll = false
+        } else {
+            $scope.setAll = true;
+            $scope.$broadcast("changingMulti")
+        }
+    }
     $scope.selectPersonnel = function () {
         $scope.localPersonnel = false;
-        $("#selectPersonnel").modal();
-        $scope.loadingPersonnel = true;
+        $scope.showPersonnel = true;
         setTimeout(function () {
             currencyConverter.call()
-        }, 500)
+        }, 10)
     }
 
-    $scope.settingPersonnelInfo = function (data) {
-        localStorage.setItem("lastSelected", JSON.stringify(data));
-        $scope.oneSelected = true;
-        $scope.loading = false;
-        setTimeout(function () {
-            $(".date-picker").datepicker({
-                dateFormat: "yy/mm/dd",
-                changeMonth: true,
-                changeYear: true
-            });
-            $("#finishEnterDate").val(moment().format('jYYYY/jM/jD'))
-            $("#startEnterDate").val(moment().add(-30, 'days').format('jYYYY/jM/jD'));
+    // $scope.settingPersonnelInfo = function (data) {
+    //     localStorage.setItem("lastSelected", JSON.stringify(data));
+    //     $scope.oneSelected = true;
+    //     $scope.loading = false;
+    //     setTimeout(function () {
+    //         $(".date-picker").datepicker({
+    //             dateFormat: "yy/mm/dd",
+    //             changeMonth: true,
+    //             changeYear: true
+    //         });
+    //         $("#finishEnterDate").val(moment().format('jYYYY/jM/jD'))
+    //         $("#startEnterDate").val(moment().add(-30, 'days').format('jYYYY/jM/jD'));
 
-        }, 100);
-    }
+    //     }, 100);
+    // }
 
-    $scope.selectPersonnelsFromDb = [];
+    // $scope.selectPersonnelsFromDb = [];
     $scope.setPersonnel = function (data, method) {
         $scope.PersonnelIds = "";
         var dataLocal = localStorage.getItem("localPersonnelItem");
@@ -196,43 +219,31 @@ app.controller('serviceCtrl', ["$scope", "$timeout", 'currencyConverter', 'reque
         $scope.loading = true;
         $scope.settingPersonnelInfo(data);
         if ($scope.IsPersonelRemoved == true) {
-            $scope.selectPersonnelsFromDb = JSON.parse(localStorage.getItem('MultiSelectionPersonnel'));
-            $scope.selectPersonnelsFromDb.push(data);
-            localStorage.setItem('MultiSelectionPersonnel', JSON.stringify($scope.selectPersonnelsFromDb));
+            $scope.multiSelectArray = JSON.parse(localStorage.getItem('MultiSelectionPersonnel'));
+            $scope.multiSelectArray.push(data);
+            localStorage.setItem('MultiSelectionPersonnel', JSON.stringify($scope.multiSelectArray));
         } else {
-            $scope.selectPersonnelsFromDb.push(data);
-            localStorage.setItem('MultiSelectionPersonnel', JSON.stringify($scope.selectPersonnelsFromDb));
+            $scope.multiSelectArray.push(data);
+            localStorage.setItem('MultiSelectionPersonnel', JSON.stringify($scope.multiSelectArray));
         }
         if (method == "1") {
-            $scope.selectPersonnelFromDbArray = JSON.parse(localStorage.getItem('MultiSelectionPersonnel'));
+            $scope.multiSelectArray = JSON.parse(localStorage.getItem('MultiSelectionPersonnel'));
             $scope.localPersonnel = false;
-            for (let i = 0; i < $scope.selectPersonnelFromDbArray.length; i++) {
-                $scope.PersonnelIds += $scope.selectPersonnelFromDbArray[i].Id.toString() + ",";
+            for (let i = 0; i < $scope.multiSelectArray.length; i++) {
+                $scope.PersonnelIds += $scope.multiSelectArray[i].Id.toString() + ",";
             }
             $scope.PersonnelIds = $scope.PersonnelIds.substring(0, $scope.PersonnelIds.length - 1);
-            if ($scope.selectPersonnelFromDbArray.length != 0) {
+            if ($scope.multiSelectArray.length != 0) {
                 $scope.personnelInfoExist = true;
             }
-            if ($scope.selectPersonnelFromDbArray.length > 1) {
+            if ($scope.multiSelectArray.length > 1) {
                 $scope.moreThanOnePersonnel = true;
             }
         }
+
     }
-    $scope.confirmAddingPersonnel = function () {
-        $scope.PersonnelIds = "";
-        $scope.selectPersonnelFromDbArray = JSON.parse(localStorage.getItem('MultiSelectionPersonnel'));
-        for (let i = 0; i < $scope.selectPersonnelFromDbArray.length; i++) {
-            $scope.PersonnelIds += $scope.selectPersonnelFromDbArray[i].Id.toString() + ",";
-        }
-        if ($scope.selectPersonnelFromDbArray.length != 0) {
-            $scope.personnelInfoExist = true;
-        }
-        if ($scope.selectPersonnelFromDbArray.length > 1) {
-            $scope.moreThanOnePersonnel = true;
-        }
-        $scope.PersonnelIds = $scope.PersonnelIds.substring(0, $scope.PersonnelIds.length - 1);
-        $("#selectPersonnel").modal('hide');
-    }
+
+
 
     $scope.checkLocal = function () {
         if (localStorage.getItem("lastSelected") != null) {
@@ -255,18 +266,10 @@ app.controller('serviceCtrl', ["$scope", "$timeout", 'currencyConverter', 'reque
         $scope.confirmAddingPersonnel();
         $scope.IsPersonelRemoved = true;
     }
-    $scope.checkMulti = function (id) {
-        var found = false;
-        for (var i = 0; i < $scope.selectPersonnelsFromDb.length; i++) {
-            if ($scope.selectPersonnelsFromDb[i].Id == id) {
-                found = true;
-                break;
-            }
-        }
-        return found;
-    }
+
     //======================== get service list =========================
     $scope.GetServiceList = function (pageItem = null) {
+        console.log($scope.multiSelectArrays.length);
         $scope.item = {
             pageNumber: 1,
             pageSize: 10,
@@ -312,27 +315,13 @@ app.controller('serviceCtrl', ["$scope", "$timeout", 'currencyConverter', 'reque
     $scope.CancelAddPersonnel = function () {
         $("#selectPersonnel").modal("hide");
     }
-    $scope.confirmAddingPersonnelEdit = function () {
-        $scope.PersonnelIds = "";
-        $scope.selectPersonnelFromDbArray = JSON.parse(localStorage.getItem('MultiSelectionPersonnel'));
-        for (let i = 0; i < $scope.selectPersonnelFromDbArray.length; i++) {
-            $scope.PersonnelIds += $scope.selectPersonnelFromDbArray[i].Id.toString() + ",";
-        }
-        if ($scope.selectPersonnelFromDbArray.length != 0) {
-            $scope.personnelInfoExist = true;
-        }
-        if ($scope.selectPersonnelFromDbArray.length > 1) {
-            $scope.moreThanOnePersonnel = true;
-        }
-        $("#selectPersonnel").modal("hide");
-        $scope.GetServiceInEditList();
-    }
     $scope.confirmCreate = function () {
         requests.postingData('TransportServices/Create', $scope.createServiceData, function (response) {
             $("#createModal").modal("hide");
             $scope.GetServiceList();
         })
     }
+
     //=================================== edit service ===================================
     $scope.editData = function (item) {
         $scope.editServiceData = item;

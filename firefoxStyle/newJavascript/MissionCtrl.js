@@ -235,6 +235,13 @@ app.controller('MissionCtrl', ["$scope", "$timeout", 'currencyConverter', 'reque
         localStorage.setItem('MultiSelectionPersonnel', JSON.stringify($scope.RemovePersonnelFromDbArray));
         $scope.confirmAddingPersonnel();
         $scope.IsPersonelRemoved = true;
+        if ($scope.RemovePersonnelFromDbArray.length == 1) {
+            $scope.moreThanOnePersonnel = false;
+            $('#selectMissionType').val(0);
+            $scope.GetDayMissionList();
+            $scope.selectId = "";
+            $scope.dayMission = [];
+        }
     }
     $scope.checkMulti = function (id) {
         var found = false;
@@ -270,10 +277,16 @@ app.controller('MissionCtrl', ["$scope", "$timeout", 'currencyConverter', 'reque
     }
 
     $scope.ShowMissionList = function () {
+        $scope.dayMistionListTrue = false;
+        $scope.hourMistionListTrue = false;
         if ($('#selectMissionType').val() == 1) {
             $scope.GetHourMissionList();
+            $scope.hourMistionListTrue = true;
         } else if ($('#selectMissionType').val() == 2) {
             $scope.GetDayMissionList();
+            $scope.dayMistionListTrue = true;
+            $scope.selectId = "";
+            $scope.dayMission = [];
         }
     }
 
@@ -339,6 +352,7 @@ app.controller('MissionCtrl', ["$scope", "$timeout", 'currencyConverter', 'reque
 
     //------------ Get hour missions List by personnel id ----------------
     $scope.hourMistionListTrue = false;
+    $scope.selectId = JSON.parse(localStorage.getItem('MultiSelectionPersonnel')).Id;
     $scope.GetHourMissionList = function (pageItem = null) {
         $scope.hourMistionListTrue = true;
         $scope.item = {
@@ -346,19 +360,24 @@ app.controller('MissionCtrl', ["$scope", "$timeout", 'currencyConverter', 'reque
             pageSize: 10,
             sortField: null,
             sortAsc: true,
-            searchList: []
+            searchList: [{
+                "searchValue": $scope.selectId,
+                "searchField": "HM.PersonId",
+                "operatorType": 0,
+                "operandType": 0
+            }]
         }
         $scope.hourMission = [];
         if ($scope.PersonnelIds != undefined) {
             if (pageItem == null) {
-                requests.postingData("HourMission/GetListByPersonnel/" + $scope.PersonnelIds, $scope.item, function (response) {
+                requests.postingData("HourMission/GetList", $scope.item, function (response) {
                     $scope.hourMission = response.data;
                     if ($scope.hourMission != null) {
                         $scope.hourMission.totalPage = Math.ceil($scope.hourMission.item2 / $scope.hourMission.item4)
                     }
                 })
             } else {
-                requests.postingData("HourMission/GetListByPersonnel/" + $scope.PersonnelIds, pageItem, pageItem, function (response) {
+                requests.postingData("HourMission/GetList", pageItem, pageItem, function (response) {
                     $scope.hourMission = response.data;
                     if ($scope.hourMission != null) {
                         $scope.hourMission.totalPage = Math.ceil($scope.hourMission.item2 / $scope.hourMission.item4)
@@ -370,8 +389,9 @@ app.controller('MissionCtrl', ["$scope", "$timeout", 'currencyConverter', 'reque
 
     //----------------------- initial Create hour mission ----------------------
     $scope.createHourMissionModal = function () {
+        $scope.selectId = JSON.parse(localStorage.getItem('MultiSelectionPersonnel'))[0].Id;
         $scope.createHourMissionData = {
-            personId: $scope.selectPersonnelFromDbArray.id,
+            personId: $scope.selectId,
             missionDate: null,
             hourMissionStateId: 1,
             hourMissionStateTitle: "تایید شده",
@@ -424,12 +444,13 @@ app.controller('MissionCtrl', ["$scope", "$timeout", 'currencyConverter', 'reque
             hours: timeArrayT[0],
             minutes: timeArrayT[1],
         }
-        requests.postingData('HourMission/CreateRequest', $scope.createHourMissionModal, function (response) {
+        requests.postingData('HourMission/Create', $scope.createHourMissionModal, function (response) {
             if (!response.data == undefined) {
                 $("#createHourModal").modal("hide");
                 $scope.GetHourMissionList();
             }
         })
+        console.log($scope.createHourMissionData);
     }
     //----------------------- Edit hour Mission ----------------------
     $scope.confirmHourMissionEdit = function () {
@@ -440,7 +461,7 @@ app.controller('MissionCtrl', ["$scope", "$timeout", 'currencyConverter', 'reque
             $("#EditHourModal").modal("hide");
             $scope.GetHourMissionList();
         })
-        console.log($scope.editHourMissionData);
+        // console.log($scope.editHourMissionData);
     }
     //----------------------- Delete hour Mission ----------------------
     $scope.confirmHourMissionDelete = function () {
@@ -480,28 +501,32 @@ app.controller('MissionCtrl', ["$scope", "$timeout", 'currencyConverter', 'reque
 
             if (pageItem == null) {
                 requests.postingData("PersonMission/GetList", $scope.item, function (response) {
-                    $scope.dayMission.push(response.data.item1);
-
+                    for (let i = 0; i < response.data.item1.length; i++) {
+                        $scope.dayMission.push(response.data.item1[i]);
+                    }
                     if ($scope.dayMission != null) {
                         $scope.dayMission.totalPage = Math.ceil($scope.dayMission.item2 / $scope.dayMission.item4)
                     }
+
                 })
             } else {
                 requests.postingData("PersonMission/GetList", pageItem, function (response) {
-                    $scope.dayMission.push(response.data.item1);
+                    for (let i = 0; i < response.data.item1.length; i++) {
+                        $scope.dayMission.push(response.data.item1[i]);
+                    }
                     if ($scope.dayMission != null) {
                         $scope.dayMission.totalPage = Math.ceil($scope.dayMission.item2 / $scope.dayMission.item4)
                     }
                 })
             }
+
         }
-        console.log($scope.result);
-        console.log($scope.result.length);
-        console.log($scope.dayMission);
+        console.log($scope.dayMission)
     }
 
     //----------------------- initial Create day mission ----------------------
     $scope.loadCreateModal = false;
+    $scope.selectId = [];
     $scope.createDayMissionModal = function () {
         $scope.getTypeOfMission();
         $scope.result = JSON.parse(localStorage.getItem('MultiSelectionPersonnel'));
@@ -526,22 +551,61 @@ app.controller('MissionCtrl', ["$scope", "$timeout", 'currencyConverter', 'reque
         $scope.loadCreateModal = true;
     }
     $scope.loadEditModal = false;
+    $scope.MasterMissionInfo = [];
     $scope.EditRowDayRequest = function (item) {
         $scope.loadEditModal = true;
         $scope.getTypeOfMission();
-        $scope.editDayMissionData = item;
+        $scope.editDayMissionData =
+        {
+            personId: item.personId,
+            personName: item.personName,
+            requestId: item.requestId,
+            fromDate: item.fromDate,
+            toDate: item.toDate,
+            missionReport: null,
+            ticketPrice: item.ticketPrice,
+            kilometer: item.kilometer,
+            withoutDayCount: item.withDayCount,
+            withDayCount: item.withDayCount,
+            otherExpense: item.otherExpense,
+            hokmNO: item.hokmNO,
+            hardWork: item.hardWork,
+            residencePrice: item.residencePrice,
+            rewardableMission1: item.rewardableMission1,
+            rewardableMission2: item.rewardableMission2,
+            rewardableMission3: item.rewardableMission3,
+            rewardableMission4: item.rewardableMission4,
+            rewardableMission5: item.rewardableMission5,
+            rewardableMission6: item.rewardableMission6,
+            rewardableMission7: item.rewardableMission7,
+            dayMissionStateId: item.dayMissionStateId,
+            missionStateTitle: item.missionStateTitle,
+            dayMissionTypeId: item.dayMissionTypeId,
+            missionTypeTitle: item.missionTypeTitle,
+            description: item.description,
+            id: item.id
+        };
+        // get master info from mission
+        requests.gettingData('PersonMission/GetMission?PersonId=' + item.personId, function (response) {
+            $scope.MasterMissionInfo = response.data;
+        })
         $('#EditstartDayDate').val($scope.convertToShamsi($scope.editDayMissionData.fromDate));
         $('#EditendDayDate').val($scope.convertToShamsi($scope.editDayMissionData.toDate));
+
         //for mission type------------------------------------------------
-        $('#selectedType').children('option').removeAttr('selected');
-        $('#selectedType').children('option[value=' + $scope.editDayMissionData.dayMissionTypeId + ']').attr('selected', 'selected');
+        $('#selectedType').val(item.missionTypeTitle);
+        // $('#selectedType').children('option').removeAttr('selected');
+        // $('#selectedType').children('option[value=' + $scope.editDayMissionData.dayMissionTypeId + ']').attr('selected', 'selected');
+
         //for zone state--------------------------------------------------
         $('#selectZoneType').children('option').removeAttr('selected');
-        $('#selectZoneType').children('option[value=' + $scope.editDayMissionData.dayMissionTypeId + ']').attr('selected', 'selected');
+        $('#selectZoneType').children('option[value=' + $scope.MasterMissionInfo.zoneId + ']').attr('selected', 'selected');
         $('#editDayModal').modal();
+        console.log($scope.MasterMissionInfo);
     }
+    $scope.deleteDayId = [];
     $scope.DeleteRowDayRequest = function (item) {
-        $scope.deleteDayId = item.requestId;
+        $scope.deleteDayId.push(item.requestId);
         $('#DeleteDayModal').modal();
     }
     //----------------------- cancel day mission ----------------------
@@ -590,10 +654,11 @@ app.controller('MissionCtrl', ["$scope", "$timeout", 'currencyConverter', 'reque
                 $scope.GetDayMissionList();
             }
         })
+        console.log($scope.editDayMissionData);
     }
-    //----------------------- Delete hour mission ----------------------
+    //----------------------- Delete day mission ----------------------
     $scope.confirmDaymissionDelete = function () {
-        requests.postingData("/PersonMission/DeletePersonMissionBatch/" + $scope.deleteDayId, function (response) {
+        requests.deleteing("PersonMission/DeletePersonMissionBatch", $scope.deleteDayId, function (response) {
             $("#DeleteDayModal").modal("hide");
             $scope.GetDayMissionList();
         })

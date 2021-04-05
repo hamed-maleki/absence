@@ -356,53 +356,58 @@
                             </div>
                         </div>
                     </div>
-                    <div class="modal fade" id="selectPersonnel">
-                        <div class="modal-dialog modal-xl">
-                            <div class="modal-content">
-                                <div class="modal-head">
+                    <div class="" ng-if="showPersonnel">
+                        <div class="">
+                            <div class="">
+                                <div class="">
                                     <p class="HeaderForm">
                                         انتخاب پرسنل
                                         <i class="fa  fa-close text-danger pointer" style="float: left;margin: 0 5px;"
                                             data-dismiss="modal"></i>
                                     </p>
                                 </div>
-                                <div class="modal-body" style="padding-top: 0;">
-                                    <div ng-if="loadingPersonnel" ng-include="'modules/personnelSelect.html'"></div>
-                                </div>
-                                <div class="card row">
-                                    <div class="row col-sm-8">
-                                        <div class="col-sm-6">
-
-                                            <div style="margin-bottom: 15px;">
+                                <div class="" style="padding-bottom: 0;padding-top: 0;">
+                                    <div class="row">
+                                        <div class="row col-sm-8">
+                                            <div class="col-sm-6">
+                                                <div style="margin-bottom: 15px;">
+                                                    <div class="input-group">
+                                                        <div class="input-group-prepend">
+                                                            <label class="input-group-text">
+                                                                از تاریخ
+                                                            </label>
+                                                        </div>
+                                                        <input type="text" autocomplete="off"
+                                                            class="form-control date-picker" placeholder="xxxx/xx/xx"
+                                                            id="EditstartDayDate">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-sm-6">
                                                 <div class="input-group">
                                                     <div class="input-group-prepend">
                                                         <label class="input-group-text">
-                                                            از تاریخ
+                                                            تا تاریخ
                                                         </label>
                                                     </div>
                                                     <input type="text" autocomplete="off"
                                                         class="form-control date-picker" placeholder="xxxx/xx/xx"
-                                                        id="EditstartDayDate">
+                                                        id="EditendDayDate">
                                                 </div>
-                                            </div>
-                                        </div>
-                                        <div class="col-sm-6">
-                                            <div class="input-group">
-                                                <div class="input-group-prepend">
-                                                    <label class="input-group-text">
-                                                        تا تاریخ
-                                                    </label>
-                                                </div>
-                                                <input type="text" autocomplete="off" class="form-control date-picker"
-                                                    placeholder="xxxx/xx/xx" id="EditendDayDate">
                                             </div>
                                         </div>
                                     </div>
+                                </div>
+
+                                <div class="" style="padding-top: 0;">
+                                    <div ng-include="'modules/personnelSelect.html'"></div>
+                                </div>
+                                <div class="card">
                                     <div class="float left">
                                         <button class="new-button red" ng-click="CancelAddPersonnel()"><i
                                                 class="fa fa-close"></i>انصراف</button>
                                         <button class="new-button green" id="confirmBtn"
-                                            ng-click="confirmAddingPersonnelEdit()"><i
+                                            ng-click="confirmAddingPersonnel()"><i
                                                 class="fa fa-check"></i>تایید</button>
                                     </div>
                                 </div>
@@ -425,31 +430,6 @@
                                 تایید
                             </button>
                         </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-    <!------------------- select personnel ---------------------->
-    <div class="modal fade" id="selectPersonnel">
-        <div class="modal-dialog modal-xl">
-            <div class="modal-content">
-                <div class="modal-head">
-                    <p class="HeaderForm">
-                        انتخاب پرسنل
-                        <i class="fa  fa-close text-danger pointer" style="float: left;margin: 0 5px;"
-                            data-dismiss="modal"></i>
-                    </p>
-                </div>
-                <div class="modal-body" style="padding-top: 0;">
-                    <div ng-if="loadingPersonnel" ng-include="'modules/personnelSelect.html'"></div>
-                </div>
-                <div class="card">
-                    <div class="float-left">
-                        <button class="new-button red" ng-click="CancelAddPersonnel()"><i
-                                class="fa fa-close"></i>انصراف</button>
-                        <button class="new-button green" id="confirmBtn" ng-click="confirmAddingPersonnel()"><i
-                                class="fa fa-check"></i>تایید</button>
                     </div>
                 </div>
             </div>
