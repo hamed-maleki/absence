@@ -93,7 +93,6 @@ app.controller('PersonnelVacationCtrl', ["$scope", "$timeout", 'currencyConverte
     $scope.selectMulti = false;
     $scope.setAll = false;
     $scope.serachPersonel = function (value) {
-        // console.log(value);
         $scope.localPersonnel = false;
         if (value == "") {
             $scope.searchingPosition = false;
@@ -118,7 +117,7 @@ app.controller('PersonnelVacationCtrl', ["$scope", "$timeout", 'currencyConverte
         $("#addingPersonnelModal").modal("hide");
         $scope.loadingPersonnel = false;
     }
-    $('.dropdownInVacation').on({
+    $('.dropdown').on({
         "click": function (event) {
             if ($(event.target).closest('.dropdown-toggle').length) {
                 $(this).data('closable', true);
@@ -126,7 +125,7 @@ app.controller('PersonnelVacationCtrl', ["$scope", "$timeout", 'currencyConverte
                 $(this).data('closable', false);
             }
         },
-        "hide.bs.dropdownInVacation": function (event) {
+        "hide.bs.dropdown": function (event) {
             hide = $(this).data('closable');
             $(this).data('closable', true);
             return hide;
@@ -364,6 +363,7 @@ app.controller('PersonnelVacationCtrl', ["$scope", "$timeout", 'currencyConverte
     }
     $scope.EditRowHourRequest = function (data) {
         $scope.editHourVacationData = data;
+        $('#EditstartHDate').val($scope.convertToShamsi(data.leaveDate));
         $('#EditHourModal').modal();
     }
     $scope.DeleteRowHourRequest = function (data) {
@@ -417,9 +417,9 @@ app.controller('PersonnelVacationCtrl', ["$scope", "$timeout", 'currencyConverte
     }
     //----------------------- Delete hour Vacation ----------------------
     $scope.confirmHourVacationDelete = function () {
-        requests.deleteing("HourLeaves/Delete/" + $scope.deleteId, function (response) {
-            $("#DeleteHourModal").modal("hide");
+        requests.deleteing("HourLeaves/Delete/" + $scope.deleteId, {}, function (response) {
             $scope.GetHourVacationList();
+            $("#DeleteHourModal").modal("hide");
         })
     }
 
@@ -427,7 +427,6 @@ app.controller('PersonnelVacationCtrl', ["$scope", "$timeout", 'currencyConverte
 
     //------------ Get day Vacations List ----------------
     $scope.GetPersonalVacationList = function (pageItem = null) {
-        console.log($scope.selectedPersonnel[0].Id.toString());
         $scope.item = {
             pageNumber: 1,
             pageSize: 10,
@@ -499,8 +498,10 @@ app.controller('PersonnelVacationCtrl', ["$scope", "$timeout", 'currencyConverte
         $('#EditendDayDate').val($scope.convertToShamsi($scope.editDayVacationData.toDate));
         $('#editDayModal').modal();
     }
+
+    $scope.deleteDayId = [];
     $scope.DeleteRowDayRequest = function (data) {
-        $scope.deleteDayId = data.id;
+        $scope.deleteDayId.push(data.id);
         $('#DeleteDayModal').modal();
     }
 
@@ -544,7 +545,6 @@ app.controller('PersonnelVacationCtrl', ["$scope", "$timeout", 'currencyConverte
             $scope.GetPersonalVacationList();
 
         })
-        // console.log($scope.createDayVacationData);
     }
     //----------------------- edit day Vacation ----------------------
     $scope.confirmDayVacationEdit = function () {
@@ -560,15 +560,17 @@ app.controller('PersonnelVacationCtrl', ["$scope", "$timeout", 'currencyConverte
                 $("#editDayModal").modal("hide");
                 $scope.GetPersonalVacationList();
             })
-            // console.log($scope.editDayVacationData);
         }
-        // console.log($scope.editDayVacationData);
     }
-    //----------------------- Delete hour Vacation ----------------------
+    //----------------------- Delete day Vacation ----------------------
     $scope.confirmDayVacationDelete = function () {
-        requests.deleteing("PersonLeaves/Delete/" + $scope.deleteDayId, function (response) {
-            $("#DeleteDayModal").modal("hide");
-            $scope.GetPersonalVacationList();
+        requests.delete("PersonLeave/DeletePersonLeaveBatch", $scope.deleteDayId, function (response) {
+            if (response.success == true) {
+                $("#DeleteDayModal").modal("hide");
+                $scope.GetPersonalVacationList();
+            } else {
+                alert(response.errorMessages);
+            }
         })
     }
 

@@ -63,9 +63,9 @@
         <div class="table-header">
             <table class="text-center">
                 <thead>
-                    <tr class="col-12 row">
-                        <th class="col-6">عنوان</th>
-                        <th class="col-6">مقدار</th>
+                    <tr>
+                        <th class="w-50">عنوان</th>
+                        <th class="w-50">مقدار</th>
                     </tr>
                 </thead>
             </table>
@@ -73,14 +73,11 @@
         <div class="table-body">
             <table class="text-center">
                 <tbody>
-                    <tr class="col-12 row" ng-repeat="workRule in WorkRules.item1">
-                        <td class="text-center col-6" ng-bind="workRule.id"></td>
-                        <td class="text-center col-6" ng-bind="workRule.value">
-                            <div class="float-left row">
-                                <p class="col-3" ng-click="removeBtn(workRule)"><i class="fa fa-trash" title="حذف"></i>
-                                </p>
-                                <p class="col-3" ng-click="editBtn(workRule)"><i class="fa fa-edit" title="ویرایش"></i>
-                                </p>
+                    <tr ng-repeat="workRule in WorkRules.item1">
+                        <td class="text-center w-50" ng-bind="workRule.item1.id"></td>
+                        <td class="text-center w-50" ng-bind="workRule.item1.value">
+                            <div class="float-left">
+                                <i class="fa fa-edit" title="ویرایش" ng-click="editBtn(WorkRules.item1)"></i>
                             </div>
                         </td>
                     </tr>

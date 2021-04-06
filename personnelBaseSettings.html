@@ -60,9 +60,10 @@
         <div class="table-header">
             <table class="text-center">
                 <thead>
-                    <tr class="col-12 row">
-                        <th class="col-6">عنوان</th>
-                        <th class="col-6">مقادیر</th>
+                    <tr>
+                        <th class="w-30">عنوان</th>
+                        <th class="w-30">نوع</th>
+                        <th class="w-40">مقادیر</th>
                     </tr>
                 </thead>
             </table>
@@ -70,23 +71,21 @@
         <div class="table-body">
             <table class="test" id="inputFields">
                 <tbody>
-                    <tr class="col-12 row" ng-repeat="conf in personnelConfig.item1">
+                    <tr ng-repeat="conf in personnelConfig.item1">
 
-                        <td class="col-6">
+                        <td class="w-30">
                             {{conf.displayName}}
                         </td>
-                        <td class="col-6">
+                        <td class="w-30">
+                            {{conf.type}}
+                        </td>
+                        <td class="w-40">
                             {{conf.value}}
-                            <div class="row float-left">
-
-                                <div class="col-3 float-right">
-                                    <p class="h6" ng-click="removeRow(conf)"><i class="fa fa-trash" title="حذف"
-                                            style="cursor: pointer"></i></p>
-                                </div>
-                                <div class="col-3 float-left">
-                                    <p class="h6" ng-click="editRow(conf)"><i class="fa fa-edit" title="ویرایش"
-                                            style="cursor: pointer"></i></p>
-                                </div>
+                            <div class="float-left">
+                                <i class="fa fa-trash" title="حذف" ng-click="removeRow(conf)"
+                                    style="cursor: pointer"></i>
+                                <i class="fa fa-edit" title="ویرایش" ng-click="editRow(conf)"
+                                    style="cursor: pointer"></i>
                             </div>
                         </td>
 
@@ -129,7 +128,7 @@
 
 
     <!-------  modal for create new --------------->
-    <div class="modal fade" id="configCreateModal">
+    <div class="modal fade" id="configCreateModal" ng-init="getPersonnnelConfigList()">
         <div class="modal-dialog modal-xl">
             <div class="modal-content">
                 <div class="modal-body">
@@ -140,67 +139,69 @@
                     </p>
 
                     <!------------------   create new config modal ------------------>
-                    <div class="row col-12">
-                        <div class="col-sm-4">
-                            <div class="input-group">
-                                <div class="input-group-prepend">
-                                    <label class="input-group-text">
-                                        عنوان انگلیسی
-                                    </label>
+                    <div class="card">
+                        <div class="row">
+                            <div class="col-sm-4">
+                                <div class="input-group">
+                                    <div class="input-group-prepend">
+                                        <label class="input-group-text">
+                                            عنوان انگلیسی
+                                        </label>
+                                    </div>
+                                    <input type="text" class="form-control" ng-model="createConfigs.name">
                                 </div>
-                                <input type="text" class="form-control" ng-model="createConfig.name">
                             </div>
-                        </div>
-                        <div class="col-sm-4">
-                            <div class="input-group">
-                                <div class="input-group-prepend">
-                                    <label class="input-group-text">
-                                        عنوان فارسی
-                                    </label>
+                            <div class="col-sm-4">
+                                <div class="input-group">
+                                    <div class="input-group-prepend">
+                                        <label class="input-group-text">
+                                            عنوان فارسی
+                                        </label>
+                                    </div>
+                                    <input type="text" class="form-control" ng-model="createConfigs.displayName">
                                 </div>
-                                <input type="text" class="form-control" ng-model="createConfig.displayName">
                             </div>
-                        </div>
-                        <div class="col-sm-4">
-                            <div class="input-group">
-                                <div class="input-group-prepend">
-                                    <label class="input-group-text">
-                                        مقدار
-                                    </label>
+                            <div class="col-sm-4">
+                                <div class="input-group">
+                                    <div class="input-group-prepend">
+                                        <label class="input-group-text">
+                                            مقدار
+                                        </label>
+                                    </div>
+                                    <input type="number" class="form-control" ng-model="createConfigs.value">
                                 </div>
-                                <input type="number" class="form-control" ng-model="createConfig.value">
                             </div>
-                        </div>
-                        <div class="col-sm-4">
-                            <div class="input-group">
-                                <div class="input-group-prepend">
-                                    <label class="input-group-text">
-                                        نوع
-                                    </label>
+                            <div class="col-sm-4">
+                                <div class="input-group">
+                                    <div class="input-group-prepend">
+                                        <label class="input-group-text">
+                                            نوع
+                                        </label>
+                                    </div>
+                                    <input type="number" class="form-control" ng-model="createConfigs.type">
                                 </div>
-                                <input type="number" class="form-control" ng-model="createConfig.type">
                             </div>
-                        </div>
-                        <div class="col-sm-4">
-                            <div class="input-group">
-                                <div class="input-group-prepend">
-                                    <label class="input-group-text">
-                                        تاریخ فعال سازی
-                                    </label>
+                            <div class="col-sm-4">
+                                <div class="input-group">
+                                    <div class="input-group-prepend">
+                                        <label class="input-group-text">
+                                            تاریخ فعال سازی
+                                        </label>
+                                    </div>
+                                    <input type="text" autocomplete="off" class="form-control date-picker"
+                                        placeholder="xxxx/xx/xx" id="startDate" ng-model="createConfigs.activeDate">
                                 </div>
-                                <input type="text" autocomplete="off" class="form-control date-picker"
-                                    placeholder="xxxx/xx/xx" id="startDate" ng-model="createConfig.activeDate">
                             </div>
-                        </div>
-                        <div class="col-sm-12">
-                            <div class="input-group">
-                                <div class="input-group-prepend">
-                                    <label class="input-group-text">
-                                        توضیحات
-                                    </label>
+                            <div class="col-sm-12">
+                                <div class="input-group">
+                                    <div class="input-group-prepend">
+                                        <label class="input-group-text">
+                                            توضیحات
+                                        </label>
+                                    </div>
+                                    <input type="text" class="form-control" ng-model="createConfigs.description"
+                                        style="height: 5em !important;"></input>
                                 </div>
-                                <textarea class="form-control" ng-model="createConfig.description"
-                                    style="height: 5em !important;"></textarea>
                             </div>
                         </div>
                     </div>
@@ -211,7 +212,7 @@
                             <button class="new-button red" ng-click="cancelConfig()"><i
                                     class="fa fa-close ml-1"></i>انصراف
                             </button>
-                            <button class="new-button green" ng-click="CreateConfig()"><i
+                            <button class="new-button green" ng-click="ConfirmCreateConfig()"><i
                                     class="fa fa-check ml-1"></i>تایید
                             </button>
 
@@ -234,67 +235,69 @@
                     </p>
 
                     <!------------------   edit new config modal ------------------>
-                    <div class="row col-12">
-                        <div class="col-sm-4">
-                            <div class="input-group">
-                                <div class="input-group-prepend">
-                                    <label class="input-group-text">
-                                        عنوان انگلیسی
-                                    </label>
+                    <div class="card">
+                        <div class="row">
+                            <div class="col-sm-4">
+                                <div class="input-group">
+                                    <div class="input-group-prepend">
+                                        <label class="input-group-text">
+                                            عنوان انگلیسی
+                                        </label>
+                                    </div>
+                                    <input type="text" class="form-control" ng-model="editConfigInfo.name">
                                 </div>
-                                <input type="text" class="form-control" ng-model="editConfigInfo.name">
                             </div>
-                        </div>
-                        <div class="col-sm-4">
-                            <div class="input-group">
-                                <div class="input-group-prepend">
-                                    <label class="input-group-text">
-                                        عنوان فارسی
-                                    </label>
+                            <div class="col-sm-4">
+                                <div class="input-group">
+                                    <div class="input-group-prepend">
+                                        <label class="input-group-text">
+                                            عنوان فارسی
+                                        </label>
+                                    </div>
+                                    <input type="text" class="form-control" ng-model="editConfigInfo.displayName">
                                 </div>
-                                <input type="text" class="form-control" ng-model="editConfigInfo.displayName">
                             </div>
-                        </div>
-                        <div class="col-sm-4">
-                            <div class="input-group">
-                                <div class="input-group-prepend">
-                                    <label class="input-group-text">
-                                        مقدار
-                                    </label>
+                            <div class="col-sm-4">
+                                <div class="input-group">
+                                    <div class="input-group-prepend">
+                                        <label class="input-group-text">
+                                            مقدار
+                                        </label>
+                                    </div>
+                                    <input class="form-control" ng-model="editConfigInfo.value">
                                 </div>
-                                <input class="form-control" ng-model="editConfigInfo.value">
                             </div>
-                        </div>
-                        <div class="col-sm-4">
-                            <div class="input-group">
-                                <div class="input-group-prepend">
-                                    <label class="input-group-text">
-                                        نوع
-                                    </label>
+                            <div class="col-sm-4">
+                                <div class="input-group">
+                                    <div class="input-group-prepend">
+                                        <label class="input-group-text">
+                                            نوع
+                                        </label>
+                                    </div>
+                                    <input type="text" class="form-control" ng-model="editConfigInfo.type">
                                 </div>
-                                <input type="text" class="form-control" ng-model="editConfigInfo.type">
                             </div>
-                        </div>
-                        <div class="col-sm-4">
-                            <div class="input-group">
-                                <div class="input-group-prepend">
-                                    <label class="input-group-text">
-                                        تاریخ ایجاد
-                                    </label>
+                            <div class="col-sm-4">
+                                <div class="input-group">
+                                    <div class="input-group-prepend">
+                                        <label class="input-group-text">
+                                            تاریخ ایجاد
+                                        </label>
+                                    </div>
+                                    <input type="text" autocomplete="off" class="form-control date-picker"
+                                        placeholder="xxxx/xx/xx" id="eStartDate">
                                 </div>
-                                <input type="text" autocomplete="off" class="form-control date-picker"
-                                    placeholder="xxxx/xx/xx" id="eStartDate">
                             </div>
-                        </div>
-                        <div class="col-sm-12">
-                            <div class="input-group">
-                                <div class="input-group-prepend">
-                                    <label class="input-group-text">
-                                        توضیحات
-                                    </label>
+                            <div class="col-sm-12">
+                                <div class="input-group">
+                                    <div class="input-group-prepend">
+                                        <label class="input-group-text">
+                                            توضیحات
+                                        </label>
+                                    </div>
+                                    <textarea class="form-control" ng-model="editConfigInfo.description"
+                                        style="height: 5em !important;"></textarea>
                                 </div>
-                                <textarea class="form-control" ng-model="editConfigInfo.description"
-                                    style="height: 5em !important;"></textarea>
                             </div>
                         </div>
                     </div>

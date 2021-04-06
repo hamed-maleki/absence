@@ -203,6 +203,31 @@ app.factory('requests', ['$http', function ($http) {
                 }
             })
         },
+        post: function (url, data, callback) {
+            var path = "http://192.168.200.2/rcapi/"
+            var authHeaders = {};
+            var accesstoken = localStorage.getItem('jwtToken');
+            var refreshtoken = localStorage.getItem('refreshToken');
+            if (accesstoken) {
+                authHeaders.Authorization = 'Bearer ' + accesstoken;
+            }
+            $http({
+                method: 'post',
+                url: path + url,
+                headers: {
+                    "Authorization": 'Bearer ' + accesstoken,
+                    "Accept": "text/plain",
+                    "Content-Type": "application/json"
+                },
+                data: data
+            }).then(function (response) {
+                callback(response.data);
+            }).catch(function (xhr) {
+                if (xhr.status == 401) {
+                    $scope.Refresh(url, data, 4, callback)
+                }
+            })
+        },
         update: function (url, data, callback) {
             var path = "http://192.168.200.2/rcapi/"
             var authHeaders = {};
