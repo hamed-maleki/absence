@@ -3,6 +3,27 @@ app.controller('personnelTrafficDailyReportCtrl', ["$scope", "$timeout", 'curren
     $scope.searchBtn = false;
     $scope.err = false;
     $scope.showSearch = false;
+    $scope.showList = false;
+    $scope.loadingPersonnel = false;
+    $scope.selectPersonnelsFromDb = [];
+    $scope.PersonnelIds = [];
+    $scope.selectPersonnelFromDbArray = [];
+    //----------- toggeler list bar ----------------
+    $scope.showListStatus = function () {
+        if ($scope.showList == false) {
+            $scope.loadingPersonnel = true;
+            $scope.selectPersonnel();
+        }
+    }
+    $('#collapsePersonnelList').on('shown.bs.collapse', function () {
+        $("#toggleIcon").addClass('fa-arrow-up');
+        $("#toggleIcon").removeClass('fa-arrow-down');
+    });
+
+    $('#collapsePersonnelList').on('hidden.bs.collapse', function () {
+        $("#toggleIcon").removeClass('fa-arrow-up');
+        $("#toggleIcon").addClass('fa-arrow-down');
+    });
     //============= date picker==================
 
     $timeout(function () {
@@ -105,16 +126,35 @@ app.controller('personnelTrafficDailyReportCtrl', ["$scope", "$timeout", 'curren
             return hide;
         }
     });
-
+    $scope.addToMutliPerSetAll = function (item) {
+        $scope.selectPersonnelsFromDb.push(item);
+    }
+    $scope.checkMulti = function (id) {
+        var found = false;
+        for (var i = 0; i < $scope.selectPersonnelsFromDb.length; i++) {
+            if ($scope.selectPersonnelsFromDb[i].Id == id) {
+                found = true;
+                break;
+            }
+        }
+        return found;
+    }
+    $scope.setAllPersonnel = function () {
+        $scope.selectPersonnelsFromDb = [];
+        if ($scope.setAll) {
+            $scope.setAll = false
+        } else {
+            $scope.setAll = true;
+            $scope.$broadcast("changingMulti")
+        }
+    }
     $scope.selectPersonnel = function () {
         $scope.localPersonnel = false;
-        $("#selectPersonnel").modal();
-        $scope.loadingPersonnel = true;
+        $scope.showPersonnel = true;
         setTimeout(function () {
             currencyConverter.call()
-        }, 500)
+        }, 10)
     }
-
     $scope.settingPersonnelInfo = function (data) {
         localStorage.setItem("lastSelected", JSON.stringify(data));
         $scope.oneSelected = true;
@@ -131,9 +171,14 @@ app.controller('personnelTrafficDailyReportCtrl', ["$scope", "$timeout", 'curren
         }, 100);
     }
 
-    $scope.selectPersonnelsFromDb = [];
+    $scope.confirmAllPersonnel = function (item) {
+        // console.log(item.length)
+        for (let i = 0; i < item.length; i++) {
+            $scope.PersonnelIds.push(item[i].Id);
+        }
+        localStorage.setItem('MultiSelectionPersonnel', JSON.stringify(item));
+    }
     $scope.setPersonnel = function (data, method) {
-        $scope.PersonnelIds = "";
         var dataLocal = localStorage.getItem("localPersonnelItem");
         if (dataLocal == null) {
             var itemToSet = [
@@ -171,9 +216,8 @@ app.controller('personnelTrafficDailyReportCtrl', ["$scope", "$timeout", 'curren
             $scope.selectPersonnelFromDbArray = JSON.parse(localStorage.getItem('MultiSelectionPersonnel'));
             $scope.localPersonnel = false;
             for (let i = 0; i < $scope.selectPersonnelFromDbArray.length; i++) {
-                $scope.PersonnelIds += $scope.selectPersonnelFromDbArray[i].Id.toString() + ",";
+                $scope.PersonnelIds.push($scope.selectPersonnelFromDbArray[i].Id);
             }
-            $scope.PersonnelIds = $scope.PersonnelIds.substring(00, $scope.PersonnelIds.length - 1);
             if ($scope.selectPersonnelFromDbArray.length != 0) {
                 $scope.personnelInfoExist = true;
             }
@@ -183,10 +227,10 @@ app.controller('personnelTrafficDailyReportCtrl', ["$scope", "$timeout", 'curren
         }
     }
     $scope.confirmAddingPersonnel = function () {
-        $scope.PersonnelIds = "";
+        $scope.PersonnelIds = [];
         $scope.selectPersonnelFromDbArray = JSON.parse(localStorage.getItem('MultiSelectionPersonnel'));
         for (let i = 0; i < $scope.selectPersonnelFromDbArray.length; i++) {
-            $scope.PersonnelIds += $scope.selectPersonnelFromDbArray[i].Id.toString() + ",";
+            $scope.PersonnelIds.push($scope.selectPersonnelFromDbArray[i].Id);
         }
         if ($scope.selectPersonnelFromDbArray.length != 0) {
             $scope.personnelInfoExist = true;
@@ -194,11 +238,15 @@ app.controller('personnelTrafficDailyReportCtrl', ["$scope", "$timeout", 'curren
         if ($scope.selectPersonnelFromDbArray.length > 1) {
             $scope.moreThanOnePersonnel = true;
         }
-        $scope.PersonnelIds = $scope.PersonnelIds.substring(0, $scope.PersonnelIds.length - 1);
-        $("#selectPersonnel").modal('hide');
+        $("#collapsePersonnelList").removeClass('show');
+        $("#toggleIcon").removeClass('fa-arrow-up');
+        $("#toggleIcon").addClass('fa-arrow-down');
         $scope.showSearch = true;
     }
-
+    $scope.CancelAddPersonnel = function () {
+        $scope.showList = false;
+        $scope.loadingPersonnel = false;
+    }
     $scope.checkLocal = function () {
         if (localStorage.getItem("lastSelected") != null) {
             var data = localStorage.getItem("lastSelected");
@@ -211,72 +259,97 @@ app.controller('personnelTrafficDailyReportCtrl', ["$scope", "$timeout", 'curren
             $scope.notLocal = true;
         }
     }
-
-    $scope.RemovePersonnelFromDbArray = [];
-    $scope.RemovePersonnelSelection = function (index) {
-        $scope.RemovePersonnelFromDbArray = JSON.parse(localStorage.getItem('MultiSelectionPersonnel'));
-        $scope.RemovePersonnelFromDbArray.splice(index, 1);
-        localStorage.setItem('MultiSelectionPersonnel', JSON.stringify($scope.RemovePersonnelFromDbArray));
-        $scope.confirmAddingPersonnel();
-        $scope.IsPersonelRemoved = true;
-        if ($scope.RemovePersonnelFromDbArray.length == 1) {
-            $scope.moreThanOnePersonnel = false;
-            $('#selectMissionType').val(0);
-            $scope.GetDayMissionList();
-            $scope.selectId = "";
-            $scope.dayMission = [];
-        }
-    }
-    $scope.checkMulti = function (id) {
-        var found = false;
-        for (var i = 0; i < $scope.selectPersonnelsFromDb.length; i++) {
-            if ($scope.selectPersonnelsFromDb[i].Id == id) {
-                found = true;
-                break;
-            }
-        }
-        return found;
-    }
     //-------------- search button -----------------------
     $scope.searching = function () {
         $scope.fromDate = $scope.convertToMiladi($('#fromDate').val())
         $scope.toDate = $scope.convertToMiladi($('#toDate').val());
-
         $scope.getReportList();
     }
     //------------- get list of work settings -----------------------
-    $scope.getReportList = function (pageItem = null) {
+    $scope.getReportList = function () {
         $scope.searchBtn = true;
         $scope.item = {
-            fromTime: $scope.fromTime,
-            toTime: $scope.toTime,
-            pageNumber: 1,
-            pageSize: 10,
-            sortField: null,
-            sortAsc: true,
-            fillNestedClass: true,
-            searchList: []
+            fromDate: $scope.convertToMiladi($('#fromDate').val()),
+            toDate: $scope.convertToMiladi($('#toDate').val()),
+            fromDatePersian: $('#fromDate').val(),
+            toDatePersian: $('#toDate').val(),
+            personIds: $scope.PersonnelIds,
+            formatType: parseInt($('#formatType').val()),
+            dayStatus: parseInt($('#dayStatus').val()),
+            isLinerReport: false
         }
         $scope.reports = [];
-        if (pageItem == null) {
-            requests.postingData(".../GetList", $scope.item, function (response) {
+        requests.postingData("Reports/GetDailyCalculatedReport", $scope.item, function (response) {
+            if (response.success == true) {
                 $scope.reports = response.data;
-                if ($scope.reports != null) {
-                    $scope.reports.totalPage = Math.ceil($scope.reports.item2 / $scope.reports.item4)
-                } else {
-                    $scope.searchBtn = false;
-                    $scope.err = true;
-                }
-            })
-        } else {
-            requests.postingData(".../GetList", pageItem, function (response) {
-                $scope.reports = response.data;
-                if ($scope.reports != null) {
-                    $scope.reports.totalPage = Math.ceil($scope.reports.item2 / $scope.reports.item4)
-                } else {
-                    $scope.err = true;
-                }
-            })
+            } else {
+                alert(response.errorMessages);
+            }
+        })
+    }
+    $scope.fnExcelReport = function () {
+        var tab_text = "<table border='2px'><tr bgcolor='#87AFC6'>";
+        var textRange; var j = 0;
+        tab = document.getElementById('tableHeader'); // id of table
+
+        for (j = 0; j < tab.rows.length; j++) {
+            tab_text = tab_text + tab.rows[j].innerHTML + "</tr>";
+            //tab_text=tab_text+"</tr>";
         }
+
+        tab_text = tab_text + "</table>";
+        tab_text = tab_text.replace(/<A[^>]*>|<\/A>/g, "");//remove if u want links in your table
+        tab_text = tab_text.replace(/<img[^>]*>/gi, ""); // remove if u want images in your table
+        tab_text = tab_text.replace(/<input[^>]*>|<\/input>/gi, ""); // reomves input params
+
+        var ua = window.navigator.userAgent;
+        var msie = ua.indexOf("MSIE ");
+
+        if (msie > 0 || !!navigator.userAgent.match(/Trident.*rv\:11\./))      // If Internet Explorer
+        {
+            txtArea1.document.open("txt/html", "replace");
+            txtArea1.document.write(tab_text);
+            txtArea1.document.close();
+            txtArea1.focus();
+            sa = txtArea1.document.execCommand("SaveAs", true, "");
+        }
+        else                 //other browser not tested on IE 11
+            sa = window.open('data:application/vnd.ms-excel,' + encodeURIComponent(tab_text));
+
+        return (sa);
+    }
+    $scope.saveReportPdf = function () {
+        $scope.item = {
+            fromDate: $scope.convertToMiladi($('#fromDate').val()),
+            toDate: $scope.convertToMiladi($('#toDate').val()),
+            fromDatePersian: $('#fromDate').val(),
+            toDatePersian: $('#toDate').val(),
+            personIds: $scope.PersonnelIds,
+            formatType: parseInt($('#formatType').val()),
+            dayStatus: parseInt($('#dayStatus').val()),
+            isLinerReport: false
+        }
+        requests.postingData("Reports/GetDailyCalculatedReportStimule", $scope.item, function (response) {
+            if (response.success == true) {
+                console.log(response.data);
+                var report = new Stimulsoft.Report.StiReport();
+                console.log(report);
+                report.loadFile($scope.reportsStimule);
+                report.exportDocumentAsync((pdfData) => {
+                    // Converting Array into buffer
+                    var buffer = Buffer.from(pdfData)
+
+                    // File System module
+                    var fs = require('fs');
+
+                    // Saving string with rendered report in PDF into a file
+                    fs.writeFileSync('./SimpleList.pdf', buffer);
+                    console.log("Rendered report saved into PDF-file.");
+                }, Stimulsoft.Report.StiExportFormat.Pdf);
+            } else {
+                alert(response.errorMessages);
+            }
+        })
+
     }
 }])

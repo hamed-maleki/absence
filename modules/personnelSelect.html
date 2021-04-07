@@ -576,7 +576,8 @@
                             <div class="custom-control custom-checkbox" ng-if="selectMulti">
                                 <input type="checkbox" ng-checked="checkMulti(personnel.Id)"
                                     class="custom-control-input" id="customCheck-{{personnel.Id}}" name="example1">
-                                <label class="custom-control-label" for="customCheck-{{personnel.Id}}"></label>
+                                <label class="custom-control-label"></label>
+                                <!-- for="customCheck-{{personnel.Id}}" -->
                             </div>
                             <input type="radio" ng-if="!selectMulti" name="select"
                                 ng-click="setPersonnelModal(personnel)">

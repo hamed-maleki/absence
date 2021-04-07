@@ -65,7 +65,7 @@
                 <thead>
                     <tr>
                         <th class="w-50">عنوان</th>
-                        <th class="w-50">مقدار</th>
+                        <th class="">مقدار</th>
                     </tr>
                 </thead>
             </table>
@@ -73,11 +73,13 @@
         <div class="table-body">
             <table class="text-center">
                 <tbody>
-                    <tr ng-repeat="workRule in WorkRules.item1">
-                        <td class="text-center w-50" ng-bind="workRule.item1.id"></td>
-                        <td class="text-center w-50" ng-bind="workRule.item1.value">
+                    <tr>
+                        <td class="text-center w-50" ng-bind="WorkRules.item1[0].id"></td>
+                        <td class="text-center">
+                            {{convertToShamsi(WorkRules.item1[0].createdAt)}}
                             <div class="float-left">
-                                <i class="fa fa-edit" title="ویرایش" ng-click="editBtn(WorkRules.item1)"></i>
+                                <i class="fa fa-trash " title="حذف" ng-click="deleteBtn(WorkRules.item1[0])"></i>
+                                <i class="fa fa-edit ml-1" title="ویرایش" ng-click="editBtn(WorkRules.item1[0])"></i>
                             </div>
                         </td>
                     </tr>
@@ -86,29 +88,9 @@
         </div>
     </div>
     <!------------------ table btns ------------------->
-    <div class="card">
-        <div class="row">
-            <div class="col-sm-6" style="text-align: right;">
-                <span ng-click="loadingPage('last')" style="cursor: pointer;">
-                    <i class="fa fa-chevron-right" style="font-size: 0.7em;"></i>
-                    <i class="fa fa-chevron-right asp-label" style="margin-right: -3px;font-size: 0.7em;"></i>
-                </span>
-                <i class="fa fa-chevron-right asp-label" ng-click="loadingPage(1)"
-                    style="margin: 0 10px;cursor: pointer;font-size: 0.7em;"></i>
-                <input class="form-control" id="pagingD" placeholder="{{WorkRules.item3}} از  {{WorkRules.pagetotal}}"
-                    style="width: 30%;display: inline-block;position: relative;top: 0px;font-size: 0.7em;"
-                    ng-model="pageNumber" ng-keyup="changePage($event,pageNumber);">
-                <i class="fa fa-chevron-left asp-label" ng-click="loadingPage(-1)"
-                    style="margin: 0 10px;cursor: pointer;font-size: 0.7em;"></i>
-                <span ng-click="loadingPage('first')" style="cursor: pointer;">
-                    <i class="fa fa-chevron-left asp-label" style="margin-left: -3px;font-size: 0.7em;"></i>
-                    <i class=" fa fa-chevron-left asp-label" style="font-size: 0.7em;"></i>
-                </span>
-            </div>
-            <div class="col-sm-4"></div>
-            <div class="col-sm-2" style="padding-left: 30px;">
-                <i class="fa fa-plus" title="افزودن" ng-click="CreateWorkSetting()"></i>
-            </div>
+    <div class="card" ng-hide="WorkRules.item1.length == 1">
+        <div class="float-left">
+            <i class="fa fa-plus" title="افزودن" ng-click="CreateWorkSetting()"></i>
         </div>
     </div>
     <!------------------- create modal -------------------->
@@ -118,170 +100,180 @@
                 <div class="modal-body">
                     <p class="HeaderForm">
                         ایجاد تنطیمات جدید
-                        <i class="fa fa-close float-left" title="انصراف" ng-click="cancelBtn()"></i>
+                        <i class="fa fa-close text-danger float-left" title="انصراف" ng-click="cancelBtn()"></i>
                     </p>
-                    <div class="col-12 row">
-                        <div class="col-sm-8 row">
-                            <div class="col-6">
-                                <div class="mb-1">
-                                    <div class="input-group">
-                                        <div class="input-group-prepend">
-                                            <label class="input-group-text">
-                                                تاجیل مجاز
-                                            </label>
+                    <div class="card">
+                        <div class="row">
+                            <div class="col-sm-8 row">
+                                <div class="col-6">
+                                    <div class="mb-1">
+                                        <div class="input-group">
+                                            <div class="input-group-prepend">
+                                                <label class="input-group-text">
+                                                    تاجیل مجاز
+                                                </label>
+                                            </div>
+                                            <input class="form-control" type="number"
+                                                ng-model="createWork.allowedHurryMin">
                                         </div>
-                                        <input class="form-control" type="number" ng-model="createWork.allowedHurryMin">
+                                    </div>
+                                    <div>
+                                        <div class="input-group">
+                                            <div class="input-group-prepend">
+                                                <label class="input-group-text">
+                                                    تاخیر مجاز
+                                                </label>
+                                            </div>
+                                            <input class="form-control" type="number"
+                                                ng-model="createWork.allowedDelayMin">
+                                        </div>
                                     </div>
                                 </div>
-                                <div>
-                                    <div class="input-group">
-                                        <div class="input-group-prepend">
-                                            <label class="input-group-text">
-                                                تاخیر مجاز
-                                            </label>
+                                <div class="col-6">
+                                    <div class="mb-1">
+                                        <div class="input-group">
+                                            <div class="input-group-prepend">
+                                                <label class="input-group-text">
+                                                    تاخیر در خروج مجاز
+                                                </label>
+                                            </div>
+                                            <input class="form-control" type="number"
+                                                ng-model="createWork.allowedLeaveDelayMin">
                                         </div>
-                                        <input class="form-control" type="number" ng-model="createWork.allowedDelayMin">
                                     </div>
+                                    <div>
+                                        <div class="input-group">
+                                            <div class="input-group-prepend">
+                                                <label class="input-group-text">
+                                                    تاجیل در خروج مجاز
+                                                </label>
+                                            </div>
+                                            <input class="form-control" type="number"
+                                                ng-model="createWork.allowedLeaveHurryMin">
+                                        </div>
+                                    </div>
+
                                 </div>
                             </div>
-                            <div class="col-6">
-                                <div class="mb-1">
-                                    <div class="input-group">
-                                        <div class="input-group-prepend">
-                                            <label class="input-group-text">
-                                                تاخیر در خروج مجاز
-                                            </label>
-                                        </div>
-                                        <input class="form-control" type="number"
-                                            ng-model="createWork.allowedLeaveDelayMin">
-                                    </div>
-                                </div>
-                                <div>
-                                    <div class="input-group">
-                                        <div class="input-group-prepend">
-                                            <label class="input-group-text">
-                                                تاجیل در خروج مجاز
-                                            </label>
-                                        </div>
-                                        <input class="form-control" type="number"
-                                            ng-model="createWork.allowedLeaveHurryMin">
+                            <div class="col-sm-4 mb-1 mt-2">
+                                <div class="custom-check" style="text-align: right;padding-right: 41px;">
+                                    <div class="custom-control custom-checkbox">
+                                        <input type="checkbox" class="custom-control-input"
+                                            ng-model="createWork.allowedHurryAddToShortageHour"
+                                            id="CallowedHurryAddToShortageHour">
+                                        <label class="custom-control-label asp-label"
+                                            for="CallowedHurryAddToShortageHour">
+                                            اعمال کسری تاجیل
+                                        </label>
                                     </div>
                                 </div>
 
+                                <div class="custom-check" style="text-align: right;padding-right: 41px;">
+                                    <div class="custom-control custom-checkbox">
+                                        <input type="checkbox" class="custom-control-input"
+                                            ng-model="createWork.allowedDelayAddToShortageHour"
+                                            id="CallowedDelayAddToShortageHour">
+                                        <label class="custom-control-label asp-label"
+                                            for="CallowedDelayAddToShortageHour">
+                                            اعمال کسری تاخیر
+                                        </label>
+                                    </div>
+                                </div>
                             </div>
-                        </div>
-                        <div class="col-sm-4 mb-1 mt-2">
-                            <div class="custom-check" style="text-align: right;padding-right: 41px;">
+                            <div class="col-sm-2 custom-check mr-2" style="text-align: right;padding-right: 42px;">
                                 <div class="custom-control custom-checkbox">
                                     <input type="checkbox" class="custom-control-input"
-                                        ng-model="createWork.allowedHurryAddToShortageHour" id="CheckBox1">
-                                    <label class="custom-control-label asp-label" for="CheckBox1">
-                                        اعمال کسری تاجیل
-                                    </label>
+                                        ng-model="createWork.isExtraWork" id="CisExtraWork">
+                                    <label class="custom-control-label asp-label" for="CisExtraWork">دارای اضافه
+                                        کار</label>
                                 </div>
                             </div>
-
-                            <div class="custom-check" style="text-align: right;padding-right: 41px;">
-                                <div class="custom-control custom-checkbox">
-                                    <input type="checkbox" class="custom-control-input"
-                                        ng-model="createWork.allowedDelayAddToShortageHour" id="CheckBox2">
-                                    <label class="custom-control-label asp-label" for="CheckBox2">
-                                        اعمال کسری تاخیر
-                                    </label>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-sm-2 custom-check mr-2" style="text-align: right;padding-right: 42px;">
-                            <div class="custom-control custom-checkbox">
-                                <input type="checkbox" class="custom-control-input" ng-model="createWork.isExtraWork"
-                                    id="CheckBox3">
-                                <label class="custom-control-label asp-label" for="CheckBox3">دارای اضافه
-                                    کار</label>
-                            </div>
-                        </div>
-                        <div class="col-sm-12" ng-if="createWork.isExtraWork">
-                            <div class="card">
-                                <div class="card-header" style="padding:0">
-                                    <p class="asp-label" style="text-align: right;margin-bottom: 0;">
-                                        مشخصات اضافه کار
-                                    </p>
-                                </div>
-                                <div class="card-body">
-                                    <div class="row">
-                                        <div class="col-sm-4">
-                                            <div class="input-group">
-                                                <div class="input-group-prepend">
-                                                    <label class="input-group-text">
-                                                        میانگین اضافه کار
-                                                    </label>
+                            <div class="col-sm-12" ng-if="createWork.isExtraWork">
+                                <div class="card">
+                                    <div class="card-header" style="padding:0">
+                                        <p class="asp-label" style="text-align: right;margin-bottom: 0;">
+                                            مشخصات اضافه کار
+                                        </p>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="row">
+                                            <div class="col-sm-4">
+                                                <div class="input-group">
+                                                    <div class="input-group-prepend">
+                                                        <label class="input-group-text">
+                                                            میانگین اضافه کار
+                                                        </label>
+                                                    </div>
+                                                    <input class="form-control" type="number"
+                                                        ng-model="createWork.extraHourRate">
                                                 </div>
-                                                <input class="form-control" type="number"
-                                                    ng-model="createWork.extraHourRate">
                                             </div>
-                                        </div>
-                                        <div class="col-sm-8"></div>
-                                        <div class="col-sm-4 custom-check"
-                                            style="text-align: right;padding-right: 42px;">
-                                            <div class="custom-control custom-checkbox">
-                                                <input type="checkbox" class="custom-control-input" id="CheckBox4"
-                                                    ng-model="createWork.hasExtraBefore">
-                                                <label class="custom-control-label asp-label" for="CheckBox4">اضافه کاری
-                                                    قبل از شروع کار</label>
-                                            </div>
-                                        </div>
-                                        <div class="col-sm-4" ng-if="createWork.hasExtraBefore">
-                                            <div class="input-group">
-                                                <div class="input-group-prepend">
-                                                    <label class="input-group-text">
-                                                        حداقل زمان
-                                                    </label>
+                                            <div class="col-sm-8"></div>
+                                            <div class="col-sm-4 custom-check"
+                                                style="text-align: right;padding-right: 42px;">
+                                                <div class="custom-control custom-checkbox">
+                                                    <input type="checkbox" class="custom-control-input"
+                                                        id="ChasExtraBefore" ng-model="createWork.hasExtraBefore">
+                                                    <label class="custom-control-label asp-label"
+                                                        for="ChasExtraBefore">اضافه کاری
+                                                        قبل از شروع کار</label>
                                                 </div>
-                                                <input class="form-control" type="number"
-                                                    ng-model="createWork.minTimeBefore">
                                             </div>
-                                        </div>
-                                        <div class="col-sm-4" ng-if="createWork.hasExtraBefore">
-                                            <div class="input-group">
-                                                <div class="input-group-prepend">
-                                                    <label class="input-group-text">
-                                                        حداکثر زمان
-                                                    </label>
+                                            <div class="col-sm-4" ng-if="createWork.hasExtraBefore">
+                                                <div class="input-group">
+                                                    <div class="input-group-prepend">
+                                                        <label class="input-group-text">
+                                                            حداقل زمان
+                                                        </label>
+                                                    </div>
+                                                    <input class="form-control" type="number"
+                                                        ng-model="createWork.minTimeBefore">
                                                 </div>
-                                                <input class="form-control" type="number"
-                                                    ng-model="createWork.maxTimeBefore">
                                             </div>
-                                        </div>
-                                        <div class="col-sm-8" ng-if="!createWork.hasExtraBefore"></div>
-                                        <div class="col-sm-4 custom-check"
-                                            style="text-align: right;padding-right: 42px;">
-                                            <div class="custom-control custom-checkbox">
-                                                <input type="checkbox" class="custom-control-input"
-                                                    ng-model="createWork.hasExtraAfter" id="CheckBox5">
-                                                <label class="custom-control-label asp-label" for="CheckBox5">اضافه
-                                                    کاری
-                                                    بعد از اتمام کار</label>
-                                            </div>
-                                        </div>
-                                        <div class="col-sm-4" ng-if="createWork.hasExtraAfter">
-                                            <div class="input-group">
-                                                <div class="input-group-prepend">
-                                                    <label class="input-group-text">
-                                                        حداقل زمان
-                                                    </label>
+                                            <div class="col-sm-4" ng-if="createWork.hasExtraBefore">
+                                                <div class="input-group">
+                                                    <div class="input-group-prepend">
+                                                        <label class="input-group-text">
+                                                            حداکثر زمان
+                                                        </label>
+                                                    </div>
+                                                    <input class="form-control" type="number"
+                                                        ng-model="createWork.maxTimeBefore">
                                                 </div>
-                                                <input class="form-control" type="number"
-                                                    ng-model="createWork.minTimeAfter">
                                             </div>
-                                        </div>
-                                        <div class="col-sm-4" ng-if="createWork.hasExtraAfter">
-                                            <div class="input-group">
-                                                <div class="input-group-prepend">
-                                                    <label class="input-group-text">
-                                                        حداکثر زمان
-                                                    </label>
+                                            <div class="col-sm-8" ng-if="!createWork.hasExtraBefore"></div>
+                                            <div class="col-sm-4 custom-check"
+                                                style="text-align: right;padding-right: 42px;">
+                                                <div class="custom-control custom-checkbox">
+                                                    <input type="checkbox" class="custom-control-input"
+                                                        ng-model="createWork.hasExtraAfter" id="ChasExtraAfter">
+                                                    <label class="custom-control-label asp-label"
+                                                        for="ChasExtraAfter">اضافه
+                                                        کاری
+                                                        بعد از اتمام کار</label>
                                                 </div>
-                                                <input class="form-control" type="number"
-                                                    ng-model="createWork.maxTimeAfter">
+                                            </div>
+                                            <div class="col-sm-4" ng-if="createWork.hasExtraAfter">
+                                                <div class="input-group">
+                                                    <div class="input-group-prepend">
+                                                        <label class="input-group-text">
+                                                            حداقل زمان
+                                                        </label>
+                                                    </div>
+                                                    <input class="form-control" type="number"
+                                                        ng-model="createWork.minTimeAfter">
+                                                </div>
+                                            </div>
+                                            <div class="col-sm-4" ng-if="createWork.hasExtraAfter">
+                                                <div class="input-group">
+                                                    <div class="input-group-prepend">
+                                                        <label class="input-group-text">
+                                                            حداکثر زمان
+                                                        </label>
+                                                    </div>
+                                                    <input class="form-control" type="number"
+                                                        ng-model="createWork.maxTimeAfter">
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
@@ -311,172 +303,179 @@
                 <div class="modal-body">
                     <p class="HeaderForm">
                         ویرایش
-                        <i class="fa fa-close float-left" title="انصراف" ng-click="cancleEditBtn()"></i>
+                        <i class="fa fa-close text-danger float-left" title="انصراف" ng-click="cancleEditBtn()"></i>
                     </p>
-                    <div class="col-12 row">
-                        <div class="col-sm-8 row">
-                            <div class="col-6">
-                                <div class="mb-1">
-                                    <div class="input-group">
-                                        <div class="input-group-prepend">
-                                            <label class="input-group-text">
-                                                تاجیل مجاز
-                                            </label>
+                    <div class="card">
+                        <div class="row">
+                            <div class="col-sm-8 row">
+                                <div class="col-6">
+                                    <div class="mb-1">
+                                        <div class="input-group">
+                                            <div class="input-group-prepend">
+                                                <label class="input-group-text">
+                                                    تاجیل مجاز
+                                                </label>
+                                            </div>
+                                            <input class="form-control" type="number"
+                                                ng-model="editWorkSetting.allowedHurryMin">
                                         </div>
-                                        <input class="form-control" type="number"
-                                            ng-model="editWorkSetting.allowedHurryMin">
+                                    </div>
+                                    <div>
+                                        <div class="input-group">
+                                            <div class="input-group-prepend">
+                                                <label class="input-group-text">
+                                                    تاخیر مجاز
+                                                </label>
+                                            </div>
+                                            <input class="form-control" type="number"
+                                                ng-model="editWorkSetting.allowedDelayMin">
+                                        </div>
                                     </div>
                                 </div>
-                                <div>
-                                    <div class="input-group">
-                                        <div class="input-group-prepend">
-                                            <label class="input-group-text">
-                                                تاخیر مجاز
-                                            </label>
+                                <div class="col-6">
+                                    <div class="mb-1">
+                                        <div class="input-group">
+                                            <div class="input-group-prepend">
+                                                <label class="input-group-text">
+                                                    تاخیر در خروج مجاز
+                                                </label>
+                                            </div>
+                                            <input class="form-control" type="number"
+                                                ng-model="editWorkSetting.allowedLeaveDelayMin">
                                         </div>
-                                        <input class="form-control" type="number"
-                                            ng-model="editWorkSetting.allowedDelayMin">
                                     </div>
+                                    <div>
+                                        <div class="input-group">
+                                            <div class="input-group-prepend">
+                                                <label class="input-group-text">
+                                                    تاجیل در خروج مجاز
+                                                </label>
+                                            </div>
+                                            <input class="form-control" type="number"
+                                                ng-model="editWorkSetting.allowedLeaveHurryMin">
+                                        </div>
+                                    </div>
+
                                 </div>
                             </div>
-                            <div class="col-6">
-                                <div class="mb-1">
-                                    <div class="input-group">
-                                        <div class="input-group-prepend">
-                                            <label class="input-group-text">
-                                                تاخیر در خروج مجاز
-                                            </label>
-                                        </div>
-                                        <input class="form-control" type="number"
-                                            ng-model="editWorkSetting.allowedLeaveDelayMin">
-                                    </div>
-                                </div>
-                                <div>
-                                    <div class="input-group">
-                                        <div class="input-group-prepend">
-                                            <label class="input-group-text">
-                                                تاجیل در خروج مجاز
-                                            </label>
-                                        </div>
-                                        <input class="form-control" type="number"
-                                            ng-model="editWorkSetting.allowedLeaveHurryMin">
+                            <div class="col-sm-4 mb-1 mt-2">
+                                <div class="custom-check" style="text-align: right;padding-right: 41px;">
+                                    <div class="custom-control custom-checkbox">
+                                        <input type="checkbox" class="custom-control-input"
+                                            ng-model="editWorkSetting.allowedHurryAddToShortageHour"
+                                            id="EallowedHurryAddToShortageHour">
+                                        <label class="custom-control-label asp-label"
+                                            for="EallowedHurryAddToShortageHour">
+                                            اعمال کسری تاجیل
+                                        </label>
                                     </div>
                                 </div>
 
+                                <div class="custom-check" style="text-align: right;padding-right: 41px;">
+                                    <div class="custom-control custom-checkbox">
+                                        <input type="checkbox" class="custom-control-input"
+                                            ng-model="editWorkSetting.allowedDelayAddToShortageHour"
+                                            id="EallowedDelayAddToShortageHour">
+                                        <label class="custom-control-label asp-label"
+                                            for="EallowedDelayAddToShortageHour">
+                                            اعمال کسری تاخیر
+                                        </label>
+                                    </div>
+                                </div>
                             </div>
-                        </div>
-                        <div class="col-sm-4 mb-1 mt-2">
-                            <div class="custom-check" style="text-align: right;padding-right: 41px;">
+                            <div class="col-sm-2 custom-check mr-2" style="text-align: right;padding-right: 42px;">
                                 <div class="custom-control custom-checkbox">
                                     <input type="checkbox" class="custom-control-input"
-                                        ng-model="editWorkSetting.allowedHurryAddToShortageHour" id="CheckBox1">
-                                    <label class="custom-control-label asp-label" for="CheckBox1">
-                                        اعمال کسری تاجیل
-                                    </label>
+                                        ng-model="editWorkSetting.isExtraWork" id="EisExtraWork">
+                                    <label class="custom-control-label asp-label" for="EisExtraWork">دارای اضافه
+                                        کار</label>
                                 </div>
                             </div>
-
-                            <div class="custom-check" style="text-align: right;padding-right: 41px;">
-                                <div class="custom-control custom-checkbox">
-                                    <input type="checkbox" class="custom-control-input"
-                                        ng-model="editWorkSetting.allowedDelayAddToShortageHour" id="CheckBox2">
-                                    <label class="custom-control-label asp-label" for="CheckBox2">
-                                        اعمال کسری تاخیر
-                                    </label>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-sm-2 custom-check mr-2" style="text-align: right;padding-right: 42px;">
-                            <div class="custom-control custom-checkbox">
-                                <input type="checkbox" class="custom-control-input"
-                                    ng-model="editWorkSetting.isExtraWork" id="CheckBox3">
-                                <label class="custom-control-label asp-label" for="CheckBox3">دارای اضافه
-                                    کار</label>
-                            </div>
-                        </div>
-                        <div class="col-sm-12" ng-if="editWorkSetting.isExtraWork">
-                            <div class="card">
-                                <div class="card-header" style="padding:0">
-                                    <p class="asp-label" style="text-align: right;margin-bottom: 0;">
-                                        مشخصات اضافه کار
-                                    </p>
-                                </div>
-                                <div class="card-body">
-                                    <div class="row">
-                                        <div class="col-sm-4">
-                                            <div class="input-group">
-                                                <div class="input-group-prepend">
-                                                    <label class="input-group-text">
-                                                        میانگین اضافه کار
-                                                    </label>
+                            <div class="col-sm-12" ng-if="editWorkSetting.isExtraWork">
+                                <div class="card">
+                                    <div class="card-header" style="padding:0">
+                                        <p class="asp-label" style="text-align: right;margin-bottom: 0;">
+                                            مشخصات اضافه کار
+                                        </p>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="row">
+                                            <div class="col-sm-4">
+                                                <div class="input-group">
+                                                    <div class="input-group-prepend">
+                                                        <label class="input-group-text">
+                                                            میانگین اضافه کار
+                                                        </label>
+                                                    </div>
+                                                    <input class="form-control" type="number"
+                                                        ng-model="editWorkSetting.extraHourRate">
                                                 </div>
-                                                <input class="form-control" type="number"
-                                                    ng-model="editWorkSetting.extraHourRate">
                                             </div>
-                                        </div>
-                                        <div class="col-sm-8"></div>
-                                        <div class="col-sm-4 custom-check"
-                                            style="text-align: right;padding-right: 42px;">
-                                            <div class="custom-control custom-checkbox">
-                                                <input type="checkbox" class="custom-control-input" id="CheckBox4"
-                                                    ng-model="editWorkSetting.hasExtraBefore">
-                                                <label class="custom-control-label asp-label" for="CheckBox4">اضافه کاری
-                                                    قبل از شروع کار</label>
-                                            </div>
-                                        </div>
-                                        <div class="col-sm-4" ng-if="editWorkSetting.hasExtraBefore">
-                                            <div class="input-group">
-                                                <div class="input-group-prepend">
-                                                    <label class="input-group-text">
-                                                        حداقل زمان
-                                                    </label>
+                                            <div class="col-sm-8"></div>
+                                            <div class="col-sm-4 custom-check"
+                                                style="text-align: right;padding-right: 42px;">
+                                                <div class="custom-control custom-checkbox">
+                                                    <input type="checkbox" class="custom-control-input"
+                                                        id="EhasExtraBefore" ng-model="editWorkSetting.hasExtraBefore">
+                                                    <label class="custom-control-label asp-label"
+                                                        for="EhasExtraBefore">اضافه کاری
+                                                        قبل از شروع کار</label>
                                                 </div>
-                                                <input class="form-control" type="number"
-                                                    ng-model="editWorkSetting.minTimeBefore">
                                             </div>
-                                        </div>
-                                        <div class="col-sm-4" ng-if="editWorkSetting.hasExtraBefore">
-                                            <div class="input-group">
-                                                <div class="input-group-prepend">
-                                                    <label class="input-group-text">
-                                                        حداکثر زمان
-                                                    </label>
+                                            <div class="col-sm-4" ng-if="editWorkSetting.hasExtraBefore">
+                                                <div class="input-group">
+                                                    <div class="input-group-prepend">
+                                                        <label class="input-group-text">
+                                                            حداقل زمان
+                                                        </label>
+                                                    </div>
+                                                    <input class="form-control" type="number"
+                                                        ng-model="editWorkSetting.minTimeBefore">
                                                 </div>
-                                                <input class="form-control" type="number"
-                                                    ng-model="editWorkSetting.maxTimeBefore">
                                             </div>
-                                        </div>
-                                        <div class="col-sm-8" ng-if="!editWorkSetting.hasExtraBefore"></div>
-                                        <div class="col-sm-4 custom-check"
-                                            style="text-align: right;padding-right: 42px;">
-                                            <div class="custom-control custom-checkbox">
-                                                <input type="checkbox" class="custom-control-input"
-                                                    ng-model="editWorkSetting.hasExtraAfter" id="CheckBox5">
-                                                <label class="custom-control-label asp-label" for="CheckBox5">اضافه
-                                                    کاری
-                                                    بعد از اتمام کار</label>
-                                            </div>
-                                        </div>
-                                        <div class="col-sm-4" ng-if="editWorkSetting.hasExtraAfter">
-                                            <div class="input-group">
-                                                <div class="input-group-prepend">
-                                                    <label class="input-group-text">
-                                                        حداقل زمان
-                                                    </label>
+                                            <div class="col-sm-4" ng-if="editWorkSetting.hasExtraBefore">
+                                                <div class="input-group">
+                                                    <div class="input-group-prepend">
+                                                        <label class="input-group-text">
+                                                            حداکثر زمان
+                                                        </label>
+                                                    </div>
+                                                    <input class="form-control" type="number"
+                                                        ng-model="editWorkSetting.maxTimeBefore">
                                                 </div>
-                                                <input class="form-control" type="number"
-                                                    ng-model="editWorkSetting.minTimeAfter">
                                             </div>
-                                        </div>
-                                        <div class="col-sm-4" ng-if="editWorkSetting.hasExtraAfter">
-                                            <div class="input-group">
-                                                <div class="input-group-prepend">
-                                                    <label class="input-group-text">
-                                                        حداکثر زمان
-                                                    </label>
+                                            <div class="col-sm-8" ng-if="!editWorkSetting.hasExtraBefore"></div>
+                                            <div class="col-sm-4 custom-check"
+                                                style="text-align: right;padding-right: 42px;">
+                                                <div class="custom-control custom-checkbox">
+                                                    <input type="checkbox" class="custom-control-input"
+                                                        ng-model="editWorkSetting.hasExtraAfter" id="CheckBox5">
+                                                    <label class="custom-control-label asp-label" for="CheckBox5">اضافه
+                                                        کاری
+                                                        بعد از اتمام کار</label>
                                                 </div>
-                                                <input class="form-control" type="number"
-                                                    ng-model="editWorkSetting.maxTimeAfter">
+                                            </div>
+                                            <div class="col-sm-4" ng-if="editWorkSetting.hasExtraAfter">
+                                                <div class="input-group">
+                                                    <div class="input-group-prepend">
+                                                        <label class="input-group-text">
+                                                            حداقل زمان
+                                                        </label>
+                                                    </div>
+                                                    <input class="form-control" type="number"
+                                                        ng-model="editWorkSetting.minTimeAfter">
+                                                </div>
+                                            </div>
+                                            <div class="col-sm-4" ng-if="editWorkSetting.hasExtraAfter">
+                                                <div class="input-group">
+                                                    <div class="input-group-prepend">
+                                                        <label class="input-group-text">
+                                                            حداکثر زمان
+                                                        </label>
+                                                    </div>
+                                                    <input class="form-control" type="number"
+                                                        ng-model="editWorkSetting.maxTimeAfter">
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
@@ -506,7 +505,7 @@
                 <div class="modal-body">
                     <p class="HeaderForm">
                         حذف
-                        <i class="fa fa-close float-left" title="حذف" ng-click="cancleRemoveBtn()"></i>
+                        <i class="fa fa-close text-danger float-left" title="حذف" ng-click="cancleRemoveBtn()"></i>
                     </p>
                 </div>
                 <div class="card row">

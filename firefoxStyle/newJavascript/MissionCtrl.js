@@ -404,10 +404,10 @@ app.controller('MissionCtrl', ["$scope", "$timeout", 'currencyConverter', 'reque
 
     //------------ Get hour missions List by personnel id ----------------
     $scope.hourMistionListTrue = false;
-    $scope.selectId = [];
+    $scope.selectId = " ";
+    $scope.hourMission = [];
     $scope.GetHourMissionList = function (pageItem = null) {
         $scope.result = $scope.selectPersonnelsFromDb;
-        console.log($scope.result)
         for (var i = 0; i < $scope.result.length; i++) {
             $scope.selectId += $scope.result[i].Id.toString().trim() + ",";
         }
@@ -426,54 +426,46 @@ app.controller('MissionCtrl', ["$scope", "$timeout", 'currencyConverter', 'reque
                     "operandType": 0
                 }]
             }
-            $scope.hourMission = [];
-            if ($scope.PersonnelIds != undefined) {
-                if (pageItem == null) {
-                    requests.postingData("HourMission/GetList", $scope.item, function (response) {
-                        if (response.success == true) {
-                            $scope.hourMission = response.data;
-                            if ($scope.hourMission != null) {
-                                $scope.hourMission.totalPage = Math.ceil($scope.hourMission.item2 / $scope.hourMission.item4)
-                            }
-                        } else {
-                            alert(response.errorMessages);
+            if (pageItem == null) {
+                requests.postingData("HourMission/GetList", $scope.item, function (response) {
+                    if (response.success == true) {
+                        for (let j = 0; j < response.data.item1.length; j++) {
+                            $scope.hourMission.push(response.data.item1[j]);
+                        }
+                    } else {
+                        alert(response.errorMessages);
+                    }
+
+                })
+            } else {
+                requests.postingData("HourMission/GetList", pageItem, function (response) {
+                    if (response.success == true) {
+                        for (let j = 0; j < response.data.item1.length; j++) {
+                            $scope.hourMission.push(response.data.item1[j]);
                         }
 
-                    })
-                } else {
-                    requests.postingData("HourMission/GetList", pageItem, pageItem, function (response) {
-                        if (response.success == true) {
-                            $scope.hourMission = response.data;
-                            if ($scope.hourMission != null) {
-                                $scope.hourMission.totalPage = Math.ceil($scope.hourMission.item2 / $scope.hourMission.item4)
-                            }
-                        } else {
-                            alert(response.errorMessages);
-                        }
+                    } else {
+                        alert(response.errorMessages);
+                    }
 
-                    })
-                }
+                })
             }
         }
+        console.log($scope.hourMission);
     }
 
     //----------------------- initial Create hour mission ----------------------
     $scope.createHourMissionModal = function () {
         $scope.selectId = $scope.selectPersonnelsFromDb[0].Id;
         $scope.createHourMissionData = {
-            "personId": $scope.selectId,
-            "missionDate": "2021-04-05T09:20:18.881Z",
-            "fromTime": "8:20:00",
-            "toTime": "10:20:00",
-            "hourMissionStateId": 1,
-            "hourMissionStateTitle": "<string>",
-            "id": 0,
-            "createdBy": 123,
-            "createdAt": "2021-04-05T09:20:18.881Z",
-            "updatedBy": 123,
-            "updatedAt": "2021-04-05T09:20:18.881Z",
-            "isDeleted": false,
-            "crossCheck": ""
+            personId: $scope.selectId,
+            missionDate: null,
+            fromTime: null,
+            toTime: null,
+            requesterId: null,
+            hourMissionStateId: 1,
+            hourMissionStateTitle: "تایید شده",
+            requesterId: 0
         };
         $('#createHourModal').modal();
     }
@@ -509,19 +501,21 @@ app.controller('MissionCtrl', ["$scope", "$timeout", 'currencyConverter', 'reque
         $('#EditHourModal').modal('hide');
     }
     //----------------------- Create hour mission ----------------------
+    $scope.createHourMissionDatas = [];
     $scope.confirmHourMissionCreate = function () {
         $scope.createHourMissionData.missionDate = $scope.convertToMiladi($('#startHDate').val().toString());
         $scope.createHourMissionData.fromTime = $('#fromTime').val() + ":00";
         $scope.createHourMissionData.toTime = $('#toTime').val() + ":00";
-        requests.postingData('HourMission/Create', $scope.createHourMissionModal, function (response) {
+        $scope.createHourMissionDatas.push($scope.createHourMissionData);
+        requests.postingData('HourMission/UpsertHourMissionBatch', $scope.createHourMissionDatas, function (response) {
             if (response.success == true) {
+                $("#createHourModal").modal("hide");
                 $scope.GetHourMissionList();
             } else {
                 alert(response.errorMessages);
             }
         })
-        $("#createHourModal").modal("hide");
-        $scope.GetHourMissionList();
+
     }
     //----------------------- Edit hour Mission ----------------------
     $scope.confirmHourMissionEdit = function () {

@@ -14,6 +14,8 @@
     <link rel="stylesheet" href="firefoxStyle/main.css">
     <link rel="stylesheet" href="firefoxStyle/newElementsStyle.css">
     <link href="firefoxStyle/time.min.css" rel="stylesheet">
+    <link href="https://unpkg.com/stimulsoft-dashboards-js/Css/stimulsoft.viewer.office2013.whiteblue.css"
+        rel="stylesheet" />
     <style>
         .default-bg {
             background-image: url("Images/polygon.png");
@@ -51,6 +53,7 @@
     <script src="firefoxStyle/newJavascript/modules/sharing.js"></script>
     <script src="firefoxStyle/newJavascript/modules/selectingChart.js"></script>
     <script src="firefoxStyle/newJavascript/modules/personnel.js"></script>
+    <script src="https://unpkg.com/stimulsoft-reports-js/Scripts/stimulsoft.reports.js" type="text/javascript"></script>
     <title>گزارش تردد روزانه پرسنل</title>
 </head>
 
@@ -60,6 +63,29 @@
 
     <!------------------- filter for search and select personnel ---------------------->
     <div class="card">
+        <p class="HeaderForm">
+            انتخاب پرسنل
+            <a type="button" data-toggle="collapse" style="float: left;margin: 0 5px;"
+                data-target="#collapsePersonnelList" aria-expanded="false" aria-controls="collapsePersonnelList"
+                ng-click="showListStatus()">
+                <i id="toggleIcon" class="fa fa-arrow-down text-white"></i>
+            </a>
+        </p>
+        <div class="collapse" id="collapsePersonnelList">
+            <div class="" style="padding-top: 0;">
+                <div ng-include="'modules/personnelSelect.html'"></div>
+            </div>
+            <div class="card">
+                <div class="float left">
+                    <button class="new-button red" ng-click="CancelAddPersonnel()"><i
+                            class="fa fa-close"></i>انصراف</button>
+                    <button class="new-button green" id="confirmBtn" ng-click="confirmAddingPersonnel()"><i
+                            class="fa fa-check"></i>تایید</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- <div class="card">
         <div class="row">
             <div class="col-sm-6">
                 <div class="input-group">
@@ -92,9 +118,9 @@
                 <div class="spinner-border text-primary" ng-if="loading"></div>
             </div>
         </div>
-    </div>
+    </div> -->
     <!------------------- select personnel ---------------------->
-    <div class="modal fade" id="selectPersonnel">
+    <!-- <div class="modal fade" id="selectPersonnel">
         <div class="modal-dialog modal-xl">
             <div class="modal-content">
                 <div class="modal-head">
@@ -117,80 +143,86 @@
                 </div>
             </div>
         </div>
-    </div>
+    </div> -->
     <!-------------------- search btn ---------------------->
-    <div class="card" ng-show="showSearch">
-        <div class="col-12 row">
-            <div class="col-4">
-                <div style="margin-bottom: 15px;">
-                    <div class="input-group">
-                        <div class="input-group-prepend">
-                            <label class="input-group-text">
-                                تاریخ از
-                            </label>
+    <div ng-show="showSearch">
+        <div class="card">
+            <div class="col-12 row">
+                <div class="col-sm-3">
+                    <div class="mb-1">
+                        <div class="input-group">
+                            <div class="input-group-prepend">
+                                <label class="input-group-text">
+                                    وضعیت روز
+                                </label>
+                            </div>
+                            <select class="form-control" id="dayStatus">
+                                <option ng-value="0" selected></option>
+                                <option ng-value="1">کاری</option>
+                                <option ng-value="2">تعطیل</option>
+                            </select>
                         </div>
-                        <input type="text" autocomplete="off" class="form-control date-picker" placeholder="xxxx/xx/xx"
-                            ng-model="report.fromDate">
                     </div>
                 </div>
-            </div>
-            <div class="col-4">
-                <div>
-                    <div class="input-group">
-                        <div class="input-group-prepend">
-                            <label class="input-group-text">
-                                تاریخ تا
-                            </label>
+                <div class="col-sm-3">
+                    <div class="mb-1">
+                        <div class="input-group">
+                            <div class="input-group-prepend">
+                                <label class="input-group-text">
+                                    نحوه نمایش
+                                </label>
+                            </div>
+                            <select class="form-control" id="formatType">
+                                <option ng-value="1">عدد دقیقه</option>
+                                <option ng-value="2" selected>ساعت:دقیقه</option>
+                                <option ng-value="3">عدد ساعت</option>
+                            </select>
                         </div>
-                        <input type="text" autocomplete="off" class="form-control date-picker" placeholder="xxxx/xx/xx"
-                            ng-model="report.toDate">
                     </div>
                 </div>
-            </div>
-            <div class="col-sm-4">
-                <div class="mb-1">
-                    <div class="input-group">
-                        <div class="input-group-prepend">
-                            <label class="input-group-text">
-                                نحوه نمایش
-                            </label>
+
+                <div class="col-sm-3">
+                    <div style="margin-bottom: 15px;">
+                        <div class="input-group">
+                            <div class="input-group-prepend">
+                                <label class="input-group-text">
+                                    تاریخ از
+                                </label>
+                            </div>
+                            <input type="text" autocomplete="off" class="form-control date-picker"
+                                placeholder="xxxx/xx/xx" id="fromDate">
                         </div>
-                        <select class="form-control">
-                            <option ng-value="1">عدد دقیقه</option>
-                            <option ng-value="2" selected>ساعت:دقیقه</option>
-                            <option ng-value="3">عدد ساعت</option>
-                        </select>
                     </div>
                 </div>
-            </div>
-            <div class="col-sm-4">
-                <div class="mb-1">
-                    <div class="input-group">
-                        <div class="input-group-prepend">
-                            <label class="input-group-text">
-                                وضعیت روز
-                            </label>
+                <div class="col-sm-3">
+                    <div>
+                        <div class="input-group">
+                            <div class="input-group-prepend">
+                                <label class="input-group-text">
+                                    تاریخ تا
+                                </label>
+                            </div>
+                            <input type="text" autocomplete="off" class="form-control date-picker"
+                                placeholder="xxxx/xx/xx" id="toDate">
                         </div>
-                        <select class="form-control">
-                            <option ng-value="0" selected></option>
-                            <option ng-value="1">کاری</option>
-                            <option ng-value="2">تعطیل</option>
-                        </select>
                     </div>
                 </div>
+
             </div>
 
-            <div class="col-4 float-left">
-                <div style="text-align: left;">
+        </div>
+        <div class="card">
+            <div class="float-left">
+                <div>
                     <button class="new-button" ng-click="searching()"><i class="fa fa-search
-                             ml-1"></i>مشاهده
+                                                     ml-1"></i>مشاهده
                     </button>
                 </div>
             </div>
         </div>
     </div>
     <!-- selected personnel table -->
-    <div class="card" ng-if="personnelInfoExist">
+    <!-- <div class="card" ng-if="personnelInfoExist">
         <p class="HeaderForm">
             افراد انتخاب شده
         </p>
@@ -231,20 +263,37 @@
                 </tbody>
             </table>
         </div>
-    </div>
+    </div> -->
     <!------------ report table ------------------->
     <div ng-if="searchBtn">
         <div class="card">
             <div class="table-header">
-                <table class="text-center">
+                <table class="text-center" id="tableHeader">
                     <thead>
-                        <tr class="col-12 row">
-                            <th class="col-2">نام</th>
-                            <th class="col-2">نام خانوادگی</th>
-                            <th class="col-2">تاریخ</th>
-                            <th class="col-2">زمان ورود</th>
-                            <th class="col-2">زمان خروج</th>
-                            <th class="col-2">مدت کارکرد</th>
+                        <tr>
+                            <th class="w-4">نام</th>
+                            <th class="w-4">استخدامی</th>
+                            <th class="w-4">پرسنلی</th>
+                            <th class="w-4">کد ملی</th>
+                            <th class="w-4">وضعیت روز</th>
+                            <th class="w-4">تاریخ شروع</th>
+                            <th class="w-4">روز</th>
+                            <th class="w-4">workTimeN</th>
+                            <th class="w-4">workTimeHL</th>
+                            <th class="w-4">workTimeHM</th>
+                            <th class="w-4">workTimeIC</th>
+                            <th class="w-4">وضعیت حضور</th>
+                            <th class="w-4">غیبت</th>
+                            <th class="w-4">مجموع حضور</th>
+                            <th class="w-4">مجموع غیبت</th>
+                            <th class="w-4">مدت شیفت</th>
+                            <th class="w-4">اضافه کار دراستراحت</th>
+                            <th class="w-4">تأخیر در شروع کار</th>
+                            <th class="w-4">تأجیل در پایان کار</th>
+                            <th class="w-4">cntRollCall</th>
+                            <th class="w-4">minIntTime</th>
+                            <th class="w-4">maxOutTime</th>
+                            <th class="w-4">allTimeRollCall</th>
                         </tr>
                     </thead>
                 </table>
@@ -252,13 +301,31 @@
             <div class="table-body">
                 <table class="test" id="inputFields">
                     <tbody>
-                        <tr class="col-12 row" ng-repeat="report in reports.item1">
-                            <td class="col-2">{{report.name}}</td>
-                            <td class="col-2">{{report.displayName}}</td>
-                            <td class="col-2">{{report.inDay}}</td>
-                            <td class="col-2">{{report.inTime}}</td>
-                            <td class="col-2">{{report.outTime}}</td>
-                            <td class="col-2">{{report.workTime}}</td>
+                        <tr ng-repeat="report in reports.item1">
+                            <td class="w-4">{{report.personName}}</td>
+                            <td class="w-4">{{report.dossierNo}}</td>
+                            <td class="w-4">{{report.personnelNo}}</td>
+                            <td class="w-4">{{report.nationalCode}}</td>
+                            <td class="w-4">{{report.dayStatus}}</td>
+                            <td class="w-4">{{report.startDayPersian}}</td>
+                            <td class="w-4">{{report.dayNamePersian}}</td>
+                            <td class="w-4">{{report.workTimeN}}</td>
+                            <td class="w-4">{{report.workTimeHL}}</td>
+                            <td class="w-4">{{report.workTimeHM}}</td>
+                            <td class="w-4">{{report.workTimeIC}}</td>
+                            <td class="w-4">{{report.presenceStatus}}</td>
+                            <td class="w-4">{{report.sumPresence}}</td>
+                            <td class="w-4">{{report.sumAbsence}}</td>
+                            <td class="w-4">{{report.absence}}</td>
+                            <td class="w-4">{{report.shiftTime}}</td>
+                            <td class="w-4">{{report.extraInOff}}</td>
+                            <td class="w-4">{{report.startDelay}}</td>
+                            <td class="w-4">{{report.endHurry}}</td>
+                            <td class="w-4">{{report.extraTime}}</td>
+                            <td class="w-4">{{report.cntRollCall}}</td>
+                            <td class="w-4">{{report.minIntTime}}</td>
+                            <td class="w-4">{{report.maxOutTime}}</td>
+                            <td class="w-4">{{report.allTimeRollCall}}</td>
                         </tr>
                     </tbody>
                 </table>
@@ -288,7 +355,16 @@
                         <i class=" fa fa-chevron-left asp-label" style="font-size: 0.7em;"></i>
                     </span>
                 </div>
-                <div class="col-sm-6"></div>
+                <div class="col-sm-4"></div>
+                <div class="col-sm-2">
+                    <div class="float-left">
+                        <button class="new-button" ng-click="fnExcelReport()"><i class="fa fa-file-excel
+                         ml-1"></i>ذخیره اکسل
+                        </button>
+                        <button class="new-button green" id="savePdf" ng-click="saveReportPdf()"><i class="fa fa-file-pdf
+                         ml-1"></i>فایل pdf</button>
+                    </div>
+                </div>
             </div>
         </div>
     </div>

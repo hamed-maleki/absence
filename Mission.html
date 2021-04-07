@@ -850,12 +850,12 @@
             <div class="table-header">
                 <table class="text-center">
                     <thead>
-                        <tr class="col-12 row">
-                            <th class="col-2">نام شخص</th>
-                            <th class="col-2">از</th>
-                            <th class="col-2">تا</th>
-                            <th class="col-2">تاریخ مأموریت</th>
-                            <th class="col-4">وضعیت
+                        <tr>
+                            <th class="w-20">نام شخص</th>
+                            <th class="w-20">از</th>
+                            <th class="w-20">تا</th>
+                            <th class="w-20">تاریخ مأموریت</th>
+                            <th class="w-20">وضعیت
 
                             </th>
                         </tr>
@@ -865,19 +865,18 @@
             <div class="table-body">
                 <table>
                     <tbody>
-                        <tr class="col-12 row" ng-repeat="item in hourMission.item1 track by item.id">
-                            <td class="col-2" ng-bind="item.personId"></td>
-                            <td class="col-2" ng-bind="item.fromTime"></td>
-                            <td class="col-2" ng-bind="item.toTime"></td>
-                            <td class="col-2" ng-bind="convertToShamsi(item.missionDate)"></td>
-                            <td class="col-4 row">
-                                <div class="col-8">
-                                    {{item.hourMissionStateTitle}}</div>
-                                <div class="row col-4 d-flex justify-content-end">
-                                    <p class="ml-1 h6 cursor-pointer" ng-click="DeleteRowHourRequest(item)"><i
-                                            class="fa fa-trash" title="حذف درخواست"></i></p>
-                                    <p class="ml-1 h6 cursor-pointer" ng-click="EditRowHourRequest(item)"><i
-                                            class="fa fa-edit" title="ویرایش درخواست"></i></p>
+                        <tr ng-repeat="item in hourMission.item1 track by item.id">
+                            <td class="w-20" ng-bind="item.personId"></td>
+                            <td class="w-20" ng-bind="item.fromTime"></td>
+                            <td class="w-20" ng-bind="item.toTime"></td>
+                            <td class="w-20" ng-bind="convertToShamsi(item.missionDate)"></td>
+                            <td class="w-20 row">
+                                {{item.hourMissionStateTitle}}
+                                <div class="float-left">
+                                    <i ng-click="DeleteRowHourRequest(item)" class="fa fa-trash cursor-pointer"
+                                        title="حذف درخواست"></i>
+                                    <i class="fa fa-edit ml-1 cursor-pointer" title="ویرایش درخواست"
+                                        ng-click="EditRowHourRequest(item)"></i>
                                 </div>
                             </td>
                         </tr>

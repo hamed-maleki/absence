@@ -1,5 +1,7 @@
 var app = angular.module('myApp', ['customService']);
 app.controller("generalSettingsCtrl", ["$scope", "$timeout", 'requests', function ($scope, $timeout, requests) {
+
+
     //------------- load page -----------------------
     $scope.loadingPage = function (page) {
         $scope.searchParameter = {
@@ -35,6 +37,22 @@ app.controller("generalSettingsCtrl", ["$scope", "$timeout", 'requests', functio
             $scope.getWorkSettingLists(item);
         }
     }
+    //=============== convert date to shamsi =============================
+    $scope.convertToShamsi = function (date) {
+        if (date != null) {
+            return moment(date, 'YYYY/M/D').format('jYYYY/jMM/jDD');
+        } else {
+            return "-"
+        }
+    }
+    //=============== convert date to miladi =============================
+    $scope.convertToMiladi = function (date) {
+        if (date != null) {
+            return moment(date, 'jYYYY/jM/jD').format('YYYY-MM-DD');
+        } else {
+            return "-"
+        }
+    }
     //------------- get list of work settings -----------------------
     $scope.getWorkSettingLists = function (pageItem = null) {
         $scope.item = {
@@ -48,20 +66,25 @@ app.controller("generalSettingsCtrl", ["$scope", "$timeout", 'requests', functio
         $scope.WorkRules = [];
         if (pageItem == null) {
             requests.postingData("WorkSettings/GetList", $scope.item, function (response) {
-                $scope.WorkRules = response.data;
-                if ($scope.WorkRules != null) {
+                if (response.success == true) {
+                    $scope.WorkRules = response.data;
                     $scope.WorkRules.totalPage = Math.ceil($scope.WorkRules.item2 / $scope.WorkRules.item4)
+                } else {
+                    alert(response.errorMessages);
                 }
             })
         } else {
             requests.postingData("WorkSettings/GetList", pageItem, function (response) {
-                $scope.WorkRules = response.data;
-                if ($scope.WorkRules != null) {
+                if (response.success == true) {
+                    $scope.WorkRules = response.data;
                     $scope.WorkRules.totalPage = Math.ceil($scope.WorkRules.item2 / $scope.WorkRules.item4)
+                } else {
+                    alert(response.errorMessages);
                 }
             })
         }
     }
+
 
     //------------- create new setting -----------------------
     $scope.CreateWorkSetting = function () {
@@ -93,11 +116,12 @@ app.controller("generalSettingsCtrl", ["$scope", "$timeout", 'requests', functio
     }
     $scope.confirmCreate = function () {
         requests.postingData("WorkSettings/Create", $scope.createWork, function (response) {
-            if (response.data != null) {
+            if (response.success == true) {
                 $('#createModal').modal('hide');
                 $scope.getWorkSettingLists();
             } else {
                 alert("خطا رخ داده است");
+                alert(response.errorMessages);
             }
         })
     }
@@ -117,8 +141,13 @@ app.controller("generalSettingsCtrl", ["$scope", "$timeout", 'requests', functio
     }
     $scope.confirmEdit = function () {
         requests.puttingData('WorkSettings/Update', $scope.editWorkSetting, function (response) {
-            $scope.getWorkSettingLists();
-            $('#editModal').modal('hide');
+            if (response.success == true) {
+                $scope.getWorkSettingLists();
+                $('#editModal').modal('hide');
+            } else {
+                alert(response.errorMessages);
+            }
+
         })
 
     }
@@ -135,8 +164,14 @@ app.controller("generalSettingsCtrl", ["$scope", "$timeout", 'requests', functio
     }
     $scope.confirmDelete = function () {
         requests.deleteing("WorkSettings/Delete/" + $scope.removeWorkSettingId, {}, function (response) {
-            $("#removeModal").modal('hide');
-            $scope.getWorkSettingLists();
+            if (response.success == true) {
+                $("#removeModal").modal('hide');
+                $scope.getWorkSettingLists();
+            } else {
+                alert("خطا رخ داده است");
+                alert(response.errorMessages);
+            }
+
         })
     }
 

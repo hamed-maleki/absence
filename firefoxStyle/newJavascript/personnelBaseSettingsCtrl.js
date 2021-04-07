@@ -35,19 +35,27 @@ app.controller("personnelBaseSettingsCtrl", ["$scope", "$timeout", 'requests', f
             pageSize: 10,
             sortField: null,
             sortAsc: true,
-            languageId: 0,
+            fillNestedClass: false,
             searchList: []
         }
         $scope.personnelConfig = [];
         if (pageItem == null) {
             requests.postingData("RollCallConfigs/GetList", $scope.dataToGetConfigs, function (response) {
-                $scope.personnelConfig = response.data;
-                $scope.personnelConfig.totalPage = Math.ceil($scope.personnelConfig.item2 / $scope.personnelConfig.item4)
+                if (response.success == true) {
+                    $scope.personnelConfig = response.data;
+                    $scope.personnelConfig.totalPage = Math.ceil($scope.personnelConfig.item2 / $scope.personnelConfig.item4)
+                } else {
+                    alert(response.errorMessages);
+                }
             })
         } else {
             requests.postingData("RollCallConfigs/GetList", pageItem, function (response) {
-                $scope.personnelConfig = response.data;
-                $scope.personnelConfig.totalPage = Math.ceil($scope.personnelConfig.item2 / $scope.personnelConfig.item4)
+                if (response.success == true) {
+                    $scope.personnelConfig = response.data;
+                    $scope.personnelConfig.totalPage = Math.ceil($scope.personnelConfig.item2 / $scope.personnelConfig.item4)
+                } else {
+                    alert(response.errorMessages);
+                }
             })
         }
     }
@@ -92,14 +100,14 @@ app.controller("personnelBaseSettingsCtrl", ["$scope", "$timeout", 'requests', f
     //------------- btns in row at table ------------------------
     $scope.editConfigInfo = [];
     $scope.editRow = function (data) {
-        console.log(data);
         $scope.editConfigInfo = {
-            "name": data.name,
-            "displayName": data.displayName,
-            "value": data.value,
-            "type": data.type,
-            "activeDate": data.activeDate,
-            "id": data.id,
+            name: data.name,
+            displayName: data.displayName,
+            value: data.value,
+            type: data.type,
+            activeDate: data.activeDate,
+            description: data.description,
+            id: data.id,
         };
         $('#configEditModal').modal();
         $('#eStartDate').val($scope.convertToShamsi($scope.editConfigInfo.activeDate));
@@ -111,38 +119,43 @@ app.controller("personnelBaseSettingsCtrl", ["$scope", "$timeout", 'requests', f
     }
 
     //------------ create new config  ----------------
-    $scope.createConfigs = [];
+    $scope.createConfig = [];
     $scope.CreateNewConfig = function () {
         $('#configCreateModal').modal();
-        $scope.createConfigs = {
-            "name": null,
-            "displayName": null,
-            "value": 0,
-            "type": 1,
-            "activeDate": null,
-            "description": null
+        $scope.createConfig = {
+            name: null,
+            displayName: null,
+            value: null,
+            type: null,
+            activeDate: null,
+            description: null
         }
+
     }
 
     $scope.cancelCreate = function () {
-        $scope.createConfigs = {};
+        $scope.createConfig = [];
         $("#startDate").val('');
         $('#configCreateModal').modal('hide');
     }
 
     $scope.cancelConfig = function () {
-        $scope.createConfigs = {};
+        $scope.createConfig = [];
         $("#startDate").val('');
         $('#configCreateModal').modal('hide');
     }
-    $scope.test = [];
+    $scope.createConfigs = [];
     $scope.ConfirmCreateConfig = function () {
-        $scope.createConfigs.activeDate = $scope.convertToMiladi($("#startDate").val());
+        $scope.createConfig.activeDate = $scope.convertToMiladi($("#startDate").val());
+        $scope.createConfigs.push($scope.createConfig);
         requests.postingData("RollCallConfigs/UpsertRollCallConfigsBatch", $scope.createConfigs, function (response) {
-        })
-        $("#configCreateModal").modal("hide");
-        $scope.getPersonnnelConfigList();
-        console.log($scope.createConfigs);
+            if (response.success == true) {
+                $("#configCreateModal").modal("hide");
+                $scope.getPersonnnelConfigList();
+            } else {
+                alert(response.errorMessages);
+            }
+        });
     }
 
 
@@ -153,16 +166,18 @@ app.controller("personnelBaseSettingsCtrl", ["$scope", "$timeout", 'requests', f
     $scope.cancelEditOnModal = function () {
         $('#configEditModal').modal('hide');
     }
+    $scope.editConfigInfos = [];
     $scope.confirmEditConfig = function () {
         $scope.editConfigInfo.activeDate = $scope.convertToMiladi($('#eStartDate').val());
-
-
-        requests.update("RollCallConfigs/UpsertRollCallConfigsBatch", JSON.stringify($scope.editConfigInfo), function (response) {
-            $("#configEditModal").modal("hide");
-            $scope.getPersonnnelConfigList();
-            console.log(response.data)
+        $scope.editConfigInfos.push($scope.editConfigInfo);
+        requests.postingData("RollCallConfigs/UpsertRollCallConfigsBatch", $scope.editConfigInfos, function (response) {
+            if (response.success == true) {
+                $scope.getPersonnnelConfigList();
+                $("#configEditModal").modal("hide");
+            } else {
+                alert(response.errorMessages);
+            }
         })
-        console.log($scope.editConfigInfo);
     }
     //------------- remove btn modal ------------------------
     $scope.cancelDelete = function (data) {
@@ -173,9 +188,12 @@ app.controller("personnelBaseSettingsCtrl", ["$scope", "$timeout", 'requests', f
     }
     $scope.deleteConfig = function () {
         requests.delete("RollCallConfigs/DeleteRollCallConfigsBatch", $scope.removeConfigInfo, function (response) {
+            if (response.success == true) {
+                $("#configRemoveModal").modal('hide');
+                $scope.getPersonnnelConfigList();
+            } else {
+                alert(response.errorMessages);
+            }
         })
-        $("#configRemoveModal").modal('hide');
-        $scope.getPersonnnelConfigList();
     }
-
 }])

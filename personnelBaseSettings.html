@@ -148,7 +148,7 @@
                                             عنوان انگلیسی
                                         </label>
                                     </div>
-                                    <input type="text" class="form-control" ng-model="createConfigs.name">
+                                    <input type="text" class="form-control" ng-model="createConfig.name">
                                 </div>
                             </div>
                             <div class="col-sm-4">
@@ -158,7 +158,7 @@
                                             عنوان فارسی
                                         </label>
                                     </div>
-                                    <input type="text" class="form-control" ng-model="createConfigs.displayName">
+                                    <input type="text" class="form-control" ng-model="createConfig.displayName">
                                 </div>
                             </div>
                             <div class="col-sm-4">
@@ -168,7 +168,7 @@
                                             مقدار
                                         </label>
                                     </div>
-                                    <input type="number" class="form-control" ng-model="createConfigs.value">
+                                    <input type="number" class="form-control" ng-model="createConfig.value">
                                 </div>
                             </div>
                             <div class="col-sm-4">
@@ -178,7 +178,7 @@
                                             نوع
                                         </label>
                                     </div>
-                                    <input type="number" class="form-control" ng-model="createConfigs.type">
+                                    <input type="number" class="form-control" ng-model="createConfig.type">
                                 </div>
                             </div>
                             <div class="col-sm-4">
@@ -189,7 +189,7 @@
                                         </label>
                                     </div>
                                     <input type="text" autocomplete="off" class="form-control date-picker"
-                                        placeholder="xxxx/xx/xx" id="startDate" ng-model="createConfigs.activeDate">
+                                        placeholder="xxxx/xx/xx" id="startDate" ng-model="createConfig.activeDate">
                                 </div>
                             </div>
                             <div class="col-sm-12">
@@ -199,7 +199,7 @@
                                             توضیحات
                                         </label>
                                     </div>
-                                    <input type="text" class="form-control" ng-model="createConfigs.description"
+                                    <input type="text" class="form-control" ng-model="createConfig.description"
                                         style="height: 5em !important;"></input>
                                 </div>
                             </div>
@@ -264,7 +264,7 @@
                                             مقدار
                                         </label>
                                     </div>
-                                    <input class="form-control" ng-model="editConfigInfo.value">
+                                    <input type="number" class="form-control" ng-model="editConfigInfo.value">
                                 </div>
                             </div>
                             <div class="col-sm-4">
@@ -274,7 +274,7 @@
                                             نوع
                                         </label>
                                     </div>
-                                    <input type="text" class="form-control" ng-model="editConfigInfo.type">
+                                    <input type="number" class="form-control" ng-model="editConfigInfo.type">
                                 </div>
                             </div>
                             <div class="col-sm-4">
@@ -295,8 +295,8 @@
                                             توضیحات
                                         </label>
                                     </div>
-                                    <textarea class="form-control" ng-model="editConfigInfo.description"
-                                        style="height: 5em !important;"></textarea>
+                                    <input type="text" class="form-control" ng-model="editConfigInfo.description"
+                                        style="height: 5em !important;"></input>
                                 </div>
                             </div>
                         </div>
