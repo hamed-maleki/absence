@@ -13,6 +13,7 @@
     <link href="firefoxStyle/datepicker/bootstrap-datepicker.min.css" rel="stylesheet">
     <link rel="stylesheet" href="firefoxStyle/main.css">
     <link rel="stylesheet" href="firefoxStyle/newElementsStyle.css">
+    <link rel="stylesheet" href="firefoxStyle/time.min.css">
     <link href="firefoxStyle/time.min.css" rel="stylesheet">
     <style>
         .default-bg {
@@ -24,9 +25,12 @@
         }
 
         body {
-            overflow-y: scroll;
-            overflow-x: hidden;
+            overflow: hidden;
+        }
 
+        .time {
+            direction: ltr;
+            text-align: right;
         }
 
         body>div {
@@ -855,22 +859,20 @@
                             <th class="w-20">از</th>
                             <th class="w-20">تا</th>
                             <th class="w-20">تاریخ مأموریت</th>
-                            <th class="w-20">وضعیت
-
-                            </th>
+                            <th class="w-20">وضعیت</th>
                         </tr>
                     </thead>
                 </table>
             </div>
             <div class="table-body">
-                <table>
+                <table class="test text-center">
                     <tbody>
-                        <tr ng-repeat="item in hourMission.item1 track by item.id">
-                            <td class="w-20" ng-bind="item.personId"></td>
-                            <td class="w-20" ng-bind="item.fromTime"></td>
-                            <td class="w-20" ng-bind="item.toTime"></td>
-                            <td class="w-20" ng-bind="convertToShamsi(item.missionDate)"></td>
-                            <td class="w-20 row">
+                        <tr ng-repeat="item in hourMission track by item.id">
+                            <td class="w-20 ">{{item.personId}}</td>
+                            <td class="w-20">{{item.fromTime}}</td>
+                            <td class="w-20">{{item.toTime}}</td>
+                            <td class="w-20">{{convertToShamsi(item.missionDate)}}</td>
+                            <td>
                                 {{item.hourMissionStateTitle}}
                                 <div class="float-left">
                                     <i ng-click="DeleteRowHourRequest(item)" class="fa fa-trash cursor-pointer"
@@ -1010,8 +1012,8 @@
                                                 ساعت خروج
                                             </label>
                                         </div>
-                                        <input class="form-control" id="EditfromTime" placeholder="HH:MM" type="text"
-                                            ng-model="editHourMissionData.fromTime">
+                                        <input class="form-control time" id="EditfromTime" placeholder="HH:MM"
+                                            type="text" ng-model="editHourMissionData.fromTime">
                                     </div>
                                 </div>
                             </div>
@@ -1023,7 +1025,7 @@
                                                 ساعت ورود
                                             </label>
                                         </div>
-                                        <input class="form-control" id="EdittoTime" placeholder="HH:MM" type="text"
+                                        <input class="form-control time" id="EdittoTime" placeholder="HH:MM" type="text"
                                             ng-model="editHourMissionData.toTime">
                                     </div>
                                 </div>
