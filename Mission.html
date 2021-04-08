@@ -64,6 +64,8 @@
 
 <body dir="rtl" ng-app="myApp" ng-controller="MissionCtrl">
     <p class="HeaderForm">ثبت و ویرایش مأموریت</p>
+
+    <!------------------- filter for search and select personnel ---------------------->
     <div class="card">
         <p class="HeaderForm">
             انتخاب پرسنل
@@ -87,107 +89,6 @@
             </div>
         </div>
     </div>
-
-    <!------------------- filter for search and select personnel ---------------------->
-    <!-- <div class="card">
-        <div class="row">
-            <div class="col-sm-6">
-                <div class="input-group">
-                    <div class="input-group-prepend">
-                        <label class="input-group-text">
-                            نام فرد
-                        </label>
-                    </div>
-                    <input class="form-control" ng-model="searchPInMission.value" id="personnel-input"
-                        ng-value="searchPInMission.value" ng-focus="selectFormLocal()"
-                        ng-keyup="serachPersonel(searchPInMission.value)"
-                        placeholder="نام/ نام خانوادگی/ کد ملی/ شماره کارمند">
-                    <i class="fa fa-download text-success pointer" ng-show="!localPersonnel && !searchingPosition"
-                        ng-click="localPersonnel = true" style="position: absolute;top: 0.3em;left: 5%;z-index: 3;"></i>
-                    <i class="fa fa-bars pointer" ng-click="selectPersonnel()"
-                        style="position: relative;top:5px;right:3px"></i>
-                    <i class="fa fa-close text-danger pointer" ng-if="searchingPosition"
-                        ng-click="searchingPositionChange()"
-                        style="position: absolute;top: 0.3em;left: 5%;z-index: 3;"></i>
-                    <i class="fa fa-close text-danger pointer" ng-show="localPersonnel"
-                        ng-click="localPersonnel = false"
-                        style="position: absolute;top: 0.3em;left: 5%;z-index: 3;"></i>
-                    <div ng-if="searchingPosition" style="position: absolute;top:1.6em;width: 100%;z-index: 2;"
-                        ng-include="'modules/personnelSelectDropdown.html'"></div>
-                    <div ng-if="localPersonnel" style="position: absolute;top:1.6em;width: 100%;z-index: 2;"
-                        ng-include="'modules/personnelSelectLocal.html'"></div>
-                </div>
-            </div>
-            <div class="col-sm-6" style="text-align: center;">
-                <div class="spinner-border text-primary" ng-if="loading"></div>
-            </div>
-        </div>
-    </div> -->
-    <!------------------- select personnel ---------------------->
-    <!-- <div class="modal fade" id="selectPersonnel">
-        <div class="modal-dialog modal-xl">
-            <div class="modal-content">
-                <div class="modal-head">
-                    <p class="HeaderForm">
-                        انتخاب پرسنل
-                        <i class="fa  fa-close text-danger pointer" style="float: left;margin: 0 5px;"
-                            data-dismiss="modal"></i>
-                    </p>
-                </div>
-                <div class="modal-body" style="padding-top: 0;">
-                    <div ng-if="loadingPersonnel" ng-include="'modules/personnelSelect.html'"></div>
-                </div>
-                <div class="card">
-                    <div class="float-left">
-                        <button class="new-button red" ng-click="CancelAddPersonnel()"><i
-                                class="fa fa-close"></i>انصراف</button>
-                        <button class="new-button green" id="confirmBtn" ng-click="confirmAddingPersonnel()"><i
-                                class="fa fa-check"></i>تایید</button>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div> -->
-    <!-- <div class="card" ng-if="personnelInfoExist">
-        <p class="HeaderForm">
-            افراد انتخاب شده
-        </p>
-        <div class="table-header">
-            <table>
-                <thead>
-                    <tr class="row col-12">
-                        <th class="col-3 text-center">
-                            نام
-                        </th>
-                        <th class="col-3 text-center">
-                            نام خانوادگی
-                        </th>
-                        <th class="col-3 text-center">
-                            شماره پرسنلی
-                        </th>
-                        <th class="col-3 text-center">
-                            کد مستخدمی
-                        </th>
-                    </tr>
-
-                </thead>
-            </table>
-        </div>
-        <div class="table-body">
-            <table class="test">
-                <tr class="row col-12" id="test" ng-repeat="item in selectPersonnelFromDbArray track by item.Id">
-                    <td class="hidden">{{$index}}</td>
-                    <td class="col-3 text-center">{{item.FirstName}}</td>
-                    <td class="col-3 text-center">{{item.LastName}}</td>
-                    <td class="col-3 text-center">{{item.PersonnelNo}}</td>
-                    <td class="col-3 text-center">{{item.DossierNo}}<i class="fa fa-trash text-danger pointer"
-                            title="حذف فرد انتخاب شده" ng-click="RemovePersonnelSelection($index)"
-                            style="float: left;margin: 0 5px;" data-dismiss="modal"></i>
-                    </td>
-                </tr>
-            </table>
-        </div>
-    </div> -->
     <!------------------- select mission type ---------------------->
     <div ng-show="personnelInfoExist">
         <div class="card">
@@ -481,7 +382,7 @@
             <div class="modal-content">
                 <div class="modal-body">
                     <p class="HeaderForm">
-                        ویرایش مأموریت روزانه: {{editDayMissionData.personName}}
+                        ویرایش مأموریت روزانه: {{MasterMissionInfo.personsMissions[0].personName}}
                         <i class="fa fa-close float-left" title="انصراف" ng-click="cancelEditDayModalBtn()"></i>
                     </p>
                     <div class="card">
@@ -497,7 +398,11 @@
                                                 نوع مأموریت
                                             </label>
                                         </div>
-                                        <input class="form-control" readonly type="text" id="selectedType">
+                                        <select ng-if="loadEditModal" disabled class="form-control"
+                                            id="selectedTypeEditDay" ng-model="selectedTypeEditDay"
+                                            ng-options="item as item.name for item in selectgroupMissionType.item1 track by item.id">
+                                        </select>
+                                        <!-- <input class="form-control" type="text" id="selectedType"> -->
                                     </div>
                                 </div>
                             </div>
@@ -509,8 +414,7 @@
                                                 عنوان مأموریت
                                             </label>
                                         </div>
-                                        <input class="form-control" readonly type="text"
-                                            ng-model="MasterMissionInfo.subject">
+                                        <input class="form-control" type="text" ng-model="MasterMissionInfo.subject">
                                     </div>
                                 </div>
                             </div>
@@ -535,7 +439,11 @@
                                                 محل مأموریت
                                             </label>
                                         </div>
-                                        <input class="form-control" readonly type="text" id="EselectZoneType">
+                                        <select ng-if="loadEditModal" disabled class="form-control" id="EselectZoneType"
+                                            ng-model="EselectZoneType"
+                                            ng-options="item as item.name for item in selectZoneType.item1 track by item.id">
+                                        </select>
+                                        <!-- <input class="form-control" readonly type="text" id="EselectZoneType"> -->
                                     </div>
                                 </div>
                             </div>
@@ -548,8 +456,8 @@
                                                 شماره حکم
                                             </label>
                                         </div>
-                                        <input class="form-control" readonly type="number"
-                                            ng-model="editDayMissionData.hokmNO">
+                                        <textarea class="form-control" readonly
+                                            ng-model="MasterMissionInfo.personsMissions[0].hokmNO"></textarea>
                                     </div>
                                 </div>
 
@@ -577,7 +485,7 @@
                                             </label>
                                         </div>
                                         <input class="form-control" type="number"
-                                            ng-model="editDayMissionData.ticketPrice">
+                                            ng-model="MasterMissionInfo.personsMissions[0].ticketPrice">
                                     </div>
                                 </div>
 
@@ -591,7 +499,7 @@
                                             </label>
                                         </div>
                                         <input class="form-control" type="number"
-                                            ng-model="editDayMissionData.otherExpense">
+                                            ng-model="MasterMissionInfo.personsMissions[0].otherExpense">
                                     </div>
                                 </div>
 
@@ -605,7 +513,7 @@
                                             </label>
                                         </div>
                                         <input class="form-control" type="number"
-                                            ng-model="editDayMissionData.kilometer">
+                                            ng-model="MasterMissionInfo.personsMissions[0].kilometer">
                                     </div>
                                 </div>
 
@@ -619,7 +527,7 @@
                                             </label>
                                         </div>
                                         <input class="form-control" type="number"
-                                            ng-model="editDayMissionData.withoutDayCount">
+                                            ng-model="MasterMissionInfo.personsMissions[0].withoutDayCount">
                                     </div>
                                 </div>
 
@@ -633,7 +541,7 @@
                                             </label>
                                         </div>
                                         <input class="form-control" type="number"
-                                            ng-model="editDayMissionData.withDayCount">
+                                            ng-model="MasterMissionInfo.personsMissions[0].withDayCount">
                                     </div>
                                 </div>
 
@@ -643,20 +551,10 @@
                                     <div class="custom-check" style="text-align: right;padding-right: 41px;">
                                         <div class="custom-control custom-checkbox">
                                             <input type="checkbox" class="custom-control-input"
-                                                ng-model="editDayMissionData.residencePrice" id="residencePrice">
+                                                ng-model="MasterMissionInfo.personsMissions[0].residencePrice"
+                                                id="residencePrice">
                                             <label class="custom-control-label asp-label" for="residencePrice">
                                                 کسر درصد محل اقامت
-                                            </label>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-6">
-                                    <div class="custom-check" style="text-align: right;padding-right: 41px;">
-                                        <div class="custom-control custom-checkbox">
-                                            <input type="checkbox" class="custom-control-input"
-                                                ng-model="editDayMissionData.hardWork" id="hardWork">
-                                            <label class="custom-control-label asp-label" for="hardWork">
-                                                سختی کار
                                             </label>
                                         </div>
                                     </div>
@@ -680,7 +578,7 @@
                                             </label>
                                         </div>
                                         <input class="form-control" type="number"
-                                            ng-model="editDayMissionData.rewardableMission1">
+                                            ng-model="MasterMissionInfo.personsMissions[0].rewardableMission1">
                                     </div>
                                 </div>
 
@@ -694,7 +592,7 @@
                                             </label>
                                         </div>
                                         <input class="form-control" type="number"
-                                            ng-model="editDayMissionData.rewardableMission2">
+                                            ng-model="MasterMissionInfo.personsMissions[0].rewardableMission2">
                                     </div>
                                 </div>
 
@@ -708,7 +606,7 @@
                                             </label>
                                         </div>
                                         <input class="form-control" type="number"
-                                            ng-model="editDayMissionData.rewardableMission3">
+                                            ng-model="MasterMissionInfo.personsMissions[0].rewardableMission3">
                                     </div>
                                 </div>
 
@@ -722,7 +620,7 @@
                                             </label>
                                         </div>
                                         <input class="form-control" type="number"
-                                            ng-model="editDayMissionData.rewardableMission4">
+                                            ng-model="MasterMissionInfo.personsMissions[0].rewardableMission4">
                                     </div>
                                 </div>
 
@@ -736,7 +634,7 @@
                                             </label>
                                         </div>
                                         <input class="form-control" type="number"
-                                            ng-model="editDayMissionData.rewardableMission5">
+                                            ng-model="MasterMissionInfo.personsMissions[0].rewardableMission5">
                                     </div>
                                 </div>
 
@@ -750,7 +648,7 @@
                                             </label>
                                         </div>
                                         <input class="form-control" type="number"
-                                            ng-model="editDayMissionData.rewardableMission6">
+                                            ng-model="MasterMissionInfo.personsMissions[0].rewardableMission6">
                                     </div>
                                 </div>
 
@@ -764,7 +662,21 @@
                                             </label>
                                         </div>
                                         <input class="form-control" type="number"
-                                            ng-model="editDayMissionData.rewardableMission7">
+                                            ng-model="MasterMissionInfo.personsMissions[0].rewardableMission7">
+                                    </div>
+                                </div>
+
+                            </div>
+                            <div class="col-sm-4">
+                                <div class="mb-1">
+                                    <div class="input-group">
+                                        <div class="input-group-prepend">
+                                            <label class="input-group-text">
+                                                سختی کار
+                                            </label>
+                                        </div>
+                                        <input class="form-control" type="number"
+                                            ng-model="MasterMissionInfo.personsMissions[0].hardWork">
                                     </div>
                                 </div>
 
@@ -781,7 +693,8 @@
                                         </label>
                                     </div>
                                     <input class="form-control" type="text" multiple="true"
-                                        ng-model="editDayMissionData.missionReport" style="min-height: 50px;">
+                                        ng-model="MasterMissionInfo.personsMissions[0].missionReport"
+                                        style="min-height: 50px;">
                                 </div>
                             </div>
 
@@ -795,7 +708,8 @@
                                         </label>
                                     </div>
                                     <input class="form-control" type="text" multiple="true"
-                                        ng-model="editDayMissionData.description" style="min-height: 50px;">
+                                        ng-model="MasterMissionInfo.personsMissions[0].description"
+                                        style="min-height: 50px;">
                                 </div>
                             </div>
 

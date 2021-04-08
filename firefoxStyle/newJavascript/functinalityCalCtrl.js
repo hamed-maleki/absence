@@ -115,6 +115,7 @@ app.controller('functinalityCalCtrl', ["$scope", "$timeout", 'currencyConverter'
         $scope.settingPersonnelInfo($scope.selectedPersonnel);
         $scope.personnelInfoExist = true;
         $scope.personnelInfoInputs = true;
+        $('#selectedPersonnel').val(JSON.parse(localStorage.getItem("lastSelected")).PoliteName);
     }
 
     $scope.checkLocal = function () {
@@ -165,14 +166,18 @@ app.controller('functinalityCalCtrl', ["$scope", "$timeout", 'currencyConverter'
         personId: null,
         insertCalcForNext: true
     }
-    $scope.getListInfoData = [];
+    $scope.getListInfoData = {};
     $scope.GetDataForFunctionalCal = function () {
         $scope.items.personId = $scope.selectedPersonnel.Id;
         $scope.items.fromDate = $scope.convertToMiladi($('#startDate').val());
         $scope.items.toDate = $scope.convertToMiladi($('#endDate').val());
         requests.postingData("PersonRollCalls/GetPersonShiftCalculation", $scope.items, function (response) {
-            $scope.getListInfoData = response.data;
-            $scope.showInfo = true;
+            if (response.success == true) {
+                $scope.getListInfoData = response.data;
+                $scope.showInfo = true;
+            } else {
+                alert(response.errorMessages);
+            }
         })
     }
 }])

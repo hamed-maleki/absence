@@ -282,10 +282,12 @@ app.controller('personnelTrafficDailyReportCtrl', ["$scope", "$timeout", 'curren
         requests.postingData("Reports/GetDailyCalculatedReport", $scope.item, function (response) {
             if (response.success == true) {
                 $scope.reports = response.data;
+
             } else {
                 alert(response.errorMessages);
             }
         })
+        console.log($scope.item);
     }
     $scope.fnExcelReport = function () {
         var tab_text = "<table border='2px'><tr bgcolor='#87AFC6'>";

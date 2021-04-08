@@ -70,10 +70,11 @@
                             نام فرد
                         </label>
                     </div>
-                    <input class="form-control" ng-model="searchPInMission.value" id="personnel-input"
-                        ng-value="searchPInMission.value" ng-focus="selectFormLocal()"
+                    <input ng-show="!personnelInfoExist" class="form-control" ng-model="searchPInMission.value"
+                        id="personnel-input" ng-value="searchPInMission.value" ng-focus="selectFormLocal()"
                         ng-keyup="serachPersonel(searchPInMission.value)"
                         placeholder="نام/ نام خانوادگی/ کد ملی/ شماره کارمند">
+                    <input ng-show="personnelInfoExist" class="form-control" id="selectedPersonnel">
                     <i class="fa fa-download text-success pointer" ng-show="!localPersonnel && !searchingPosition"
                         ng-click="localPersonnel = true" style="position: absolute;top: 0.3em;left: 5%;z-index: 3;"></i>
                     <i class="fa fa-bars pointer" ng-click="selectPersonnel()"
@@ -113,40 +114,6 @@
         </div>
     </div>
     <div class="card" ng-if="personnelInfoExist">
-        <p class="HeaderForm">
-            فرد انتخاب شده
-        </p>
-        <div class="table-header">
-            <table>
-                <thead>
-                    <tr class="row col-12">
-                        <th class="col-3 text-center">
-                            نام
-                        </th>
-                        <th class="col-3 text-center">
-                            نام خانوادگی
-                        </th>
-                        <th class="col-3 text-center">
-                            شماره پرسنلی
-                        </th>
-                        <th class="col-3 text-center">
-                            کد مستخدمی
-                        </th>
-                    </tr>
-
-                </thead>
-            </table>
-        </div>
-        <div class="table-body">
-            <table class="test">
-                <tr class="row col-12">
-                    <td class="col-3 text-center">{{selectedPersonnel.FirstName}}</td>
-                    <td class="col-3 text-center">{{selectedPersonnel.LastName}}</td>
-                    <td class="col-3 text-center">{{selectedPersonnel.PersonnelNo}}</td>
-                    <td class="col-3 text-center">{{selectedPersonnel.DossierNo}}</td>
-                </tr>
-            </table>
-        </div>
         <!--------------- inputs data for getting info -------------- -->
         <div class="card" ng-if="personnelInfoInputs">
             <p class="HeaderForm">اطلاعات ورودی </p>
@@ -186,10 +153,10 @@
         <div class="table-header" ng-if="showInfo">
             <table>
                 <thead>
-                    <tr class="row col-12">
+                    <tr>
                         <th style="width: 8%;">تاریخ شروع </th>
                         <th style="width: 8%;">تاریخ پایان</th>
-                        <th style="width: 8%;">زمان شروع شروع</th>
+                        <th style="width: 8%;">زمان شروع</th>
                         <th style="width: 8%;">زمان پایان</th>
                         <th style="width: 8%;">روز هفته</th>
                         <th style="width: 8%;">روز ورود </th>
@@ -207,7 +174,7 @@
         </div>
         <div class="table-body">
             <table class="test">
-                <tr class="row col-12" id="test" ng-repeat="item in getListInfoData track by item.Id">
+                <tr id="test" ng-repeat="item in getListInfoData track by item.Id">
                     <th style="width: 8%;">{{item.startDate}}</td>
                     <th style="width: 8%;">{{item.endDate}}</td>
                     <th style="width: 8%;">{{item.startTime}}</td>
